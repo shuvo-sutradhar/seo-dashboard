@@ -115,12 +115,9 @@ class FormBuilderController extends Controller
 
         if (Auth::attempt($credentials)) {
 
-
             $invoice = Invoice::where('invoice_number', $request->order_id)->firstOrFail();
-            // $order = Order::query()
-            //         ->where('order_number', 'LIKE', "%{$request->order_id}%") 
-            //         ->get();
             return view('order-form.thanks',compact('invoice'));
+            
         }
     }
 }
