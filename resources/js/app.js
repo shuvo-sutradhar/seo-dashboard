@@ -22,7 +22,9 @@ Vue.use(VueProgressBar, {
   height: '4px'
 })
 
-
+// Vue.component('v-select', vSelect)
+import VueSingleSelect from "vue-single-select";
+Vue.component('vue-single-select', VueSingleSelect);
 
 // Import moment js for date time
 import moment from 'moment';

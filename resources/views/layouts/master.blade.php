@@ -34,9 +34,7 @@
 		{{-- Specific Page Vendor CSS --}}
 		@yield('page-style')
 		<link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/css/bootstrap.css') }}" />
-		{{-- Bootstrap select CSS --}}
-		<link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.css') }}" />
-		<link rel="stylesheet" href="{{ asset('assets/vendor/select2-bootstrap-theme/select2-bootstrap.min.css') }}" />
+
 		{{-- Theme CSS --}}
 		<link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}" />
 		
@@ -129,7 +127,6 @@
 		<script src="{{ asset('assets/vendor/nanoscroller/nanoscroller.js') }}"></script>
 		<script src="{{ asset('assets/vendor/magnific-popup/jquery.magnific-popup.js') }}"></script>
 		<script src="{{ asset('assets/vendor/jquery-placeholder/jquery-placeholder.js') }}"></script>
-		<script src="{{ asset('assets/vendor/select2/js/select2.js') }}"></script>
 		
 		{{-- Specific Page Vendor --}}
 		@yield('page-script')

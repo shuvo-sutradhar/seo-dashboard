@@ -15,20 +15,36 @@
 						<div class="form-group">
 							<label class="control-label">Client</label>
 							<div>
-								<select id="client" v-model="form.client" data-plugin-selectTwo class="form-control" title="Please select at least one Client" required>
-									<option value="">Search Client</option>
-									<option v-for="data in orderData.users" :value="data.id" >{{ data.name }}</option>
-								</select>
+                              <vue-single-select 
+                              placeholder="Select client" 
+                              you-want-to-select-a-post="id" 
+                              v-model="form.client" 
+                              out-of-all-these-posts="makes sense" 
+                              :options="orderData.users" 
+                              you-like-bootstrap="yes" 
+                              a-post-has-an-id="id" 
+                              option-value="id" 
+                              the-post-has-a-title="make sure to show these" 
+                              option-label="name" 
+                              class="form-control"></vue-single-select>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="control-label">Service</label>
-							<div>
-								<select id="service" v-model="form.service" data-plugin-selectTwo class="form-control" title="Please select at least one Service" required>
-									<option disabled selected>Search Service</option>
-									<option v-for="data in orderData.services" :value="data.id" >{{ data.name }}</option>
-								</select>
-							</div>
+                            <div>
+                              <vue-single-select 
+                              placeholder="Select service" 
+                              you-want-to-select-a-post="id" 
+                              v-model="form.service" 
+                              out-of-all-these-posts="makes sense" 
+                              :options="orderData.services" 
+                              you-like-bootstrap="yes" 
+                              a-post-has-an-id="id" 
+                              option-value="id" 
+                              the-post-has-a-title="make sure to show these" 
+                              option-label="name" 
+                              class="form-control"></vue-single-select>
+                            </div>
 						</div>
 	            </div>
 	          </div>
@@ -65,8 +81,8 @@
 			* Modal dismiss
         	*/
         	modalDismiss(){
-        		// this.form.user='',
-        		// this.form.service='',
+        		this.form.user='',
+        		this.form.service='',
         		$.magnificPopup.close()
         	},
             // form data submit to database
@@ -98,3 +114,11 @@
     };
 
 </script>
+
+
+<style type="text/css">
+    .form-control {
+        padding: 0px;
+        border: 0px;
+    }
+</style>
