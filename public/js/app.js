@@ -10837,7 +10837,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.form-control {\n    padding: 0px;\n    border: 0px;\n}\n", ""]);
+exports.push([module.i, "\n.form-control.vue-single-select {\n    padding: 0px;\n    border: 0px;\n}\n", ""]);
 
 // exports
 
@@ -80245,7 +80245,7 @@ var render = function() {
                     "div",
                     [
                       _c("vue-single-select", {
-                        staticClass: "form-control",
+                        staticClass: "form-control vue-single-select",
                         attrs: {
                           placeholder: "Select client",
                           "you-want-to-select-a-post": "id",
@@ -80279,7 +80279,7 @@ var render = function() {
                     "div",
                     [
                       _c("vue-single-select", {
-                        staticClass: "form-control",
+                        staticClass: "form-control vue-single-select",
                         attrs: {
                           placeholder: "Select service",
                           "you-want-to-select-a-post": "id",

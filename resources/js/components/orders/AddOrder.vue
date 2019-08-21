@@ -26,7 +26,7 @@
                               option-value="id" 
                               the-post-has-a-title="make sure to show these" 
                               option-label="name" 
-                              class="form-control"></vue-single-select>
+                              class="form-control vue-single-select"></vue-single-select>
 							</div>
 						</div>
 						<div class="form-group">
@@ -43,7 +43,7 @@
                               option-value="id" 
                               the-post-has-a-title="make sure to show these" 
                               option-label="name" 
-                              class="form-control"></vue-single-select>
+                              class="form-control vue-single-select"></vue-single-select>
                             </div>
 						</div>
 	            </div>
@@ -117,7 +117,7 @@
 
 
 <style type="text/css">
-    .form-control {
+    .form-control.vue-single-select {
         padding: 0px;
         border: 0px;
     }
