@@ -66,24 +66,19 @@ Theme Version: 	2.1.1
 	/*
 	Modal Dismiss
 	*/
-	$(document).on('click', '.modal-dismiss', function (e) {
-		e.preventDefault();
-		$.magnificPopup.close();
-	});
+	// $(document).on('click', '.modal-dismiss', function (e) {
+	// 	e.preventDefault();
+	// 	$.magnificPopup.close();
+	// });
 
 	/*
 	Modal Confirm
 	*/
-	$(document).on('click', '.modal-confirm', function (e) {
-		e.preventDefault();
-		$.magnificPopup.close();
+	// $(document).on('click', '.modal-confirm', function (e) {
+	// 	e.preventDefault();
+	// 	$.magnificPopup.close();
 
-		new PNotify({
-			title: 'Success!',
-			text: 'Modal Confirm Message.',
-			type: 'success'
-		});
-	});
+	// });
 
 	/*
 	Form

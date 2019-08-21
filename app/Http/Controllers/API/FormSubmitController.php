@@ -211,7 +211,7 @@ class FormSubmitController extends Controller
                     'order_number' => $orderNumber.'_'.$i,
                     'order_note' => 'Write your order note',
                     'quantity' => $key['quantity'],
-                    'order_status' => 'submitted',
+                    'order_status' => 'Pending',
                     'payment_staus' => 'By Card',
                 ]);
                 $i++;

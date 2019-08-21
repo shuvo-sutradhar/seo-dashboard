@@ -296,15 +296,6 @@ body{
   background: #E0BF73;
 }
 
-.card-title {
-  margin: 20px;
-  margin-left: -40px;
-  z-index: 1;
-  color: #EBF1EB;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 2rem;
-}
 
 .form {
   height: 100%;

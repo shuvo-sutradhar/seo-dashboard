@@ -14,6 +14,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Route::get('{path}', 'HomeController@index')->where('path','([A-z\d-\/_.]+)?');
 
 Auth::routes(['verify' => true]);
 
@@ -227,4 +228,7 @@ Route::middleware(['auth', 'verified', 'IsAdmin'])->group(function () {
 	})->name('profile');
 });
 
-//Route::get('{path}', 'HomeController@index')->where('path','([A-z\d-\/_.]+)?');
+
+
+
+// Route::get('/orders/{path}', 'OrderController@index')->where('path','([A-z\d-\/_.]+)?');
