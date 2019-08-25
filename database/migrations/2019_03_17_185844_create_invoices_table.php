@@ -31,6 +31,7 @@ class CreateInvoicesTable extends Migration
             $table->string('payment_getway')->nullable();
             $table->string('payment_method')->nullable();
             $table->string('error')->nullable();
+            $table->timestamp('due_date')->nullable();
             $table->timestamps();
         });
     }

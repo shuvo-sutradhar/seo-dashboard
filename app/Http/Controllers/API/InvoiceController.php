@@ -4,13 +4,12 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Order;
+use App\Invoice;
 use App\User;
 use App\Service;
 
-class OrderController extends Controller
+class InvoiceController extends Controller
 {
-
     /**
      * Create a new controller instance.
      *
@@ -20,7 +19,6 @@ class OrderController extends Controller
     {
         $this->middleware('auth:api');
     }
-   
     /**
      * Display a listing of the resource.
      *
@@ -28,19 +26,14 @@ class OrderController extends Controller
      */
     public function index()
     {
+        $total        = Invoice::count(); 
+        $paid_total   = Invoice::where('invoice_status','paid')->count(); 
+        $unpaid_total = Invoice::where('invoice_status','unpaid')->count(); 
+        $refund_total = Invoice::where('invoice_status','refund')->count(); 
         //
-        $count1 = Order::count(); 
-        $count2 = Order::where('order_status','Pending')->count(); 
-        $count3 = Order::where('order_status','Submitted')->count(); 
-        $count4 = Order::where('order_status','Working')->count(); 
-        $count5 = Order::where('order_status','Complete')->count(); 
-        $count6 = Order::where('order_status','Canceled')->count(); 
-        $orders = Order::with('orderService')->with('orderClinet')->with('orderTeam')->paginate(10);
-        
-        $users = User::where('account_role',2)->get(); 
-        $services = Service::where('is_active',1)->get();
-        
-        return  response()->json(compact('count1','count2','count3','count4','count5','count6','orders','users','services'), 200);
+        $invoices     = Invoice::with('invoiceItems')->with('invoiceClient')->paginate(10);  
+
+        return  response()->json(compact('total','paid_total','unpaid_total','refund_total','invoices'), 200);
     }
 
     /**
@@ -51,6 +44,9 @@ class OrderController extends Controller
     public function create()
     {
         //
+        $users = User::where('account_role',2)->get();
+        $services = Service::where('is_active',1)->get();
+        return  response()->json(compact('users','services'), 200);
     }
 
     /**
@@ -62,24 +58,6 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         //
-        //
-        $this->validate($request,[
-            'client'   => 'required',
-            'service'   => 'required',
-        ]);
-
-        $input['user_id']         = $request->client['id'];
-        $input['service_id']      = $request->service['id'];
-        $input['team_member_id']  = null;
-        $input['order_number']    = strtoupper(uniqid('CODE'));
-        $input['order_note']      = null;
-        $input['quantity']        = 1;
-        $input['order_status']    = 'Pending';
-        $input['payment_staus']   = 'Not paid';
-        
-        $order = Order::create($input);
-
-        return  response()->json(compact('order'), 200);
     }
 
     /**
@@ -125,7 +103,5 @@ class OrderController extends Controller
     public function destroy($id)
     {
         //
-
-        return Order::destroy($id);
     }
 }

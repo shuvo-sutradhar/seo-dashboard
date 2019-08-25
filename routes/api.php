@@ -32,3 +32,5 @@ Route::post('/create-order','API\FormSubmitController@createOrder');
 */
 
 Route::apiResources(['/orders' => 'API\OrderController']);
+Route::apiResources(['/invoices' => 'API\InvoiceController']);
+Route::get('/create-invoice','API\InvoiceController@create');

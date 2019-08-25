@@ -1,0 +1,140 @@
+<template>
+
+    <div class="card-body">
+        <br/>
+        <div v-if="invoiceData!=0">
+            <table class="table table-no-more table-bordered table-striped mb-0" id="table">
+                <thead>
+                    <tr>
+                      <th class="text-left">Invoice</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">Added</th>
+                      <th class="text-center">Number</th>
+                      <th class="text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- for all invoice -->
+                    <tr v-for="(data, index) in invoiceData" class="order-wrap" v-show="isInvoceCurrentPage()=='/invoices' || isInvoceCurrentPage()=='/invoices/all'">
+                        <td>{{ data.invoice_number }}</td>
+                        <td class="text-center">
+                            <span v-if="data.invoice_status == 'paid'" class="span-badge working">Paid</span>
+                            <span v-if="data.invoice_status == 'unpaid'" class="span-badge canceled">Unpaid</span>
+                            <span v-if="data.invoice_status == 'refund'" class="span-badge submitted">Refund</span>
+                        </td>
+                        <td class="text-center">
+                            {{ data.created_at | dateFormat }}
+                        </td>
+                        <td class="text-center">
+                           Pending
+                        </td>
+                        <td class="text-right">
+                            <div class="btn-group flex-wrap">
+                                <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                                <div class="dropdown-menu" role="menu">
+                                    <a class="dropdown-item text-1" href="#"><i class="far fa-eye"></i> View</a>
+
+                                    <a class="dropdown-item text-1"><i class="far fa-edit"></i> Edit</a>
+
+                                    <a class="dropdown-item text-1" href="#"><i class="far fa-bell-slash"></i> Unfollow</a>
+
+                                    <a class="dropdown-item text-1" href="#">
+                                        <i class="fa fa-trash-alt"></i> Delete
+                                    </a>
+
+                                    
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+
+                    <!-- for specific invoice based on route -->
+                    <tr v-for="(data, index) in invoiceData" class="order-wrap" v-if="isInvoceCurrentPage()=='/invoices/'+data.invoice_status">
+                        <td>{{ data.invoice_number }}</td>
+                        <td class="text-center">
+                            <span v-if="data.invoice_status == 'paid'" class="span-badge working">Paid</span>
+                            <span v-if="data.invoice_status == 'unpaid'" class="span-badge canceled">Unpaid</span>
+                            <span v-if="data.invoice_status == 'refund'" class="span-badge submitted">Refund</span>
+                        </td>
+                        <td class="text-center">
+                            {{ data.created_at | dateFormat }}
+                        </td>
+                        <td class="text-center">
+                           Pending
+                        </td>
+                        <td class="text-right">
+                            <div class="btn-group flex-wrap">
+                                <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                                <div class="dropdown-menu" role="menu">
+                                    <a class="dropdown-item text-1" href="#"><i class="far fa-eye"></i> View</a>
+
+                                    <a class="dropdown-item text-1"><i class="far fa-edit"></i> Edit</a>
+
+                                    <a class="dropdown-item text-1" href="#"><i class="far fa-bell-slash"></i> Unfollow</a>
+
+                                    <a class="dropdown-item text-1" href="#">
+                                        <i class="fa fa-trash-alt"></i> Delete
+                                    </a>
+
+                                    
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pull-right mt-4">
+            </div>
+        </div>
+        
+        <div v-else>
+            <p class="no-order">
+               Invoices are created automatically for new orders...
+            </p>
+        </div>
+    </div>
+
+</template>
+
+
+
+<script>
+
+
+    export default {
+
+        data() {
+            return {
+                invoiceData : {}
+            }
+        },
+
+        methods: {
+
+            isInvoceCurrentPage: function() {
+              return this.$route.path;
+            },
+
+            loadInvoiceData(){
+                axios.get("/api/invoices").then(({ data }) => (this.invoiceData = data.invoices.data));
+            },
+
+        },
+
+        created() {
+           this.loadInvoiceData();
+        }
+
+    };
+</script>
+
+
+<style>
+    .badge-info {
+        color: rgb(23, 162, 184);
+        background: rgb(212, 245, 250);
+    }
+</style>
+

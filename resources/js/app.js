@@ -46,7 +46,11 @@ const toast = Swal.mixin({
   showConfirmButton: false,
   timer: 3000
 });
+
 window.toast = toast;
+// Vue Fire
+window.Fire =  new Vue();
+
 
 Vue.component('formindex',require('./components/order-form/FormIndex.vue').default);
 Vue.component('formbuilder', require('./components/order-form/FormBuilder.vue').default);
@@ -56,8 +60,12 @@ Vue.component('payment', require('./components/order-form/Payment.vue').default)
 //order page 
 Vue.component('orders', require('./components/orders/Orders.vue').default);
 Vue.component('Add', require('./components/orders/AddOrder.vue').default);
+//Invoice page 
+Vue.component('invoice', require('./components/invoice/Index.vue').default);
+Vue.component('invoiceData', require('./components/invoice/Invocies.vue').default);
 
 const routes = [
+  //order route
   { path: '/orders', component: require('./components/orders/AllOrder.vue').default },
   { path: '/orders/all', component: require('./components/orders/AllOrder.vue').default },
   { path: '/orders/pending', component: require('./components/orders/Pending.vue').default },
@@ -65,6 +73,13 @@ const routes = [
   { path: '/orders/working', component: require('./components/orders/Working.vue').default },
   { path: '/orders/complete', component: require('./components/orders/Complete.vue').default },
   { path: '/orders/cancled', component: require('./components/orders/Cancled.vue').default },
+  //order route
+  { path: '/invoices', component: require('./components/invoice/Invocies.vue').default },
+  { path: '/invoices/all', component: require('./components/invoice/Invocies.vue').default },
+  { path: '/invoices/create', component: require('./components/invoice/Create.vue').default },
+  { path: '/invoices/paid', component: require('./components/invoice/Paid.vue').default },
+  { path: '/invoices/unpaid', component: require('./components/invoice/Unpaid.vue').default },
+  { path: '/invoices/refund', component: require('./components/invoice/Refund.vue').default },
   // { path: '/orders/submitted', component: require('./components/orders/Submitted.vue').default },
   // { path: '/orders/working', component: require('./components/orders/Working.vue').default },
   // { path: '/orders/complete', component: require('./components/orders/Complete.vue').default },

@@ -226,7 +226,7 @@ class FormSubmitController extends Controller
                 'invoice_total' => $request->total,
                 'invoice_discount' => 0.0,
                 'invoice_vat' => 0.0,
-                'invoice_status' => 'complete',
+                'invoice_status' => 'paid',
                 'payment_method' => 'checkout',
                 'payment_getway' => 'stripe'
             ]);

@@ -9,42 +9,46 @@
 	          </header>
 	          <div class="card-body">
 	          	<div class="alert alert-warning">
-		            Adding an order manually will not trigger any notifications or payments. To add a paid order you can <a href="https://alokitrsh.spp.io/invoices/add/order">create a new invoice</a> and mark it as paid.
+		            Adding an order manually will not trigger any notifications or payments. To add a paid order you can <a :href="'/invoices/create'">create a new invoice</a> and mark it as paid.
 		        </div>
 	            <div class="modal-wrapper">
-						<div class="form-group">
+						<div class="form-group add-order">
 							<label class="control-label">Client</label>
 							<div>
-                              <vue-single-select 
-                              placeholder="Select client" 
-                              you-want-to-select-a-post="id" 
-                              v-model="form.client" 
-                              out-of-all-these-posts="makes sense" 
-                              :options="orderData.users" 
-                              you-like-bootstrap="yes" 
-                              a-post-has-an-id="id" 
-                              option-value="id" 
-                              the-post-has-a-title="make sure to show these" 
-                              option-label="name" 
-                              class="form-control vue-single-select"></vue-single-select>
+                  <vue-single-select 
+                    placeholder="Select client" 
+                    you-want-to-select-a-post="id" 
+                    v-model="form.client" 
+                    out-of-all-these-posts="makes sense" 
+                    :options="orderData.users" 
+                    you-like-bootstrap="yes" 
+                    a-post-has-an-id="id" 
+                    option-value="id" 
+                    the-post-has-a-title="make sure to show these" 
+                    option-label="name" 
+                    class="form-control vue-single-select" :class="{ 'is-invalid': form.errors.has('client') }">
+                  </vue-single-select>
+                  <has-error :form="form" field="client"></has-error>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group add-order">
 							<label class="control-label">Service</label>
-                            <div>
-                              <vue-single-select 
-                              placeholder="Select service" 
-                              you-want-to-select-a-post="id" 
-                              v-model="form.service" 
-                              out-of-all-these-posts="makes sense" 
-                              :options="orderData.services" 
-                              you-like-bootstrap="yes" 
-                              a-post-has-an-id="id" 
-                              option-value="id" 
-                              the-post-has-a-title="make sure to show these" 
-                              option-label="name" 
-                              class="form-control vue-single-select"></vue-single-select>
-                            </div>
+                  <div>
+                    <vue-single-select 
+                      placeholder="Select service" 
+                      you-want-to-select-a-post="id" 
+                      v-model="form.service" 
+                      out-of-all-these-posts="makes sense" 
+                      :options="orderData.services" 
+                      you-like-bootstrap="yes" 
+                      a-post-has-an-id="id" 
+                      option-value="id" 
+                      the-post-has-a-title="make sure to show these" 
+                      option-label="name" 
+                      class="form-control vue-single-select" :class="{ 'is-invalid': form.errors.has('service') }">
+                    </vue-single-select>
+                    <has-error :form="form" field="service"></has-error>
+                  </div>
 						</div>
 	            </div>
 	          </div>
@@ -80,11 +84,11 @@
         	/*
 			* Modal dismiss
         	*/
-        	modalDismiss(){
-        		this.form.user='',
-        		this.form.service='',
-        		$.magnificPopup.close()
-        	},
+          	modalDismiss(){
+          		this.form.client='',
+          		this.form.service='',
+          		$.magnificPopup.close()
+          	},
             // form data submit to database
             formSubmit() {
 
@@ -92,9 +96,14 @@
                 this.form.post('/api/orders')
                 .then((order)=>{
 
-                  //console.log("Test");
-                  this.$Progress.finish();
+                  $.magnificPopup.close();
 
+                  toast.fire({
+                    type: 'success',
+                    title: 'Order created successfully.'
+                  })
+                  //console.log();
+                  window.location.href = "../orders/"+order.data.order.order_number;
                 }).catch(()=>{
                     this.$Progress.fail()
                 })
@@ -105,6 +114,9 @@
                 axios.get("/api/orders").then(({ data }) => (this.orderData = data));
             },
 
+            invoiceCreateLink(){
+                return this.link;
+            },
         },
 
         created() {
@@ -116,9 +128,13 @@
 </script>
 
 
-<style type="text/css">
+<style type="text/css" scoped>
     .form-control.vue-single-select {
         padding: 0px;
         border: 0px;
     }
+    .invalid-feedback {
+      color: #dc3545;
+      margin-top: -8px;
+  }
 </style>

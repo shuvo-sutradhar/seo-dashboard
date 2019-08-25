@@ -22,7 +22,7 @@ class Invoice extends Model
      * @var array
      */
     protected $fillable = [
-        'order_id', 'user_id', 'invoice_number', 'invoice_note', 'invoice_total', 'invoice_discount', 'invoice_vat', 'invoice_status', 'payment_getway', 'payment_method', 'error'
+        'order_id', 'user_id', 'invoice_number', 'invoice_note', 'invoice_total', 'invoice_discount', 'invoice_vat', 'invoice_status', 'payment_getway', 'payment_method', 'error','due_date'
     ];
 
 

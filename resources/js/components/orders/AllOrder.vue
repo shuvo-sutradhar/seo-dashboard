@@ -46,7 +46,7 @@
 
                                     <a class="dropdown-item text-1" href="#"><i class="far fa-bell-slash"></i> Unfollow</a>
 
-                                    <a class="dropdown-item text-1" href="#">
+                                    <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
                                         <i class="fa fa-trash-alt"></i> Delete
                                     </a>
 
@@ -88,6 +88,35 @@
 
         methods: {
 
+            deleteData(id){
+                
+               
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    // Send request to the server
+                     if (result.value) {
+                            axios.delete('api/orders/'+id).then(()=>{
+                                    Swal.fire(
+                                    'Deleted!',
+                                    'Your item has been deleted.',
+                                    'success'
+                                    )
+                                Fire.$emit('AfterDelete');
+                            }).catch(()=> {
+                                Swal.fire("Opps!", "Something is wrong.", "warning");
+                            });
+                     }
+                })
+
+            },
+
             orderFormLink(){
                 return this.link+"/order-form/create";
             },
@@ -107,6 +136,9 @@
 
         created() {
            this.loadOrderData();
+           Fire.$on('AfterDelete',() => {
+               this.loadOrderData();
+           });
         }
 
     };

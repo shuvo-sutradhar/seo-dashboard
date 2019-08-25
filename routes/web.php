@@ -15,6 +15,7 @@ Route::get('/', function () {
 });
 
 // Route::get('{path}', 'HomeController@index')->where('path','([A-z\d-\/_.]+)?');
+Route::get('/invoices/{path}', 'InvoiceController@index')->where('path','([A-z\d-\/_.]+)?');
 
 Auth::routes(['verify' => true]);
 
