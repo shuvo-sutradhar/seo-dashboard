@@ -97,13 +97,16 @@
                 .then((order)=>{
 
                   $.magnificPopup.close();
-
+                  
+                  this.$Progress.finish();
                   toast.fire({
                     type: 'success',
                     title: 'Order created successfully.'
                   })
                   //console.log();
-                  window.location.href = "../orders/"+order.data.order.order_number;
+                  //window.location.href = "../orders/"+order.data.order.order_number;
+
+                  this.$router.push('/orders/order/'+order.data.order.order_number);
                 }).catch(()=>{
                     this.$Progress.fail()
                 })

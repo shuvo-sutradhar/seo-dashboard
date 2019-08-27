@@ -31,6 +31,14 @@ import moment from 'moment';
 
 
 
+// Ck-editor
+import Vue from 'vue';
+import CKEditor from '@ckeditor/ckeditor5-vue';
+
+Vue.use( CKEditor );
+
+
+
 // Import vue form
 import { Form, HasError, AlertError } from 'vform';
 window.Form = Form;
@@ -60,6 +68,7 @@ Vue.component('payment', require('./components/order-form/Payment.vue').default)
 //order page 
 Vue.component('orders', require('./components/orders/Orders.vue').default);
 Vue.component('Add', require('./components/orders/AddOrder.vue').default);
+Vue.component('AllOrder', require('./components/orders/AllOrder.vue').default);
 //Invoice page 
 Vue.component('invoice', require('./components/invoice/Index.vue').default);
 Vue.component('invoiceData', require('./components/invoice/Invocies.vue').default);
@@ -68,11 +77,12 @@ const routes = [
   //order route
   { path: '/orders', component: require('./components/orders/AllOrder.vue').default },
   { path: '/orders/all', component: require('./components/orders/AllOrder.vue').default },
-  { path: '/orders/pending', component: require('./components/orders/Pending.vue').default },
-  { path: '/orders/submitted', component: require('./components/orders/Submitted.vue').default },
-  { path: '/orders/working', component: require('./components/orders/Working.vue').default },
-  { path: '/orders/complete', component: require('./components/orders/Complete.vue').default },
-  { path: '/orders/cancled', component: require('./components/orders/Cancled.vue').default },
+  { path: '/orders/Pending', component: require('./components/orders/Pending.vue').default },
+  { path: '/orders/Submitted', component: require('./components/orders/Submitted.vue').default },
+  { path: '/orders/Working', component: require('./components/orders/Working.vue').default },
+  { path: '/orders/Complete', component: require('./components/orders/Complete.vue').default },
+  { path: '/orders/Canceled', component: require('./components/orders/Canceled.vue').default },
+  { path: '/orders/order/:order_number', component: require('./components/orders/View.vue').default },
   //order route
   { path: '/invoices', component: require('./components/invoice/Invocies.vue').default },
   { path: '/invoices/all', component: require('./components/invoice/Invocies.vue').default },
@@ -103,11 +113,25 @@ Vue.filter('dateFormat', function (creted) {
   return moment(creted).format('MMMM Do YYYY');
 })
 
+Vue.filter('capitalize', function (value) {
+  if (!value) return ''
+  value = value.toString()
+  return value.charAt(0).toUpperCase() + value.slice(1)
+})
+
 
 Vue.filter('month', function () {
   return moment.month();
 })
 
+
+//stripe html tag
+Vue.filter('striphtml', function (value) {
+  var div = document.createElement("div");
+  div.innerHTML = value;
+  var text = div.textContent || div.innerText || "";
+  return text;
+});
 
 // Vue Fire
 window.Fire =  new Vue();

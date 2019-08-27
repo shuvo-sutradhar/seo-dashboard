@@ -23,13 +23,13 @@ class Order extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'service_id', 'team_member_id', 'order_number', 'order_note', 'quantity', 'order_total', 'order_status', 'payment_staus'
+        'user_id', 'service_id', 'team_member_id', 'order_number', 'order_note', 'quantity', 'order_total', 'order_status', 'payment_staus','origin','strated_at','completed_at'
     ];
 
 
 
     // Return ont to many relationship with client
-    public function orderClinet()
+    public function orderClient()
     {
     	return $this->belongsTo('App\User', 'user_id');
     }
@@ -80,8 +80,16 @@ class Order extends Model
 
 
 
-
-
+    // Return one to many relationship with client
+    public function orderForm()
+    {
+        return $this->belongsTo('App\OrderForm', 'origin');
+    }
 
     
+    // Return one to many relationship with INVOICE
+    public function invoice()
+    {
+        return $this->hasOne('App\Invoice');
+    }
 }

@@ -32,5 +32,14 @@ Route::post('/create-order','API\FormSubmitController@createOrder');
 */
 
 Route::apiResources(['/orders' => 'API\OrderController']);
+Route::get('/show-order/{order_number}','API\OrderController@show');
+Route::put('/orders/order-note/{id}','API\OrderController@order_note');
+Route::put('/orders/order-status/{id}','API\OrderController@order_status');
+Route::put('/orders/order-following/{order_number}','API\OrderController@order_follow');
+Route::put('/orders/order-assign/{order_number}','API\OrderController@assign_orders');
+/*
+* Invoice controller
+*/
+
 Route::apiResources(['/invoices' => 'API\InvoiceController']);
 Route::get('/create-invoice','API\InvoiceController@create');

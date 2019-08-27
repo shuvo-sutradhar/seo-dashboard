@@ -4,14 +4,14 @@
     <div class="template-wrap">
         
         <section class="card card-horizontal mb-4">
-            <div class="card_header">
+            <div class="card_header" v-if="isOrderPage()===false">
               <h3 class="font-weight-semibold mt-3 dark">Orders</h3>
               <a href="" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light modal-with-move-anim" href="#modalAnim">
                 <i class="fas fa-shopping-basket"></i> Add order
               </a>
             </div>
-
-            <div class="card_nav">
+            
+            <div class="card_nav" v-if="isOrderPage()===false">
               <ul>
                 <li v-if="orderData.count1!=0">
                   <router-link to="/orders/all" class="nav-link order-all">
@@ -19,35 +19,35 @@
                   </router-link>
                 </li>
                 <li v-if="orderData.count2!=0">
-                  <router-link to="/orders/pending" class="nav-link order-pending">
+                  <router-link to="/orders/Pending" class="nav-link order-pending">
                     <span>{{orderData.count2}}</span> Pending
                   </router-link>
                 </li>
                 <li v-if="orderData.count3!=0">
-                  <router-link to="/orders/submitted" class="nav-link order-submit">
+                  <router-link to="/orders/Submitted" class="nav-link order-submit">
                     <span>{{orderData.count3}}</span> Submitted
                   </router-link>
                 </li>
                 <li v-if="orderData.count4!=0">
-                  <router-link to="/orders/working" class="nav-link order-working">
+                  <router-link to="/orders/Working" class="nav-link order-working">
                     <span>{{orderData.count4}}</span> Working
                   </router-link>
                 </li>
                 <li v-if="orderData.count5!=0">
-                  <router-link to="/orders/complete" class="nav-link order-complete">
+                  <router-link to="/orders/Complete" class="nav-link order-complete">
                     <span>{{orderData.count5}}</span> Complete
                   </router-link>
                 </li>
                 <li v-if="orderData.count6!=0">
-                  <router-link to="/orders/cancled" class="nav-link order-cancle">
+                  <router-link to="/orders/Canceled" class="nav-link order-cancle">
                     <span>{{orderData.count6}}</span> Canceled
                   </router-link>
                 </li>
               </ul>
             </div>
 
-            <div class="card-body">
-              <router-view></router-view>
+            <div>
+              <router-view :orderdata="orderData"></router-view>
             </div>
         </section>
 
@@ -76,6 +76,13 @@
 
         methods: {
 
+            isOrderPage: function() {
+
+              let url = this.$route.path;
+              url = url.slice(0, url.lastIndexOf('/'));
+
+              return url === '/orders/order';
+            },
 
             loadOrderData(){
                 axios.get("/api/orders").then(({ data }) => (this.orderData = data));
@@ -85,6 +92,9 @@
 
         created() {
            this.loadOrderData();
+           Fire.$on('AfterDelete',() => {
+               this.loadOrderData();
+           });
         }
 
     };

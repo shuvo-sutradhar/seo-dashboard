@@ -235,7 +235,6 @@
 							{{-- {{ dd($order->userFollowingOrder) }} --}}
 
 						</form>
-						
 					</div>
 
 					<div class="row">

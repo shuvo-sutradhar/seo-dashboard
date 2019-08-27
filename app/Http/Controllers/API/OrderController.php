@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Order;
 use App\User;
 use App\Service;
+use App\OrderUnfollow;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -35,7 +37,7 @@ class OrderController extends Controller
         $count4 = Order::where('order_status','Working')->count(); 
         $count5 = Order::where('order_status','Complete')->count(); 
         $count6 = Order::where('order_status','Canceled')->count(); 
-        $orders = Order::with('orderService')->with('orderClinet')->with('orderTeam')->paginate(10);
+        $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->paginate(10);
         
         $users = User::where('account_role',2)->get(); 
         $services = Service::where('is_active',1)->get();
@@ -82,15 +84,119 @@ class OrderController extends Controller
         return  response()->json(compact('order'), 200);
     }
 
+    //store order note data
+    public function order_note(Request $request,$id)
+    {
+        $order              = Order::find($id);
+        $order->order_note  = $request->data;
+        $order->save();
+        return ['message'=>'Successfuly inserted.'];
+    }
+
+
+    //change order status data
+    public function order_status(Request $request,$id)
+    {
+        $order              = Order::find($id);
+        $order->order_status  = $request->data;
+
+        if($request->data=='Complete') {
+            if($order->strated_at==null){
+                $order->strated_at  = Carbon::now()->format('Y-m-d H:i:s');
+            }
+            $order->completed_at  = Carbon::now()->format('Y-m-d H:i:s');
+
+        } elseif ($request->data!='Submitted' || $request->data!='Working'){
+
+            $order->strated_at  = Carbon::now()->format('Y-m-d H:i:s');
+            $order->completed_at  = NULL;
+
+        } else {
+            $order->completed_at  = NULL;
+        }
+        $order->save();
+        return ['message'=>'Successfuly inserted.'];
+    }
+
+
+    // follow or unflow order
+    public function order_follow($number)
+    {
+        $order = Order::where('order_number', $number)->firstOrFail();
+
+        $matchThese = ['order_id' => $order->id, 'user_id' => auth()->user()->id];
+
+        $unfollow = OrderUnfollow::where($matchThese)->first();
+
+        if(isset($unfollow->is_following))
+        {
+            $isFollowing = true;
+
+            if($unfollow->is_following == true)
+            {
+                $isFollowing = false;
+            }
+           
+            $unfollow->update([
+                'is_following' => $isFollowing,
+            ]);
+
+            if($isFollowing)
+            {
+                return ['You are now following the orde.'];
+            }
+            return ['You are now unfollowing the order.'];
+        }
+        else
+        {
+            OrderUnfollow::create([
+                'order_id' => $order->id,
+                'user_id' => auth()->user()->id,
+                'is_following' => 1,
+
+            ]);
+        }
+        return ['You are now following the orde.'];
+    }
+
+    // assign order
+    public function assign_orders(Request $request, $number)
+    {
+
+        $order = Order::where('order_number', $number)->firstOrFail();
+
+        if($request->data == 'anyone')
+        {
+            $team = null;
+        }
+        else
+        {
+            $team = $request->data;
+        }
+        $order->update([
+            'team_member_id' => $team
+        ]);
+
+        return ['message'=>'Order has been assign.'];
+    }
+
+
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($order_number)
     {
         //
+        $order = Order::with('orderClient')->with('orderService')->with('orderForm')->with('invoice')->with('orderTeam')->where('order_number', $order_number)->firstOrfail();
+        $teamMembers = User::where('account_role', 0)->orWhere('account_role',1)->get();
+        $matchThese = ['order_id' => $order->id, 'user_id' => auth('api')->id()];
+        $followOrUnfollow = OrderUnfollow::where($matchThese)->first();
+
+        return  response()->json(compact('order', 'teamMembers', 'followOrUnfollow'), 200);
+
     }
 
     /**
@@ -125,7 +231,6 @@ class OrderController extends Controller
     public function destroy($id)
     {
         //
-
         return Order::destroy($id);
     }
 }

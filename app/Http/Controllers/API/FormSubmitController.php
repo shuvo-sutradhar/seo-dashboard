@@ -11,6 +11,7 @@ use App\InvoiceItem;
 use App\InvoiceBilling;
 use App\User;
 use App\Client;
+use App\OrderForm;
 
 use Carbon\Carbon;
 use Stripe;
@@ -107,7 +108,6 @@ class FormSubmitController extends Controller
             'email' => 'required|string|max:191|unique:users'
         ]);
 
-
         $array = [];
 
         // check radio button data
@@ -201,6 +201,7 @@ class FormSubmitController extends Controller
             // store data in database
             // unique order number
             $orderNumber = strtoupper(uniqid('CODE'));
+            $formLink = OrderForm::where('formLink',$request->formLink)->first();
             // insert row for every ervery service
             $i = 1;
             foreach($array as $key) {
@@ -213,6 +214,7 @@ class FormSubmitController extends Controller
                     'quantity' => $key['quantity'],
                     'order_status' => 'Pending',
                     'payment_staus' => 'By Card',
+                    'origin' => $formLink->id,
                 ]);
                 $i++;
             }

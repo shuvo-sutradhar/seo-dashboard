@@ -31,11 +31,16 @@ class Invoice extends Model
     public function invoiceItems()
     {
         return $this->hasMany('App\InvoiceItem');
-    }
+    }    
 
     //Relation with service
     public function invoiceClient()
     {
         return $this->belongsTo('App\User', 'user_id');
+    }
+    //Relation with order
+    public function invoiceOrder()
+    {
+        return $this->belongsTo('App\Order', 'order_id');
     }
 }
