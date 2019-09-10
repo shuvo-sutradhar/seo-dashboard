@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Stripe
- * @version    2.1.4
+ * @version    2.2.10
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2018, Cartalyst LLC
+ * @copyright  (c) 2011-2019, Cartalyst LLC
  * @link       http://cartalyst.com
  */
 
@@ -66,14 +66,17 @@ class Invoices extends Api
      *
      * @param  string  $customerId
      * @param  string  $subscriptionId
+     * @param  array  $parameters
      * @return array
      */
-    public function upcomingInvoice($customerId, $subscriptionId = null)
+    public function upcomingInvoice($customerId, $subscriptionId = null, array $parameters = [])
     {
-        return $this->_get('invoices/upcoming', [
+        $parameters = array_merge($parameters, [
             'customer'     => $customerId,
             'subscription' => $subscriptionId,
         ]);
+
+        return $this->_get('invoices/upcoming', $parameters);
     }
 
     /**
@@ -89,14 +92,71 @@ class Invoices extends Api
     }
 
     /**
-     * Pays the given invoice.
+     * Deletes the given draft invoice.
      *
      * @param  string  $invoiceId
      * @return array
      */
-    public function pay($invoiceId)
+    public function delete($invoiceId)
     {
-        return $this->_post("invoices/{$invoiceId}/pay");
+        return $this->_delete("invoices/{$invoiceId}");
+    }
+
+    /**
+     * Finalizes the given invoice.
+     *
+     * @param  string  $invoiceId
+     * @param  array  $parameters
+     * @return array
+     */
+    public function finalize($invoiceId, array $parameters = [])
+    {
+        return $this->_post("invoices/{$invoiceId}/finalize", $parameters);
+    }
+
+    /**
+     * Pays the given invoice.
+     *
+     * @param  string  $invoiceId
+     * @param  array  $parameters
+     * @return array
+     */
+    public function pay($invoiceId, array $parameters = [])
+    {
+        return $this->_post("invoices/{$invoiceId}/pay", $parameters);
+    }
+
+    /**
+     * Sends the given invoice.
+     *
+     * @param  string  $invoiceId
+     * @return array
+     */
+    public function send($invoiceId)
+    {
+        return $this->_post("invoices/{$invoiceId}/send");
+    }
+
+    /**
+     * Voids the given invoice.
+     *
+     * @param  string  $invoiceId
+     * @return array
+     */
+    public function void($invoiceId)
+    {
+        return $this->_post("invoices/{$invoiceId}/void");
+    }
+
+    /**
+     * Voids the given invoice.
+     *
+     * @param  string  $invoiceId
+     * @return array
+     */
+    public function markUncollectible($invoiceId)
+    {
+        return $this->_post("invoices/{$invoiceId}/mark_uncollectible");
     }
 
     /**

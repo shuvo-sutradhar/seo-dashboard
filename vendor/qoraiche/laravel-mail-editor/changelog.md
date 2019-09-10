@@ -25,3 +25,75 @@ All notable changes to `laravel-mail-editor` will be documented in this file.
 - look for the equivalent factory and check if the dependency is an eloquent model.
 - resolve all other non-eloquent objects.
 - markdown editor will output no object variables in the following format: {{ varname }}.
+
+## Version 1.1.1
+
+- fix template view path encoding for windows env.
+
+## Version 1.1.2
+
+- Add constructor auto detect for arrays.
+
+## Version 1.1.3
+
+- rollback db after generating a model factory.
+
+## Version 1.1.4
+
+- Fix error saving template error `Request failed with status code 500`.
+
+## Version 1.1.5
+
+- Enable source code editing plugin for WYSIWYG.
+
+## Version 1.1.6
+
+- Add `vendor:publish` for template production.
+
+## Version 1.1.7
+
+- Moving away templates metadata from DB to a JSON file to avoid production problems.
+
+## Version 1.1.10
+
+- Fixes issues #15, #16 
+- Adds the ability to have params mocked for a Mailable's constructor where a type isn't available
+
+## Version 1.1.11
+
+- Fixes issue where the **tinyMCE editor** would take the blade directive `{{ $user->name }}` and then render the thing as this in the `.blade.php` file `{{ $user-&gt;name }}`.
+
+## Version 1.1.14
+
+- Add ui anchor icon for each simple variable.
+- Fix error that occured when updating template details: Error: Request failed with status code 500 #32.
+- Add route groups.
+
+## Version 1.1.15
+
+- Add Legacy output plugin and inline_styles option to TinyMCE editor.
+
+## Version 1.1.16
+
+- Add web middleware
+
+## Version 1.1.20
+
+- Add advanced editor params.
+- Optional factory usage configuration.
+- Add with data to params list.
+- Remove web middleware which disables markdown preview to render.
+
+## Version 1.1.21
+
+- Rename config middleware option to middlewares and add a simple middleware example.
+
+## Version 1.2.0
+
+- Save created templates to maileclipse vendor resources path.
+- Fix editor view data anchor.
+- Rename configuration option `mail_dir` to `mailables_dir`.
+
+## Version 1.2.1
+
+- Fix markdown template preview error request **419**.

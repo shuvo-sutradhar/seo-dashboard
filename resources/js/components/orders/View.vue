@@ -7,6 +7,8 @@
         <h3 class="font-weight-semibold mt-3 dark">{{ orderDetails.order.order_service.name }}</h3>
       </div>
 
+
+      <!-- service name start -->
       <div class="card-body" v-bind:class="orderDetails.order.order_note==null ? '' : 'borderLeft'">
         <form @submit.prevent="submitOrderNote(orderDetails.order.id)">
           <div class="form-group order-note-field" id="order-note-area">
@@ -16,13 +18,13 @@
                 <p style="margin-bottom: 0px">Add a note for your item...</p>
               </div>
               <div v-else class="order_note_edit">
-                <p style="margin-bottom: 0px">{{orderDetails.order.order_note | striphtml}}</p>
+                <p style="margin-bottom: 0px" v-html="orderDetails.order.order_note"></p>
                 <a class="edit-note" id="edit-note" href="#" @click="noteEditor(orderDetails.order.order_note)"><i class="fa fa-edit"></i></a>
               </div>
             </div>
 
-            <div v-else>
-              <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+            <div v-else class="order-note-editor">
+              <ckeditor :editor="editor" v-model="editorData" ></ckeditor>
               <button type="button" class="mb-1 mt-1 mr-1 btn btn-danger  btn-sm float-right" @click="isHidden=false">Cancle</button>
               <button type="sumit" class="mb-1 mt-1 mr-1 btn btn-primary  btn-sm float-right">Save Change</button>
             </div>
@@ -30,15 +32,23 @@
           </div>
         </form>
       </div>
+      <!-- service name end -->
+
+
+      <!-- order conversation start -->
+      <Orderconversation :messages="orderMessage" @messageDel="deleteMessage"></Orderconversation>
+      <ComposeOrderconversation @send="sendMessage" @new="saveNewMessage"></ComposeOrderconversation>
+      <!-- order conversation end -->
 
     </div>
     <!-- left side end -->
 
     <!-- right side start -->
     <div class="col-md-3 ">
+
       <div class="order_right_details">
         <!-- top bar menu -->
-        <div class="row justify-content-center">
+        <div class="d-flex justify-content-center">
             <div class="form-inline">
                  <div class="form-group order-wrap ">
                     <button v-if="orderDetails.order.order_status=='Submitted'" type="button" class="btn submitted dropdown-toggle" data-toggle="dropdown" id="change_status">
@@ -103,7 +113,7 @@
                     </div>
                  </div>
                  <div class="form-group ml-2">
-                    <a href="#" class="btn btn-light" @click="isFollowing(orderDetails.order.order_number)" v-if="orderDetails.followOrUnfollow!=null && orderDetails.followOrUnfollow.is_following!=0">
+                    <a href="#" class="btn btn-light" @click="isFollowing(orderDetails.order.order_number)" v-if="orderDetails.followOrUnfollow!=null && orderDetails.followOrUnfollow.is_following==0">
                       <i class="fas fa-bell-slash" aria-hidden="true"></i> Unfollow
                     </a>
                     <a href="#" class="btn btn-light" @click="isFollowing(orderDetails.order.order_number)" v-else>
@@ -115,81 +125,117 @@
         <!-- top bar menu end -->
 
         <!-- details start -->
-        <div class="row">
-          <div class="card card-horizontal mt-2">
-            <div class="card-body order-body">
-              <h3>Order #B39U312Y 
-                <span class="float-right ">
-                  <button type="button" class="btn dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-                  <div class="dropdown-menu dropdown-menu-right" role="menu">
-                    <a class="dropdown-item text-1" href="#"><i class="fa fa-edit"></i> Edit Details</a>
+        <div class="card card-horizontal mt-2">
+          <div class="card-body order-body">
+            <h3>Order #B39U312Y 
+              <span class="float-right ">
+                <button type="button" class="btn dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                <div class="dropdown-menu dropdown-menu-right" role="menu">
+                  <a class="dropdown-item text-1" href="#"><i class="fa fa-edit"></i> Edit Details</a>
 
-                    <a onclick="deleteData(event)" class="dropdown-item text-1" href="#">
-                      <i class="fa fa-trash-alt"></i> Delete Order
-                    </a>
-                  </div>
-                </span>
-              </h3>
-              <table class="details">
-                  <tbody>
+                  <a onclick="deleteData(event)" class="dropdown-item text-1" href="#">
+                    <i class="fa fa-trash-alt"></i> Delete Order
+                  </a>
+                </div>
+              </span>
+            </h3>
+            <table class="details">
+                <tbody>
+                  <tr>
+                      <th style="width: 150px">Client</th>
+                      <td>
+                          <a href="#">{{orderDetails.order.order_client.name}}</a>
+                      </td>
+                  </tr>
+
                     <tr>
-                        <th style="width: 150px">Client</th>
+                        <th>Payment</th>
+                        <td>{{orderDetails.order.payment_staus}}</td>
+                    </tr>
+                    <tr>
+                        <th>Amount</th>
+                        <td>${{orderDetails.order.order_service.price}}  </td>
+                    </tr>
+                    <tr v-if="orderDetails.order.invoice!=null">
+                        <th>Invoice</th>
+                        <td><a href="/invoice/B39U312Y">{{orderDetails.order.invoice.invoice_number}}</a></td>
+                    </tr>
+                    <!-- form origin -->
+                    <tr v-if="orderDetails.order.origin!=null">
+                        <th>Origin</th>
                         <td>
-                            <a href="#">{{orderDetails.order.order_client.name}}</a>
+                          <a href="https://alok.spp.io/invoice/B39U312Y">{{orderDetails.order.order_form.formName}}  </a>
                         </td>
                     </tr>
-
-                      <tr>
-                          <th>Payment</th>
-                          <td>{{orderDetails.order.payment_staus}}</td>
-                      </tr>
-                      <tr>
-                          <th>Amount</th>
-                          <td>${{orderDetails.order.order_service.price}}  </td>
-                      </tr>
-                      <tr v-if="orderDetails.order.invoice!=null">
-                          <th>Invoice</th>
-                          <td><a href="/invoice/B39U312Y">{{orderDetails.order.invoice.invoice_number}}</a></td>
-                      </tr>
-                      <!-- form origin -->
-                      <tr v-if="orderDetails.order.origin!=null">
-                          <th>Origin</th>
-                          <td>
-                            <a href="https://alok.spp.io/invoice/B39U312Y">{{orderDetails.order.order_form.formName}}  </a>
-                          </td>
-                      </tr>
-                      <tr v-if="orderDetails.order.payment_staus=='Manual'">
-                          <th>Origin</th>
-                          <td>
-                              Manual invoice
-                          </td>
-                      </tr>
-                      <!-- /. form origin -->
-                      <tr>
-                          <th>Order date</th>
-                          <td>{{ orderDetails.created_at | dateFormat }}</td>
-                      </tr>
-                  
-                      <tr v-if="orderDetails.order.strated_at!=null">
-                          <th>Started</th>
-                          <td>{{ orderDetails.strated_at | dateFormat }}</td>
-                      </tr>
-                      <tr v-if="orderDetails.order.completed_at!=null">
-                          <th>Completed</th>
-                          <td>{{ orderDetails.completed_at | dateFormat }}</td>
-                      </tr>
-                      <tr>
-                          <th>Service</th>
-                          <td><a href="https://alok.spp.io/invoice/B39U312Y">{{ orderDetails.order.order_service.name }}</a></td>
-                      </tr>
-                  
-                  </tbody>
-              </table>
-            </div>
+                    <tr v-if="orderDetails.order.payment_staus=='Manual'">
+                        <th>Origin</th>
+                        <td>
+                            Manual invoice
+                        </td>
+                    </tr>
+                    <!-- /. form origin -->
+                    <tr>
+                        <th>Order date</th>
+                        <td>{{ orderDetails.created_at | dateFormat }}</td>
+                    </tr>
+                
+                    <tr v-if="orderDetails.order.strated_at!=null">
+                        <th>Started</th>
+                        <td>{{ orderDetails.strated_at | dateFormat }}</td>
+                    </tr>
+                    <tr v-if="orderDetails.order.completed_at!=null">
+                        <th>Completed</th>
+                        <td>{{ orderDetails.completed_at | dateFormat }}</td>
+                    </tr>
+                    <tr>
+                        <th>Service</th>
+                        <td><a href="https://alok.spp.io/invoice/B39U312Y">{{ orderDetails.order.order_service.name }}</a></td>
+                    </tr>
+                
+                </tbody>
+            </table>
           </div>
         </div>
         <!-- details end -->
+      </div>
 
+      <div class="order_right_details">
+        <div class="card mt-2">
+          <div class="card-body order-body">
+            <h3>Tags</h3>
+            <!-- <form @submit.prevent="addTag">
+              <div class="d-flex mb-3" id="tag-edit" >
+                  <input type="text" v-model="tag" class="form-control ui-autocomplete-input" id="tag-input" placeholder="New tag" >
+                  <button type="submit" class="btn btn-default ml-2" id="tag-save">Add</button>
+              </div>
+            </form> -->
+            <form @submit.prevent="addTag" class="d-flex">
+              <vue-tags
+                  :active="tags"
+                  :all="orderDetails.tags"
+                  :element-count-for-start-arrow-scrolling="1"
+                  :tab-index="1"
+                  :tag-creation-enabled="true"
+                  :colors-enabled="false"
+                  :tag-color-default="'rgb(46, 195, 161)'"
+                  :tag-list-label="'Select an option'"
+                  :placeholder="'Select an option'"
+                  @on-tag-added="onTagAdded"
+                  @on-tag-removed="onTagRemoved"
+                  @on-tag-created="onTagCreated"
+              />
+              <button type="submit" class="btn btn-secondary ml-2" id="tag-save">Add</button>
+            </form>
+            <div class="tag-wrap mt-3">
+              <transition-group name="list" tag="div" class="field is-grouped-multiline" enter-active-class="animated zoomInUp" leave-active-class="animated zoomOutDown">
+                <button type="submit" class="btn btn-primary btn-sm mr-2 mb-2 tag" v-for='(tag, id) in orderDetails.order_tag' v-on:click="removeTag(tag)" :key="tag.id">
+                  {{tag.order_tag.name}} <span>×</span>
+                </button>
+              </transition-group>
+
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <!-- right side end -->
@@ -203,23 +249,111 @@
 
 <script>
 
+    import Orderconversation from './Orderconversation';
+    import ComposeOrderconversation from './ComposeOrderconversation';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     export default {
+
         data() {
             return {
               isHidden:false,
               //load data from server
               orderDetails:{},
+              //load tag 
+              tags:[],
               //ck-editor
               editor: ClassicEditor,
               editorData: '',
-              editorConfig: {
-                  // The configuration of the rich-text editor.
-              },
+              //orderMessage
+              orderMessage:[],
             }
         },
 
         methods: {
+
+            //add tag
+            addTag(){
+                // //save new tag
+                this.$Progress.start();
+                axios.put('/api/orders/order-tag-status/'+this.orderDetails.order.id,{tag:this.tags})
+                .then((response)=>{
+
+
+                  Fire.$emit('AfterUpdate');
+                  this.$Progress.finish();
+
+                  //push data into active tag
+                  // let newTag = {
+                  //   id: response.data.tag.id,
+                  //   name: response.data.tag.name,
+                  //   slug: response.data.tag.slug
+                  // };
+
+                  // this.tags.push(newTag);
+                  this.tags=[]
+
+                }).catch(()=>{
+                    this.$Progress.fail()
+                })
+            },
+            onTagAdded(data){
+              //console.log(data.name)
+              this.tags.push(data);
+            },
+            onTagRemoved(data){
+              //console.log(data.name)
+              this.tags.splice(data,1);
+            },
+            onTagCreated(data,id = this.orderDetails.order.id){
+                //console.log(orderDetails.tags.length);
+
+
+                // //save new tag
+                this.$Progress.start();
+                axios.post('/api/orders/order-tag/'+id,{tag:data})
+                .then((response)=>{
+
+
+                  Fire.$emit('AfterUpdate');
+                  this.$Progress.finish();
+
+                  //push data into active tag
+                  let newTag = {
+                    id: response.data.tag.id,
+                    name: response.data.tag.name,
+                    slug: response.data.tag.slug
+                  };
+
+                  this.tags.push(newTag);
+
+                }).catch(()=>{
+                    this.$Progress.fail()
+                })
+            },
+            removeTag(data){
+
+                // //save new tag
+                this.$Progress.start();
+                axios.delete('/api/orders/order-tag/'+data.id)
+                .then((response)=>{
+
+                  //remove item from active item
+                  if(this.tags.length>0){
+                    for(var i = 0; i < this.tags.length; i++) {
+                      if(this.tags[i].id==data.order_tag.id){
+                        this.tags.splice(data,1);
+                      }
+                    }
+                  }
+
+                  Fire.$emit('AfterUpdate');
+                  this.$Progress.finish();
+
+                }).catch(()=>{
+                    this.$Progress.fail()
+                })
+            },
+
 
             //submit order note data
             submitOrderNote(id){
@@ -256,7 +390,6 @@
                   })
                   //this.$router.push('/route_name')
                   Fire.$emit('AfterUpdate');
-                  this.isHidden=false;
 
                 }).catch(()=>{
                     this.$Progress.fail()
@@ -326,32 +459,121 @@
                 axios.get(`/api/show-order/${this.$route.params.order_number}`).then(({ data }) => (this.orderDetails = data));
             },
 
+            /*
+            * Sending Message
+            */
+
+            saveNewMessage(message,usere){
+              Vue.set(message, 'user', usere);
+              this.orderMessage.push(message);
+            },
+
+
+            handleIncoming(message, user) {
+              //if(this.selectedContact && message.from == this.selectedContact.id){
+                this.saveNewMessage(message, user);
+                return [message,user];
+              },
+              //this.updateUnreadCount(message.from_contact, false);
+            //},
+
+            sendMessage(text) {
+              // if(!this.contact) {
+              //   return;
+              // }
+              axios.post('/api/order-message/send',{
+                order_id: this.orderDetails.order.id,
+                mesasge_body: text[1],
+                message_for: text[0],
+                message_link: this.orderMessage.length + 1,
+              }).then((response)=>{
+                console.log(response.data.message);
+                this.$emit('new', response.data.message)
+              })
+            },
+
+            /*
+            * Delete Order Message
+            */
+
+          deleteMessage(id) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                    // Send request to the server
+                     if (result.value) {
+                        axios.delete('/api/order-message/'+id).then(()=>{
+                                Swal.fire(
+                                'Deleted!',
+                                'Your file has been deleted.',
+                                'success'
+                                )
+                            Fire.$emit('AfterDeleteOrderMsg');
+                        }).catch(()=> {
+                            Swal.fire("Failed!", "There was something wronge.", "warning");
+                        });
+                    }
+                })
+          },
+
+
+          loadOrderMessages() {
+            axios.get('/api/order-message/'+this.$route.params.order_number)
+              .then((response)=>{
+                this.orderMessage = response.data.orderMessage;
+            })
+          }
 
         },
 
         mounted() {
+
+          // Echo.private(`orderMessage.${this.user.id}`)
+          //     .listen('OrderMessages', (e) => {
+          //       this.handleIncoming(e.message);
+          //     })
+
+          Echo.private('orderMessages')
+          .listen('NewOrderMessage', (e) => {
+              this.handleIncoming(e.orderMessage, e.user);
+          });
+
           this.loadOrderData();
+          this.loadOrderMessages();
           Fire.$on('AfterUpdate',() => {
             this.loadOrderData();
           });
+          Fire.$on('AfterDeleteOrderMsg',() => {
+             this.loadOrderMessages();
+          });
 
-        }
+
+        },
+
+        components: {Orderconversation,ComposeOrderconversation}
     };
 
 </script>
 
 
 <style type="text/css">
+  @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css";
   .order_note_edit{
         display: flex;
     justify-content: space-between;
     align-items: flex-start;
   }
 
-  .ck.ck-toolbar {
+  .order-note-editor .ck.ck-toolbar {
       border: 1px solid #c4c4c426 !important;
   }
-  .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+  .order-note-editor .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
       border:none;
       box-shadow: 0px 0px 3px #00000014 !important;
   }
@@ -385,8 +607,38 @@
 
   #order_employee,
   #order_status {
-    border: 0 solid rgba(0,0,0,.15);
-    border-radius: .25rem;
-    box-shadow: 0 0.5rem 2.5rem rgba(0,0,0,.15);
-}
+      border: 0 solid rgba(0,0,0,.15);
+      border-radius: .25rem;
+      box-shadow: 0 0.5rem 2.5rem rgba(0,0,0,.15);
+  }
+  .tag-wrap button {
+      font-size: 10px !important;
+      padding: 3px 5px!important;
+      transition: .5s;
+  }
+  .tag-wrap button span {
+      display: none;
+      transition: .5s;
+  }
+  .tag-wrap button:hover span{
+      display: inline-block;
+      transition: .5s;
+  }
+
+  .tags {
+    position: relative;
+    width: 100% !important;
+    height: 40px;
+  }
+
+  .tags__search {
+      border: none;
+  }
+  .tags__list-item-tag[data-v-3336f93f] {
+      background: transparent !important;
+  }
+  .tags__list-item-tag span[data-v-3336f93f] {
+      color: #8c8c8c !important;
+  }
+
 </style>

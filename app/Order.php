@@ -63,6 +63,16 @@ class Order extends Model
 
 
 
+    // Return one to many realationship with order follow
+    public function orderAssignTag()
+    {
+        return $this->hasMany('App\OrderTag');
+    }
+
+
+
+
+
 
 
     // Return message for each order

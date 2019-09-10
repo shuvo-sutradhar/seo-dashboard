@@ -45,7 +45,7 @@
 						<div class="form-group">
 
 							<label for="clientEmail">Client Email <span class="required">*</span></label>
-							<input type="email" id="clientEmail" name="clientEmail"  class="form-control {{ $errors->has('clientEmail') ? ' is-invalid' : '' }}" required placeholder="john@example.com" value="{{ $user->email }}">
+							<input type="email" id="clientEmail" name="clientEmail"  class="form-control {{ $errors->has('clientEmail') ? ' is-invalid' : '' }}" required placeholder="john@example.com" value="{{ $user->email }}" disabled>
 
 							@if ($errors->has('clientEmail'))
 		                        <span class="invalid-feedback" role="alert">
@@ -57,7 +57,7 @@
 						<div class="form-group">
 
 							<label for="clientPhone">Client Phone </label>
-							<input type="text" id="clientPhone" name="clientPhone"  class="form-control {{ $errors->has('clientPhone') ? ' is-invalid' : '' }}"  placeholder="+880 1754218741" value="{{ $user->client->phone }}">
+							<input type="text" id="clientPhone" name="clientPhone"  class="form-control {{ $errors->has('clientPhone') ? ' is-invalid' : '' }}"  placeholder="+880 1754218741" value="{{ $user->client ? $user->client->phone : '' }}">
 
 							@if ($errors->has('clientPhone'))
 		                        <span class="invalid-feedback" role="alert">
@@ -80,7 +80,7 @@
 	
 
 		                    <div class="profilePic-preview">
-		                    	@if (!empty($user->client->profile_picture))
+		                    	@if (!is_null($user->client) && !empty($user->client->profile_picture))
 		                    		<img src="{{ asset('/uploads/profile_pic/') }}/{{ $user->client->profile_picture }}" alt="Profile Picture" id="preview-image">
 		                    	@else
 		                    		<img src="{{ asset('/uploads/profile_pic/') }}/avatar.png" alt="Profile Picture" id="preview-image">
@@ -93,7 +93,7 @@
 						<div class="form-group">
 
 							<label for="address">Address </label>
-							<input type="text" id="address" name="address"  class="form-control {{ $errors->has('address') ? ' is-invalid' : '' }}"  placeholder="Mirpur-10, Benarossi Polli" value="{{ $user->client->address }}">
+							<input type="text" id="address" name="address"  class="form-control {{ $errors->has('address') ? ' is-invalid' : '' }}"  placeholder="Mirpur-10, Benarossi Polli" value="{{ $user->client ? $user->client->address : '' }}">
 
 							@if ($errors->has('address'))
 		                        <span class="invalid-feedback" role="alert">
@@ -106,7 +106,7 @@
 							<div class="row">
 								<div class="col-md-6">
 									<label for="city">City</label>
-									<input type="text" class="form-control {{ $errors->has('address') ? ' is-invalid' : '' }}" placeholder="Dhaka" name="city" value="{{ $user->client->city }}" >
+									<input type="text" class="form-control {{ $errors->has('address') ? ' is-invalid' : '' }}" placeholder="Dhaka" name="city" value="{{ $user->client ? $user->client->city : '' }}" >
 
 									@if ($errors->has('city'))
 				                        <span class="invalid-feedback" role="alert">
@@ -381,7 +381,7 @@
 								<div class="col-md-6">
 									<label for="state">State </label>
 									
-									<input type="text" class="form-control" placeholder="Client State / Province / Region" name="state" value="{{ $user->client->state }}">
+									<input type="text" class="form-control" placeholder="Client State / Province / Region" name="state" value="{{ $user->client ? $user->client->state : ''}}">
 
 									@if ($errors->has('state'))
 				                        <span class="invalid-feedback" role="alert">
@@ -392,7 +392,7 @@
 
 								<div class="col-md-6">
 									<label for="postalCode">Postal / Zip Code</label>
-									<input type="text" class="form-control {{ $errors->has('postalCode') ? ' is-invalid' : '' }}" placeholder="Postal / Zip Code" name="postalCode" value="{{ $user->client->post_code }}">
+									<input type="text" class="form-control {{ $errors->has('postalCode') ? ' is-invalid' : '' }}" placeholder="Postal / Zip Code" name="postalCode" value="{{ $user->client ? $user->client->post_code : '' }}">
 
 									@if ($errors->has('postalCode'))
 				                        <span class="invalid-feedback" role="alert">
@@ -407,7 +407,7 @@
 							<div class="row">
 								<div class="col-md-6">
 									<label for="companyName">Company Name </label>
-									<input type="text" id="companyName" name="companyName"  class="form-control {{ $errors->has('companyName') ? ' is-invalid' : '' }}"  placeholder="Codeshaper" value="{{ $user->client->company_name }}">
+									<input type="text" id="companyName" name="companyName"  class="form-control {{ $errors->has('companyName') ? ' is-invalid' : '' }}"  placeholder="Codeshaper" value="{{ $user->client ?  $user->client->company_name : '' }}">
 
 									@if ($errors->has('companyName'))
 				                        <span class="invalid-feedback" role="alert">
@@ -417,7 +417,7 @@
 								</div>
 								<div class="col-md-6">
 									<label for="taxID">Tax ID </label>
-									<input type="text" id="taxID" name="taxID"  class="form-control {{ $errors->has('taxID') ? ' is-invalid' : '' }}" placeholder="Tax ID" value="{{ $user->client->tax_id }}">
+									<input type="text" id="taxID" name="taxID"  class="form-control {{ $errors->has('taxID') ? ' is-invalid' : '' }}" placeholder="Tax ID" value="{{ $user->client ? $user->client->tax_id : '' }}">
 
 									@if ($errors->has('taxID'))
 				                        <span class="invalid-feedback" role="alert">
@@ -438,13 +438,19 @@
 						<div class="form-group" id="password-area">
 
 							<div id="remove">
-								<label for="password">Password <span>*</span></label><input type="password" id="password" name="password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="New password" >
+								<label for="password">Password</label><input type="password" id="password" value="" name="password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="New password" autocomplete="false">
 
 								@if ($errors->has('password'))
 			                        <span class="invalid-feedback" role="alert">
 			                            <strong>{{ $errors->first('password') }}</strong>
 			                        </span>
 			                    @endif
+							</div>
+							<br>
+							<div id="remove">
+								<label for="password">Confirm Password</label>
+                            	<input name="password_confirmation" type="password" class="form-control" />
+
 							</div>
 						</div>
 

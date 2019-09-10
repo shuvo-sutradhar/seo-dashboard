@@ -49,16 +49,12 @@
 								<tr>
 									<td>
 										<figure class="image rounded img-60">
-											@if (!empty($user->client->profile_picture))
-												<img src="{{ asset('uploads/profile_pic/') }}/{{ $user->client->profile_picture }}" alt="{{ ucfirst($user->name) }}" class="rounded-circle">
-											@else
-												<img src="{{ asset('uploads/profile_pic/user.png') }}/" alt="{{ ucfirst($user->name) }}" class="">
-											@endif	
+											<img src="uploads/profile_pic/{{$user->client && !empty($user->client->profile_picture) ? $user->client->profile_picture : 'avatar.png'}}" alt="{{ ucfirst($user->name) }}" class="rounded-circle">
 										</figure>
 									</td>
 
 									<td>
-										<a href="">{{ ucfirst($user->name) }}</a>
+										<a href="{{ route('client.show', $user->email) }}">{{ ucfirst($user->name) }}</a>
 									</td>
 
 									<td>

@@ -7,6 +7,7 @@
                 <thead>
                     <tr>
                       <th class="text-left">Invoice</th>
+                      <th class="text-center">Client</th>
                       <th class="text-center">Status</th>
                       <th class="text-center">Added</th>
                       <th class="text-center">Number</th>
@@ -16,42 +17,53 @@
                 <tbody>
                     <!-- for all invoice -->
                     <tr v-for="(data, index) in invoiceData" class="order-wrap" v-show="isInvoceCurrentPage()=='/invoices' || isInvoceCurrentPage()=='/invoices/all'">
-                        <td>{{ data.invoice_number }}</td>
-                        <td class="text-center">
-                            <span v-if="data.invoice_status == 'paid'" class="span-badge working">Paid</span>
-                            <span v-if="data.invoice_status == 'unpaid'" class="span-badge canceled">Unpaid</span>
-                            <span v-if="data.invoice_status == 'refund'" class="span-badge submitted">Refund</span>
-                        </td>
-                        <td class="text-center">
-                            {{ data.created_at | dateFormat }}
-                        </td>
-                        <td class="text-center">
-                           Pending
-                        </td>
-                        <td class="text-right">
-                            <div class="btn-group flex-wrap">
-                                <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-                                <div class="dropdown-menu" role="menu">
-                                    <a class="dropdown-item text-1" href="#"><i class="far fa-eye"></i> View</a>
-
-                                    <a class="dropdown-item text-1"><i class="far fa-edit"></i> Edit</a>
-
-                                    <a class="dropdown-item text-1" href="#"><i class="far fa-bell-slash"></i> Unfollow</a>
-
-                                    <a class="dropdown-item text-1" href="#">
-                                        <i class="fa fa-trash-alt"></i> Delete
-                                    </a>
-
-                                    
+                            <td>
+                                <router-link :to="`/invoices/view/${data.invoice_number}`">
+                                {{ data.invoice_number }}
+                                </router-link>
+                            </td>
+                            <td class="text-center">
+                                {{ data.invoice_client.name }}
+                            </td>
+                            <td class="text-center">
+                                <span v-if="data.invoice_status == 'paid'" class="span-badge working">Paid</span>
+                                <span v-if="data.invoice_status == 'unpaid'" class="span-badge canceled">Unpaid</span>
+                                <span v-if="data.invoice_status == 'refund'" class="span-badge submitted">Refund</span>
+                            </td>
+                            <td class="text-center">
+                                {{ data.created_at | dateFormat }}
+                            </td>
+                            <td class="text-center">
+                               Pending
+                            </td>
+                            <td class="text-right">
+                                <div class="btn-group flex-wrap">
+                                    <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                                    <div class="dropdown-menu" role="menu">
+                                        
+                                        <router-link :to="`/invoices/view/${data.invoice_number}`" class="dropdown-item text-1">
+                                          <i class="far fa-eye"></i> View
+                                        </router-link>
+                                        <router-link :to="`/invoices/edit/${data.invoice_number}`" class="dropdown-item text-1">
+                                          <i class="far fa-edit"></i> Edit
+                                        </router-link>
+                                        <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
+                                            <i class="fa fa-trash-alt"></i> Delete
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
+                            </td>
                     </tr>
 
 
                     <!-- for specific invoice based on route -->
                     <tr v-for="(data, index) in invoiceData" class="order-wrap" v-if="isInvoceCurrentPage()=='/invoices/'+data.invoice_status">
-                        <td>{{ data.invoice_number }}</td>
+                        <td>
+                            <router-link :to="`/invoices/view/${data.invoice_number}`">{{ data.invoice_number }}</router-link>
+                        </td>
+                        <td class="text-center">
+                            {{ data.invoice_client.name }}
+                        </td>
                         <td class="text-center">
                             <span v-if="data.invoice_status == 'paid'" class="span-badge working">Paid</span>
                             <span v-if="data.invoice_status == 'unpaid'" class="span-badge canceled">Unpaid</span>
@@ -67,17 +79,15 @@
                             <div class="btn-group flex-wrap">
                                 <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
                                 <div class="dropdown-menu" role="menu">
-                                    <a class="dropdown-item text-1" href="#"><i class="far fa-eye"></i> View</a>
-
-                                    <a class="dropdown-item text-1"><i class="far fa-edit"></i> Edit</a>
-
-                                    <a class="dropdown-item text-1" href="#"><i class="far fa-bell-slash"></i> Unfollow</a>
-
-                                    <a class="dropdown-item text-1" href="#">
+                                    <router-link :to="`/invoices/view/${data.invoice_number}`" class="dropdown-item text-1">
+                                      <i class="far fa-eye"></i> View
+                                    </router-link>
+                                    <router-link :to="`/invoices/edit/${data.invoice_number}`" class="dropdown-item text-1">
+                                      <i class="far fa-edit"></i> Edit
+                                    </router-link>
+                                    <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
                                         <i class="fa fa-trash-alt"></i> Delete
                                     </a>
-
-                                    
                                 </div>
                             </div>
                         </td>
@@ -121,10 +131,45 @@
                 axios.get("/api/invoices").then(({ data }) => (this.invoiceData = data.invoices.data));
             },
 
+            deleteData(id){
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    // Send request to the server
+                    this.$Progress.start();
+                     if (result.value) {
+                            axios.delete('/api/invoices/'+id).then(()=>{
+                                    Swal.fire(
+                                    'Deleted!',
+                                    'Your item has been deleted successfully.',
+                                    'success'
+                                )
+
+                                this.$Progress.finish();
+                                Fire.$emit('AfterDelete');
+                            }).catch(()=> {
+                                Swal.fire("Opps!", "Something is wrong.", "warning");
+                                this.$Progress.fail()
+                            });
+                     }
+                })
+
+            },
         },
 
         created() {
            this.loadInvoiceData();
+           Fire.$on('AfterDelete',() => {
+               this.loadInvoiceData();
+           });
+
         }
 
     };

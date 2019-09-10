@@ -876,7 +876,6 @@
                 this.$Progress.start();
                 if(this.errors.length === 0) {
 
-                    
                     this.baseForm.post('/api/order-form')
                     .then((order)=>{
 

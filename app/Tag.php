@@ -42,4 +42,12 @@ class Tag extends Model
             ]
         ];
     }
+
+
+    
+    // Return one to many realationship with order tag
+    public function orderTag()
+    {
+        return $this->hasMany('App\OrderTag');
+    }
 }

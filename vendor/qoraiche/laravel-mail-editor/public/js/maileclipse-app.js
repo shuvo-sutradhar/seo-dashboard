@@ -1,9 +1,10 @@
 $(document).ready(function(){
-/*$.ajaxSetup({
+
+$.ajaxSetup({
   headers: {
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
   },
-});*/
+});
 
 axios.defaults.headers.common['X-CSRF-TOKEN'] = $('meta[name="csrf-token"]').attr('content');
 
@@ -14,6 +15,7 @@ const el = document.querySelector('img');
 
 $(function () {
     $('[data-toggle="popover"]').popover();
+    $('[maileclipse-data-toggle="tooltip"]').tooltip();
 })
 
 $(document).on('click', function (e) {

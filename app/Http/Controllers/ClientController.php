@@ -51,6 +51,8 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
+
+
         $request->validate([
 
             'clientName' => 'required|string|max:255|min:3',
@@ -79,7 +81,7 @@ class ClientController extends Controller
         ]);
 
         $profilePicture = '';
-        if(!empty($request->profilePicture))
+        if($request->profilePicture)
         {
             $profilePicture = $user->name.rand(1,10).'.'.$request->profilePicture->getClientOriginalExtension();
             $request->profilePicture->move(public_path('uploads/profile_pic'), $profilePicture);
@@ -115,7 +117,9 @@ class ClientController extends Controller
         $user = User::where('email', $email)->firstOrfail();
         $orders = $user->orders()->latest()->paginate(5);
         $invoices = $user->clientInvoices()->latest()->paginate(5);
-        return view('clients.show', compact('user', 'orders', 'invoices'));
+        $totalOrder = $user->orders()->count();
+        $totalSpent = $user->clientInvoices()->sum('invoice_total');
+        return view('clients.show', compact('user', 'orders', 'invoices','totalOrder','totalSpent'));
     }
 
     /**
@@ -139,14 +143,14 @@ class ClientController extends Controller
      */
     public function update(Request $request, $email)
     {
+
         $user = User::where('email', $email)->firstOrFail();
-        $clientProfile = Client::where('user_id', $user->id)->firstOrFail();
-        
+      
         $request->validate([
 
-            'clientEmail'=>'required|string|email|max:255|unique:users,email,'.$user->id,
+            'clientEmail'=>'string|email|max:255|unique:users,email,'.$user->id,
             'clientName'=>'required|string|max:255',
-            'clientPhone'=>['nullable', 'numeric', new PhoneNumber],
+            'clientPhone'=>['numeric', new PhoneNumber],
             'profilePicture' =>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'address' =>'string|max:255',
             'city' =>'string|max:255',
@@ -155,33 +159,32 @@ class ClientController extends Controller
             'postalCode' =>'string|max:255',
             'companyName' =>'string|max:255',
             'taxID' =>'max:255',
-            'password' => 'nullable|min:6',
+            'password' => 'nullable|min:6|confirmed',
 
         ]);
 
 
-
         $user->name = $request['clientName'];
-        $user->email = $request['clientEmail'];
-
+        $user->email = $user->email;
         if($request['password']) {
             $user->password = Hash::make($request['password']);
         }
-
         $user->save();
 
 
 
-        $profilePic = $clientProfile->profile_picture;
+        
+        $clientProfile = Client::where('user_id', $user->id)->first();
+        $profilePic = null;
 
         // Delete user profile picture and set new profile picture
         if(!empty($request->profilePicture))
         {
             // Delete user profile picture   
-            if(!empty($profilePic))
+            if(!empty($clientProfile) && !empty($clientProfile->profile_picture))
             {
                         
-                $image_path = public_path('uploads/profile_pic'). "\\" .$profilePic;
+                $image_path = public_path('uploads/profile_pic'). "\\" .$clientProfile->profile_picture;
                 if(File::exists($image_path)) 
                 {
                     File::delete($image_path);
@@ -192,21 +195,42 @@ class ClientController extends Controller
             $profilePic = $request->clientName.rand(1,10).'.'.$request->profilePicture->getClientOriginalExtension();
             $request->profilePicture->move(public_path('uploads/profile_pic'), $profilePic);
 
+        } else {
+            if(!empty($clientProfile) && !empty($clientProfile->profile_picture)) {
+                $profilePic = $clientProfile->profile_picture;
+            }
         }
 
+        // $clientProfileUpdate = $clientProfile->update([
 
-        $clientProfileUpdate = $clientProfile->update([
-            'phone' => $request->clientPhone,
-            'profile_picture' => $profilePic,
-            'address' => $request->address,
-            'city' => $request->city,
-            'country' => $request->country,
-            'state' => $request->state,
-            'post_code' => $request->postalCode,
-            'company_name' => $request->companyName,
-            'tax_id' => $request->taxID,
+        //         'phone' => $request->clientPhone,
+        //         'profile_picture' => $profilePic,
+        //         'address' => $request->address,
+        //         'city' => $request->city,
+        //         'country' => $request->country,
+        //         'state' => $request->state,
+        //         'post_code' => $request->postalCode,
+        //         'company_name' => $request->companyName,
+        //         'tax_id' => $request->taxID,
 
-        ]);
+        // ]);
+
+        //save data if not found in client table if found then update
+        if(empty($clientProfile)) {
+            $clientProfile = new Client;
+            $clientProfile->user_id = $user->id;
+        } 
+
+        $clientProfile->phone = $request->clientPhone;
+        $clientProfile->profile_picture = $profilePic;
+        $clientProfile->address = $request->address;
+        $clientProfile->city = $request->city;
+        $clientProfile->country = $request->country;
+        $clientProfile->state = $request->state;
+        $clientProfile->post_code = $request->postalCode;
+        $clientProfile->company_name = $request->companyName;
+        $clientProfile->tax_id = $request->taxID;
+        $clientProfile->save();
 
         return redirect()->route('client.index')->with('success',  ' Client '. ucfirst($request->clientName) .' updated');
     }
@@ -222,10 +246,9 @@ class ClientController extends Controller
         $user = User::where('email', $email)->firstOrFail();
 
         // Delete user profile picture
-        $profilePic = $user->client->profile_picture;
-        if(!empty($profilePic))
+        if($user->client && !is_null($user->client->profile_picture))
         {
-            $image_path = public_path('uploads/profile_pic'). "\\" .$profilePic ;
+            $image_path = public_path('uploads/profile_pic'). "\\" .$user->client->profile_picture ;
             if(File::exists($image_path)) 
             {
                 File::delete($image_path);

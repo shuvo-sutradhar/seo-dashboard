@@ -32,6 +32,11 @@ class Invoice extends Model
     {
         return $this->hasMany('App\InvoiceItem');
     }    
+    // Return many to one relation with invoice_items table
+    public function invoiceBill()
+    {
+        return $this->hasOne('App\InvoiceBilling');
+    }    
 
     //Relation with service
     public function invoiceClient()

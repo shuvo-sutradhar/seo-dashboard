@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Stripe
- * @version    2.1.4
+ * @version    2.2.10
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2018, Cartalyst LLC
+ * @copyright  (c) 2011-2019, Cartalyst LLC
  * @link       http://cartalyst.com
  */
 
@@ -60,12 +60,11 @@ class Payouts extends Api
      * Cancels the given payout.
      *
      * @param  string  $payoutId
-     * @param  array  $parameters
      * @return array
      */
-    public function cancel($payoutId, array $parameters = [])
+    public function cancel($payoutId)
     {
-        return $this->_post("payouts/{$payoutId}/cancel", $parameters);
+        return $this->_post("payouts/{$payoutId}/cancel");
     }
 
     /**

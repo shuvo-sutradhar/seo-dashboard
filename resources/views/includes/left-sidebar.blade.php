@@ -62,9 +62,9 @@
         @endif
 
         @if (auth()->user()->isAdmin())
-            <li class="{{ request()->is('discounts*') ? 'nav-active' : '' }}">
+            <li class="{{ request()->is('discount*') ? 'nav-active' : '' }}">
                 
-                <a class="nav-link" href="{{ route('service.index') }}">
+                <a class="nav-link" href="{{ route('discount.index') }}">
                     <i class="fas fa-percent"></i>
                     <span>Discounts</span>
                 </a>

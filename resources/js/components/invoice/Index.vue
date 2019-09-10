@@ -6,7 +6,7 @@
           
           <section class="card card-horizontal mb-4" >
 
-              <div class="card_header" v-if="isInvoceCratePage()===false">
+              <div class="card_header" v-if="isInvoiceSinglePage()===false">
                 <h3 class="font-weight-semibold mt-3 dark">Invoices</h3>
                 <router-link to="/invoices/create" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light" >
                   <i class="fas fa-plus"></i> Add invoice
@@ -14,7 +14,7 @@
               </div>
 
 
-              <div class="card_nav" v-if="isInvoceCratePage()===false">
+              <div class="card_nav" v-if="isInvoiceSinglePage()===false">
                 <ul>
                   <li v-if="invoiceData.total!=0">
                     <router-link to="/invoices/all" class="nav-link order-all">
@@ -70,6 +70,23 @@
             isInvoceCratePage: function() {
               return this.$route.path === '/invoices/create';
             },
+
+            isInvoiceSinglePage: function() {
+
+              let url = this.$route.path;
+              let urlslice = url.slice(0, url.lastIndexOf('/'));
+
+              if(url==='/invoices/create'){
+                return true;
+              } else if (urlslice==='/invoices/view') {
+                return true;
+              } else if (urlslice==='/invoices/edit') {
+                return true;
+              }else {
+                return false;
+              }
+            },
+
             loadInvoiceData(){
                 axios.get("/api/invoices").then(({ data }) => (this.invoiceData = data));
             },
@@ -78,6 +95,10 @@
 
         created() {
            this.loadInvoiceData();
+
+           Fire.$on('AfterDelete',() => {
+               this.loadInvoiceData();
+           });
         }
 
     };

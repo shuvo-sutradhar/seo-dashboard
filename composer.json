@@ -17,6 +17,7 @@
         "laravel/framework": "5.7.*",
         "laravel/passport": "^7.3",
         "laravel/tinker": "^1.0",
+        "pusher/pusher-php-server": "~4.0",
         "qoraiche/laravel-mail-editor": "^1.1",
         "spatie/laravel-activitylog": "^3.2",
         "spatie/laravel-permission": "^2.33",

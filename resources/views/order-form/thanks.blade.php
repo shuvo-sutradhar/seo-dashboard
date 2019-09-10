@@ -83,7 +83,7 @@
 
 			.preloder_loding {
 				background:#fff;
-			    height: 100%;
+			    height: 100vh;
 			    left: 0;
 			    margin-top: 0;
 			    position: fixed;

@@ -24,4 +24,10 @@ class InvoiceBilling extends Model
     protected $fillable = [
         'invoice_id', 'first_name', 'last_name', 'email', 'phone', 'company_name', 'tax_id', 'address', 'city', 'country', 'state', 'post_code'
     ];
+
+    // Return many to one relation with invoice_items table
+    public function invoice()
+    {
+        return $this->hasOne('App\Invoice');
+    } 
 }

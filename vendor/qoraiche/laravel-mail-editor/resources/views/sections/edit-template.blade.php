@@ -140,12 +140,11 @@ $(document).ready(function(){
                   cancelText: 'Cancel',
                   allowed: new RegExp('[^a-zA-Z0-9 ]', 'g'),
                   submitCallback: function (templatedescription) {
-                    
 	                  axios.post('{{ route('updateTemplate') }}', {
 					  	templateslug: '{{ $template['slug'] }}',
 					  	title: templatename,
 					  	description: templatedescription,
-					  })
+					})
 
                     .then(function (response) {
 
@@ -487,13 +486,14 @@ $(document).ready(function(){
 	        menubar : false,
 	        visual: false,
 	        height:600,
+	        inline_styles : true,
 	        plugins: [
 	             "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
 	             "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-	             "save table directionality emoticons template paste fullpage"
+	             "save table directionality emoticons template paste fullpage code legacyoutput"
 	       ],
 	       content_css: "css/content.css",
-	       toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image fullpage table | forecolor backcolor emoticons | preview",
+	       toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image fullpage table | forecolor backcolor emoticons | preview | code",
 	       fullpage_default_encoding: "UTF-8",
 	       fullpage_default_doctype: "<!DOCTYPE html>",
 	       init_instance_callback: function (editor) 

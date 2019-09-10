@@ -1,5 +1,15 @@
 @extends('layouts.master')
 
+@section('page-style')
+
+	<style type="text/css">
+		img.profile-img{
+			width: 100%;
+		}
+	</style>
+
+@endsection
+
 @section('breadcrumb')
     <h2>Clients</h2>
     <div class="right-wrapper text-right">
@@ -23,11 +33,7 @@
 						<div class="card-body client-profile">
 							<div class="thumb-info mb-3">
 
-								@if (!empty($user->client->profile_picture))
-									<img src="{{ asset('uploads/profile_pic/') }}/{{ $user->client->profile_picture }}" alt="{{ ucfirst($user->name) }}" class="rounded img-fluid" alt="{{ $user->name }}">
-								@else
-									<img src="{{ asset('uploads/profile_pic/user.png') }}/" alt="{{ ucfirst($user->name) }}" class="rounded img-fluid" alt="{{ $user->name }}">
-								@endif
+								<img class="profile-img" src="../uploads/profile_pic/{{$user->client && !is_null($user->client->profile_picture) ? $user->client->profile_picture : 'logged-user.jpg'}}" alt="{{ ucfirst($user->name) }}" class="rounded-circle">
 								<div class="thumb-info-title">
 									<span class="thumb-info-inner">{{ $user->name }}</span>
 									<span class="thumb-info-type">Client</span>
@@ -51,9 +57,15 @@
 										</tr>
 
 										<tr>
-											<th>Phone</th>
+											<th>Total Order</th>
 											<th class="text-right">
-												<a href="tel:{{ $user->email }}">{{ $user->client->phone }}</a>
+												{{ $totalOrder ? $totalOrder : '0' }}/-
+											</th>
+										</tr>
+										<tr>
+											<th>Total Spent</th>
+											<th class="text-right">
+												{{ $totalSpent ? $totalSpent : '0.00' }}$
 											</th>
 										</tr>
 									</tbody>
@@ -89,7 +101,7 @@
 								<tr>
 									<th>Phone</th>
 									<th class="text-right">
-										<a href="tel:{{ $user->email }}">{{ $user->client->phone }}</a>
+										<a href="tel:{{ $user->client ? $user->client->phone : '--' }}">{{ $user->client ? $user->client->phone : '--' }}</a>
 									</th>
 								</tr>
 
@@ -141,6 +153,12 @@
 										<th class="text-right">{{ $user->client->tax_id }}</th>
 									</tr>
 								@endif
+								<tr>
+									<th>Created at</th>
+									<th class="text-right">
+										{{ $user->created_at->diffForHumans()}}
+									</th>
+								</tr>
 								
 							</tbody>
 						</table>

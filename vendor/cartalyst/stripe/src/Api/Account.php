@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Stripe
- * @version    2.1.4
+ * @version    2.2.10
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2018, Cartalyst LLC
+ * @copyright  (c) 2011-2019, Cartalyst LLC
  * @link       http://cartalyst.com
  */
 
@@ -138,5 +138,15 @@ class Account extends Api
         return $this->_post("accounts/{$accountId}/login_links", [
             'redirect_url' => $redirectUrl,
         ]);
+    }
+
+    /**
+     * Returns an account persons api instance.
+     *
+     * @return \Cartalyst\Stripe\Api\Account\Persons
+     */
+    public function persons()
+    {
+        return new Account\Persons($this->config);
     }
 }

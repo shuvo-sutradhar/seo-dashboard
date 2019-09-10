@@ -17,6 +17,7 @@ Route::get('/', function () {
 // Route::get('{path}', 'HomeController@index')->where('path','([A-z\d-\/_.]+)?');
 Route::get('/invoices/{path}', 'InvoiceController@index')->where('path','([A-z\d-\/_.]+)?');
 Route::get('/orders/{path}', 'OrderController@index')->where('path','([A-z\d-\/_.]+)?');
+Route::get('/discount/{path}', 'DiscountController@index')->where('path','([A-z\d-\/_.]+)?');
 
 Auth::routes(['verify' => true]);
 
@@ -41,7 +42,6 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function(){
 
 	Route::get('orders', 'ClientDashboardController@getOrdersPage')->name('order.index');
 	Route::get('order/{number}', 'ClientDashboardController@getOrderpage')->name('order.single');
-
 	
 	//invoices
 	Route::post('invoices', 'ClientDashboardController@getInvoicePage')->name('invoice.client'); 
@@ -218,9 +218,19 @@ Route::middleware(['auth', 'verified', 'IsAdmin'])->group(function () {
 	    ]
 	]);
 
+	Route::resource('/discount', 'DiscountController', [
+	    
+	    'names' => [
+	        'index' => 'discount.index',
+	        'create' => 'discount.create',
+	        'store' => 'discount.store',
+	        'show' => 'discount.show',
+	        'edit' => 'discount.edit',
+	        'update' => 'discount.update',
+	        'destroy' => 'discount.delete',
 
-	
-
+	    ]
+	]);
 
 
 
@@ -231,6 +241,10 @@ Route::middleware(['auth', 'verified', 'IsAdmin'])->group(function () {
 });
 
 
+//message roue
+Route::get('/message',function(){
+	return view('message.index');
+})->middleware('auth');
 
 
 // Route::get('/orders/{path}', 'OrderController@index')->where('path','([A-z\d-\/_.]+)?');

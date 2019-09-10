@@ -9,6 +9,9 @@ use App\User;
 use App\Service;
 use App\OrderUnfollow;
 use Carbon\Carbon;
+use App\Tag;
+use App\OrderTag;
+use Auth;
 
 class OrderController extends Controller
 {
@@ -31,13 +34,13 @@ class OrderController extends Controller
     public function index()
     {
         //
-        $count1 = Order::count(); 
+        $count1 = Order::where('order_status','!=','unpaid')->count(); 
         $count2 = Order::where('order_status','Pending')->count(); 
         $count3 = Order::where('order_status','Submitted')->count(); 
         $count4 = Order::where('order_status','Working')->count(); 
         $count5 = Order::where('order_status','Complete')->count(); 
         $count6 = Order::where('order_status','Canceled')->count(); 
-        $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->paginate(10);
+        $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->with('orderTeam')->where('order_status','!=','unpaid')->paginate(10);
         
         $users = User::where('account_role',2)->get(); 
         $services = Service::where('is_active',1)->get();
@@ -84,7 +87,11 @@ class OrderController extends Controller
         return  response()->json(compact('order'), 200);
     }
 
-    //store order note data
+
+    /**
+     * store order note data
+     *
+    */
     public function order_note(Request $request,$id)
     {
         $order              = Order::find($id);
@@ -93,8 +100,10 @@ class OrderController extends Controller
         return ['message'=>'Successfuly inserted.'];
     }
 
-
-    //change order status data
+    /**
+     * change order status data
+     *
+    */
     public function order_status(Request $request,$id)
     {
         $order              = Order::find($id);
@@ -119,7 +128,11 @@ class OrderController extends Controller
     }
 
 
-    // follow or unflow order
+    
+    /**
+     * follow or unflow order
+     *
+    */
     public function order_follow($number)
     {
         $order = Order::where('order_number', $number)->firstOrFail();
@@ -159,7 +172,11 @@ class OrderController extends Controller
         return ['You are now following the orde.'];
     }
 
-    // assign order
+
+    /**
+     * assign order.
+     *
+    */
     public function assign_orders(Request $request, $number)
     {
 
@@ -180,6 +197,48 @@ class OrderController extends Controller
         return ['message'=>'Order has been assign.'];
     }
 
+    /**
+     * order tag create.
+     *
+    */
+    public function order_tag(Request $request, $id)
+    {
+
+        $tag = Tag::create([
+            'id' => $request->tag['id'],
+            'name' => $request->tag['name'],
+        ]);
+
+        return  response()->json(compact('tag'), 200);
+    }
+
+    /**
+     * tag_orders.
+     *
+    */
+    public function tag_orders(Request $request,$id)
+    {
+        $order = Order::findOrFail($id);
+        if($request->tag!=null){
+            foreach ($request->tag as $tag) {
+
+                $matchThese = ['order_id' => $id, 'tag_id' => $tag['id']];
+                $orderTags = OrderTag::where($matchThese)->get();
+                //return $orderTags;
+                if(count($orderTags) == 0){
+                    OrderTag::create([
+                        'order_id' => $id,
+                        'tag_id' => $tag['id']
+                    ]);
+
+                }
+            }
+        }
+
+
+        return ['test'];
+    }
+
 
     /**
      * Display the specified resource.
@@ -194,8 +253,22 @@ class OrderController extends Controller
         $teamMembers = User::where('account_role', 0)->orWhere('account_role',1)->get();
         $matchThese = ['order_id' => $order->id, 'user_id' => auth('api')->id()];
         $followOrUnfollow = OrderUnfollow::where($matchThese)->first();
+        $tags = Tag::all();
+        $order_tag = OrderTag::with('orderTag')->where('order_id',$order->id)->get();
+        $user =  Auth::user();
 
-        return  response()->json(compact('order', 'teamMembers', 'followOrUnfollow'), 200);
+        return  response()->json(compact('order', 'teamMembers', 'followOrUnfollow','tags','order_tag','user'), 200);
+
+    }
+
+    /**
+     * Delete Assign tag into order
+     *
+     */
+    public function order_tag_delete($id)
+    {
+        //
+        return OrderTag::destroy($id);
 
     }
 

@@ -21,6 +21,7 @@ class CreateInvoicesTable extends Migration
 
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null')->onUpdate('no action');
+            
 
             $table->string('invoice_number');
             $table->text('invoice_note')->nullable();

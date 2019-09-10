@@ -8,10 +8,11 @@
 
 <p align="center">
 <a href="https://packagist.org/packages/qoraiche/laravel-mail-editor" alt="sponsors on Open Collective"><img src="https://poser.pugx.org/qoraiche/laravel-mail-editor/v/stable" /></a> <a href="https://packagist.org/packages/qoraiche/laravel-mail-editor" alt="Sponsors on Open Collective"><img src="https://poser.pugx.org/qoraiche/laravel-mail-editor/license" /></a> 
+<a href="https://packagist.org/packages/qoraiche/laravel-mail-editor" alt="Sponsors on Open Collective"><img src="https://poser.pugx.org/qoraiche/laravel-mail-editor/downloads" /></a> 
 </p>
 <br/><br/>
 
-This Package inspired from [JoggApp/laravel-mail-viewer](https://github.com/JoggApp/laravel-mail-viewer) & [laravel/telescope](https://github.com/laravel/telescope) (Design).
+MailEclipse is a mailable editor package for your Laravel applications to create and manage mailables using a web UI. You can use this package to develop mailables without using the command line, and edit templates associated with mailables using a WYSIWYG editor, among other features.
 
 ## WORK IN PROGRESS
 
@@ -46,20 +47,10 @@ Publish configuration file and public assets:
 php artisan vendor:publish --provider="qoraiche\mailEclipse\mailEclipseServiceProvider"
 ```
 
-Migrate database:
+## Documentation
 
-```bash
-php artisan migrate
-```
+Documentation for Maileclipse can be found on the [Official website](https://maileclipse.io).
 
-## Usage
-
-[![Package tutorial](https://i.imgur.com/sBCiFyt.png)](https://www.youtube.com/watch?v=QFgEGNBY3FI)
-
-
-After setting up the package as described above, you can now access the application by visiting the `/maileclipse` route (considering the default url is `maileclipse` in the config file). You can modify it to whatever you want as per your needs.
-
-![maileclipse-img](https://i.imgur.com/cWD5odh.png)
 
 ## Change log
 
@@ -89,11 +80,23 @@ __Contributions are welcome__
 * Add more email templates (HTML/Markdown).
 * Expand documentation pages.
 
+## Credits
+
+- [Yassine Qoraiche](https://github.com/qoraiche)
+- [All Contributors](../../contributors)
+
 ## Donate :heart:
 
-If you benefit from and/or like using MailEclipse then please help drive the future development of the project by [donating today](https://www.paypal.me/streamaps)!
+If you benefit from and/or like using MailEclipse then please help drive the future development of the project by 
 
-### Donators list:
+* [Donating today](https://www.paypal.me/streamaps)!.
+* Star the project :star:.
 
-1. **Flavius Borlovan** (6,99 $ USD) - `#teamcookie says HELLOO 🥳😉 Thanks for this really helpful Package (MailEclipse) bro. 😉💪🏽` - 12 March 2019
-2. **Maik Kasper** - (6,99 $ USD) - `We {teamcookie:github. com/flavius-constantin} 💥 love to support good developers and their awesome work! 🌪🔥` - 13 March 2019
+### Donors list:
+
+1. **Idearia Web Agency** - (40,00 €) - `Keep up the good work!` - 19 June 2019
+2. **Snapt Systems Ltd** - (100,00 $ USD) - `Being used by one of our teams at Snapt!` - 11 April 2019
+3. **Corr Ex** - (2,00 $ USD) - 28 March 2019
+4. **WebArt Design** - (10,00 $ USD) - `Donation made with love by BuiltByPanda. com from Australia who support developers and their excellent work` - 28 March 2019
+5. **Flavius Borlovan** (6,99 $ USD) - `#teamcookie says HELLOO 🥳😉 Thanks for this really helpful Package (MailEclipse) bro. 😉💪🏽` - 12 March 2019
+6. **Maik Kasper** - (6,99 $ USD) - `We {teamcookie:github. com/flavius-constantin} 💥 love to support good developers and their awesome work! 🌪🔥` - 13 March 2019

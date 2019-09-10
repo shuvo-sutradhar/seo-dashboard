@@ -20,6 +20,9 @@
                             <router-link :to="`/orders/order/${data.order_number}`">
                                 {{ data.order_client.name  }} <span class="badge badge-info" v-if="data.team_member_id!= null">{{ data.order_team.name  }}</span>
                                 <p>{{ data.order_service.name  }} (${{ data.order_service.price }})</p>
+                                <!-- <ul v-if="data.order_assign_tag!=null">
+                                    <li v-for="(tag in key) data.order_assign_tag">}</li>
+                                </ul> -->
                             </router-link>
                         </td>
                         <td class="text-center">

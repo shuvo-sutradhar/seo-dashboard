@@ -11,10 +11,10 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Stripe
- * @version    2.1.4
+ * @version    2.2.10
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2018, Cartalyst LLC
+ * @copyright  (c) 2011-2019, Cartalyst LLC
  * @link       http://cartalyst.com
  */
 
@@ -32,5 +32,17 @@ class UsageRecords extends Api
     public function create($itemId, array $parameters)
     {
         return $this->_post("subscription_items/{$itemId}/usage_records", $parameters);
+    }
+
+    /**
+     * Lists all usage records of a subscription item.
+     *
+     * @param  string  $itemId
+     * @param  array  $parameters
+     * @return array
+     */
+    public function all($itemId, array $parameters = [])
+    {
+        return $this->_get("subscription_items/{$itemId}/usage_record_summaries", $parameters);
     }
 }

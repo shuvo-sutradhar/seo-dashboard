@@ -4,7 +4,6 @@ namespace qoraiche\mailEclipse;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use mailEclipse;
 
 class mailEclipseServiceProvider extends ServiceProvider
 {
@@ -15,19 +14,18 @@ class mailEclipseServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Route::middlewareGroup('maileclipse', config('maileclipse.middleware', []));
+        Route::middlewareGroup('maileclipse', config('maileclipse.middlewares', []));
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'maileclipse');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'maileclipse');
         $this->registerRoutes();
-        $this->registerMigrations();
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
         }
     }
-    
+
     /**
      * Register the package routes.
      *
@@ -38,13 +36,6 @@ class mailEclipseServiceProvider extends ServiceProvider
         Route::group($this->routeConfiguration(), function () {
             $this->loadRoutesFrom(__DIR__.'/Http/routes.php');
         });
-    }
-
-    private function registerMigrations()
-    {
-        if ($this->app->runningInConsole()) {
-            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        }
     }
 
     /**
@@ -74,7 +65,6 @@ class mailEclipseServiceProvider extends ServiceProvider
         $this->app->singleton('maileclipse', function ($app) {
             return new mailEclipse;
         });
-
     }
 
     /**
@@ -86,7 +76,7 @@ class mailEclipseServiceProvider extends ServiceProvider
     {
         return ['maileclipse'];
     }
-    
+
     /**
      * Console-specific booting.
      *
@@ -102,5 +92,9 @@ class mailEclipseServiceProvider extends ServiceProvider
         $this->publishes([
                 __DIR__.'/../public' => public_path('vendor/maileclipse'),
             ], 'public');
+
+        $this->publishes([
+                __DIR__.'/../resources/views/templates' => $this->app->resourcePath('views/vendor/maileclipse/templates'),
+            ], 'maileclipse.templates');
     }
 }

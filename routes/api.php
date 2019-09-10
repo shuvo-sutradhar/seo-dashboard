@@ -37,9 +37,34 @@ Route::put('/orders/order-note/{id}','API\OrderController@order_note');
 Route::put('/orders/order-status/{id}','API\OrderController@order_status');
 Route::put('/orders/order-following/{order_number}','API\OrderController@order_follow');
 Route::put('/orders/order-assign/{order_number}','API\OrderController@assign_orders');
+Route::put('/orders/order-tag-status/{id}','API\OrderController@tag_orders');
+Route::post('/orders/order-tag/{id}','API\OrderController@order_tag');
+Route::delete('/orders/order-tag/{id}','API\OrderController@order_tag_delete');
+/*
+* messenger controller
+*/
+Route::apiResources(['/message' => 'API\MessageController']);
+Route::get('/message/{id}','API\MessageController@show');
+Route::post('/message/send','API\MessageController@store');
+/*
+* order message controller
+*/
+Route::apiResources(['/order-message' => 'API\OrderMessageController']);
+Route::post('/order-message/send','API\OrderMessageController@store');
+Route::get('/order-message/{order_id}','API\OrderMessageController@show');
+
 /*
 * Invoice controller
 */
 
 Route::apiResources(['/invoices' => 'API\InvoiceController']);
+Route::get('/invoices/edit/{invoice_number}', 'API\InvoiceController@edit');
 Route::get('/create-invoice','API\InvoiceController@create');
+Route::put('/invoice-paid/{id}','API\InvoiceController@makeAsPaid');
+Route::put('/invoices/address/{id}','API\InvoiceController@address');
+
+/*
+* Discount controller
+*/
+Route::apiResources(['/discount' => 'API\DiscountController']);
+Route::get('/create-discount','API\DiscountController@create');

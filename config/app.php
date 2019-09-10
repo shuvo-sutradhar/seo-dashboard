@@ -55,7 +55,7 @@ return [
     | ahead and set this to a sensible default for you out of the box.
     |
     */
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Dhaka',
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
@@ -147,7 +147,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Cartalyst\Stripe\Laravel\StripeServiceProvider::class

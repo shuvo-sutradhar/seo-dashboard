@@ -346,4 +346,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\OrderUnfollow');
     }
 
+    public function orderMessage()
+    {
+        return $this->hasMany(OrderMessage::class, 'sender_id');
+    }
+
 }

@@ -51,7 +51,13 @@ class Service extends Model
     public function serviceInvoices()
     {
         return $this->hasMany('App\InvoiceItem');
-    }
+    }    
 
+
+
+    public function discountService()
+    {
+        return $this->hasMany('App\DiscountService');
+    }  
 
 }

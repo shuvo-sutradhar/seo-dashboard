@@ -143,7 +143,11 @@
 		{{-- Examples --}}
 		<script src="{{ asset('assets/js/examples/examples.modals.js') }}"></script>
 		<script src="{{ asset('assets/js/examples/examples.dashboard.js') }}"></script>
-
+		<script>
+			$(document).ready(function(){
+			  $('[data-toggle="tooltip"]').tooltip();   
+			});
+		</script>
 
 	</body>
 </html>

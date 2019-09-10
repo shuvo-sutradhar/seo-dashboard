@@ -11,6 +11,8 @@
 	              </div>
 
 				<div class="invoice-body">
+
+				<form @submit.prevent="addInvoice">
 					<section>
 			            <div class="row">
 			                <div class="col-md-8">
@@ -48,18 +50,17 @@
 					         <tr>
 					            <th>Item</th>
 					            <th style="width: 100px;">Price</th>
-					            <th style="width: 100px;">Discount</th>
+					            <th style="width: 100px;">Discount(%)</th>
 					            <th style="width: 130px;">Qty</th>
 					         </tr>
 					      </thead>
 					      <tbody class="pb-3 pb-3 clearfix">
-					         <tr>
+					         <tr v-for="(item, index) in form.items">
 					            <td>
 					                <div class="form-group custom-size">
 					                    <vue-single-select 
-					                    placeholder="Select service" 
 					                    you-want-to-select-a-post="id" 
-					                    v-model="form.service" 
+					                    v-model="item.selectedService" 
 					                    out-of-all-these-posts="makes sense" 
 					                    :options="services" 
 					                    you-like-bootstrap="yes" 
@@ -67,24 +68,29 @@
 					                    option-value="id" 
 					                    the-post-has-a-title="make sure to show these" 
 					                    option-label="name" 
-					                    class="vue-single-select" :class="{ 'is-invalid': form.errors.has('client') }">
+					                    class="vue-single-select">
 					                  </vue-single-select>
 					                   
 					                </div>
-					               <div class="form-group" v-if="form.service != null">
-					               	<input type="text" placeholder="Item name" class="form-control" v-if="form.service.id==0">
+					               <div class="form-group" v-if="item.selectedService != null">
+					               		<input type="text" placeholder="Item name" class="form-control" v-model="item.serviceName" v-if="item.selectedService.id==0">
 					               </div>
-					               <div class="form-group"><textarea placeholder="Description" class="form-control"></textarea></div>
+					               <div class="form-group"><textarea placeholder="Description" class="form-control" v-model="item.description"></textarea></div>
 					            </td>
-					            <td><input placeholder="0.00" type="tel" class="form-control"></td>
-					            <td><input placeholder="0.00" type="tel" class="form-control"></td>
+					            <td>
+					            	<input v-if="item.selectedService != null && item.selectedService.id==0" placeholder="0.00" type="text" class="form-control" v-model="item.servicePrice">
+					            	<input v-if="item.selectedService != null && item.selectedService.id!=0" type="text" class="form-control" :value="item.selectedService.price">
+					            	<input v-if="item.selectedService== null" type="text" class="form-control" placeholder="0.00">
+					            </td>
+					            <td><input placeholder="0.00" type="text" class="form-control"  v-model="item.serviceDiscount"></td>
 					            <td class="d-flex">
-					               <input type="number" class="form-control d-flex-grow-1" value="1"> <!---->
+					               <input type="number" class="form-control d-flex-grow-1" v-model="item.serviceQty"> 
+					               <button v-if="form.items.length>1" type="button" data-delete="" class="btn btn-sm removeServ" @click="deleteItem(index)"><i class="fas fa-trash"></i></button>
 					            </td>
 					         </tr>
 					      </tbody>
 					   </table>
-					   <div class="text-right mt-2"><a href="#">+ Add item</a></div>
+					   <div class="text-right mt-2"><a style="cursor: pointer;color: #2ec3a1;" @click="addNewItem" >+ Add item</a></div>
 					   <input type="hidden" name="invoice_items" value="[{&quot;service_id&quot;:0,&quot;quantity&quot;:1,&quot;amount&quot;:0,&quot;discount&quot;:0}]">
 					</div>
 			        <!-- service order end -->
@@ -112,11 +118,13 @@
 					   </div>
 					   <div class="text-right">
 					      <button type="submit" class="btn btn-primary">
-					      Add  invoice
+					      	Add invoice
 					      </button>
 					   </div>
 					</section>
-
+				</form>
+                <!-- notification warning messge modal -->
+                <notifications group="checkErrors" position="top center" />
 
 				</div><!-- /. invoice-hader -->
 
@@ -131,15 +139,24 @@
 export default{
 	data(){
 		return{
+
             // a: location.href,
             //invoiceData:{},
+            formerrors:[],
             users:[],
             services:[],
             form: new Form({
                 client: '',
                 due_date:'',
-                service:[],
                 invoice_note:'',
+                items:[{
+	                selectedService:null,
+	                serviceName:'',
+	                servicePrice:'' ,
+	                serviceDiscount:'',
+	                serviceQty:1,
+	                description:''
+	            }],
                 send_email:'',
                 custom_currency:'',
             }),
@@ -147,14 +164,39 @@ export default{
 	},
 
 	methods:{
+
+		/*
+		*  addNewItem
+		*/
+		addNewItem: function () {
+		 	this.form.items.push({
+                selectedService:null,
+                serviceName: '',
+                servicePrice:0 ,
+                serviceDiscount:0,
+                serviceQty:1,
+                description:''
+		 	})
+		},
+
+		/*
+		*  deleteItem
+		*/
+		deleteItem: function(index) {
+			this.form.items.splice(index,1);
+		},
+
+
+		/*
+		*  isInvoiceCreatePage
+		*/
 		isInvoceCratePage: function() {
 		  return this.$route.path === '/invoices/create';
 		},
 
-		// goBack(){
-		// 	this.$router.go(-1) //go back 1 step
-		// },
-
+		/*
+		*  Load Invoice Data
+		*/
         loadInvoiceData(){
             axios.get("/api/create-invoice").then(({ data }) => (this.users = data.users));
             axios.get("/api/create-invoice")
@@ -169,6 +211,67 @@ export default{
             })
         },
 
+
+        /*
+		* Submit Invoice Data
+        */
+        addInvoice() {
+
+            this.formerrors = [];
+
+			if(this.form.client == null || this.form.client == ''){
+    			this.formerrors.push('Select client field is required.');
+    		} 
+
+        	for (var i = 0; i < this.form.items.length; i++) {
+        		if(this.form.items[i].selectedService == null){
+        			this.formerrors.push('Select service field is required.')
+        		} 
+
+        		if(this.form.items[i].selectedService != null && this.form.items[i].selectedService.id==0){
+        			if(!this.form.items[i].serviceName){
+        				this.formerrors.push('Item name field is required.')
+        			}
+        			if(!this.form.items[i].servicePrice){
+        				this.formerrors.push('Item price field is required.')
+        			}
+        		}
+
+        	}
+
+            // if there have no error then the form will be submit
+            this.$Progress.start();
+            if(this.formerrors.length === 0) {
+
+	            this.form.post('/api/invoices')
+	            .then((order)=>{
+
+	              $.magnificPopup.close();
+	              
+	              this.$Progress.finish();
+	              toast.fire({
+	                type: 'success',
+	                title: 'Order created successfully.'
+	              })
+	              //console.log();
+	              //window.location.href = "../orders/"+order.data.order.order_number;
+
+	              //this.$router.push('/orders/order/'+order.data.order.order_number);
+	            }).catch(()=>{
+	                this.$Progress.fail()
+	            })
+
+            } else {
+                this.$Progress.fail();
+                this.$notify({
+                  group: 'checkErrors',
+                  //title: 'Important message',
+                  text: this.formerrors[0],
+                  closeOnClick: true,
+                  type:"warn"
+                });
+            }
+        }
 	},
 
     created() {
@@ -180,6 +283,9 @@ export default{
 </script>
 
 <style >
+	.removeServ {
+	    margin-left: 14px;
+	}
 	.invoice-body section {
 	    background: #fff;
 	    border-radius: .25rem;
