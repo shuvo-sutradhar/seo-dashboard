@@ -33,6 +33,8 @@ Route::post('/create-order','API\FormSubmitController@createOrder');
 
 Route::apiResources(['/orders' => 'API\OrderController']);
 Route::get('/show-order/{order_number}','API\OrderController@show');
+Route::get('/edit-order/{order_number}','API\OrderController@edit');
+Route::patch('/update-order/{order_number}','API\OrderController@update');
 Route::put('/orders/order-note/{id}','API\OrderController@order_note');
 Route::put('/orders/order-status/{id}','API\OrderController@order_status');
 Route::put('/orders/order-following/{order_number}','API\OrderController@order_follow');
@@ -68,3 +70,31 @@ Route::put('/invoices/address/{id}','API\InvoiceController@address');
 */
 Route::apiResources(['/discount' => 'API\DiscountController']);
 Route::get('/create-discount','API\DiscountController@create');
+
+/*
+* client controller
+*/
+Route::resource('/clients', 'API\ClientController')->names([
+    'index' => 'clients.index',
+    'create' => 'clients.create',
+    'show' => 'clients.show',
+    'store' => 'clients.store',
+]);
+Route::get('/clients-edit/{email}','API\ClientController@edit');
+Route::get('/clients_get_country','API\ClientController@getAllCountry');
+
+
+/*
+* Service controller
+*/
+Route::apiResources(['/services' => 'API\ServiceController']);
+Route::get('/duplicate/{id}','API\ServiceController@duplicate');
+
+/*
+* Client Dashboard
+*/
+
+Route::get('/client-invoice','API\ClientDashboardController@invoice');
+Route::get('/client-invoice/{invoice_number}','API\ClientDashboardController@showInvoiceDetils');
+
+

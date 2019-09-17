@@ -174,135 +174,135 @@
 <script>
 	
 
-export default{
-	data(){
-		return{
+	export default{
+		data(){
+			return{
 
-            formerrors:[],
-            services:[],
-            form: new Form({
-                cupon_code: '',
-                description:'',
-                discount_type:'1',
-                discount_duration:'1',
-                limit_1:'',
-                is_total_limit:'',
-                total_limit:'',
-                is_expiry_date:'',
-                expiry_date:'',
-                isactive:true,
-                items:[{
+	            formerrors:[],
+	            services:[],
+	            form: new Form({
+	                cupon_code: '',
+	                description:'',
+	                discount_type:'1',
+	                discount_duration:'1',
+	                limit_1:'',
+	                is_total_limit:'',
+	                total_limit:'',
+	                is_expiry_date:'',
+	                expiry_date:'',
+	                isactive:true,
+	                items:[{
+		                selectedService:null,
+		                discount_amount:null,
+		            }],
+	            }),
+			}
+		},
+
+		methods:{
+
+			/*
+			*  add discount for more service
+			*/
+			addNewDiscount() {
+			 	this.form.items.push({
 	                selectedService:null,
-	                discount_amount:null,
-	            }],
-            }),
-		}
-	},
+	                discount_amount: null,
+			 	})
 
-	methods:{
+			},
+			deleteItem: function(index) {
+				this.form.items.splice(index,1);
+			},
+			/*
+			*  Load Invoice Data
+			*/
+	        loadServices(){
+	            axios.get("/api/create-discount").then(({ data }) => (this.services = data.services));
 
-		/*
-		*  add discount for more service
-		*/
-		addNewDiscount() {
-		 	this.form.items.push({
-                selectedService:null,
-                discount_amount: null,
-		 	})
-
-		},
-		deleteItem: function(index) {
-			this.form.items.splice(index,1);
-		},
-		/*
-		*  Load Invoice Data
-		*/
-        loadServices(){
-            axios.get("/api/create-discount").then(({ data }) => (this.services = data.services));
-            
-        },
+	        },
 
 
-        /*
-		* Submit Invoice Data
-        */
-        addDiscount() {
+	        /*
+			* Submit Invoice Data
+	        */
+	        addDiscount() {
 
-            this.formerrors = [];
+	            this.formerrors = [];
 
-			if(this.form.cupon_code == null || this.form.cupon_code == ''){
-    			this.formerrors.push('Cupon code field is required.');
-    		} 
+				if(this.form.cupon_code == null || this.form.cupon_code == ''){
+	    			this.formerrors.push('Cupon code field is required.');
+	    		} 
 
 
 
-        	for (var i = 0; i < this.form.items.length; i++) {
-        		
-        		if(this.form.items[i].discount_amount == null){
-        			this.formerrors.push('Discount amount field is required.')
-        		} 
-
-        		if(1 <= i){
-	        		if(this.form.items[i].selectedService == null){
-	        			this.formerrors.push('Service field is required.')
-	        		} 
+	        	for (var i = 0; i < this.form.items.length; i++) {
+	        		
 	        		if(this.form.items[i].discount_amount == null){
 	        			this.formerrors.push('Discount amount field is required.')
 	        		} 
-        		} 
 
-        		// if(this.form.items[i].selectedService != null && this.form.items[i].selectedService.id==0){
-        		// 	if(!this.form.items[i].serviceName){
-        		// 		this.formerrors.push('Item name field is required.')
-        		// 	}
-        		// 	if(!this.form.items[i].servicePrice){
-        		// 		this.formerrors.push('Item price field is required.')
-        		// 	}
-        		// }
+	        		if(1 <= i){
+		        		if(this.form.items[i].selectedService == null){
+		        			this.formerrors.push('Service field is required.')
+		        		} 
+		        		if(this.form.items[i].discount_amount == null){
+		        			this.formerrors.push('Discount amount field is required.')
+		        		} 
+	        		} 
 
-        	}
+	        		// if(this.form.items[i].selectedService != null && this.form.items[i].selectedService.id==0){
+	        		// 	if(!this.form.items[i].serviceName){
+	        		// 		this.formerrors.push('Item name field is required.')
+	        		// 	}
+	        		// 	if(!this.form.items[i].servicePrice){
+	        		// 		this.formerrors.push('Item price field is required.')
+	        		// 	}
+	        		// }
+
+	        	}
 
 
-            this.$Progress.start();
-            if(this.formerrors.length === 0) {
-	            this.form.post('/api/discount')
-	            .then((order)=>{
+	            this.$Progress.start();
+	            if(this.formerrors.length === 0) {
+		            this.form.post('/api/discount')
+		            .then((order)=>{
 
-	              $.magnificPopup.close();
-	              
-	              this.$Progress.finish();
-	              toast.fire({
-	                type: 'success',
-	                title: 'Coupon added successfully.'
-	              })
+		              $.magnificPopup.close();
+		              
+		              this.$Progress.finish();
+		              toast.fire({
+		                type: 'success',
+		                title: 'Coupon added successfully.'
+		              })
 
-	              //console.log();
-	              //window.location.href = "../orders/"+order.data.order.order_number;
+		              //console.log();
+		              //window.location.href = "../orders/"+order.data.order.order_number;
 
-	              //this.$router.push('/orders/order/'+order.data.order.order_number);
-	            }).catch(()=>{
-	                this.$Progress.fail()
-	            })
-        	} else {
-                this.$Progress.fail();
-                this.$notify({
-                  group: 'checkErrors',
-                  //title: 'Important message',
-                  text: this.formerrors[0],
-                  closeOnClick: true,
-                  type:"warn"
-                });
-            }
+		              //this.$router.push('/orders/order/'+order.data.order.order_number);
+		            }).catch(()=>{
+		                this.$Progress.fail()
+		            })
+	        	} else {
+	                this.$Progress.fail();
+	                this.$notify({
+	                  group: 'checkErrors',
+	                  //title: 'Important message',
+	                  text: this.formerrors[0],
+	                  closeOnClick: true,
+	                  type:"warn"
+	                });
+	            }
 
-  
-        }
-	},
+	  
+	        }
+		},
 
-    created() {
-       this.loadServices();
-    }
+	    created() {
+	       this.loadServices();
+	    }
 
-}
+	}
 
 </script>
 

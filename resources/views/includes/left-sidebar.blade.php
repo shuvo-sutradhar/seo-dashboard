@@ -1,7 +1,7 @@
 <nav id="menu" class="nav-main" role="navigation">
-				            
+                            
     <ul class="nav nav-main">
-        <li class="">
+        <li class="{{ request()->is('home') ? 'nav-active' : '' }}">
             <a class="nav-link" href="{{ route('home') }}">
                 <i class="fas fa-home" aria-hidden="true"></i>
                 <span>Dashboard</span>
@@ -27,29 +27,30 @@
             </ul>
         </li> --}}
 
-         @if (auth()->user()->isClient())
-            <li class="{{ request()->is('dashboard/order/*') ? 'nav-active' : '' }}">
-                <a class="nav-link" href="{{ route('order.index') }}">
-                    <i class="fas fa-shopping-basket" aria-hidden="true"></i>
-                    <span>Orders</span>
-                </a>                        
-            </li>
-        @else
-            <li class="{{ request()->is('orders*') ? 'nav-active' : '' }}">
-                <a class="nav-link" href="{{ route('order.main') }}">
-                    <i class="fas fa-shopping-basket" aria-hidden="true"></i>
-                    <span>Orders</span>
-                </a>                        
-            </li>
 
-        @endif
-        
-        <li class="{{ request()->is('invoices*') ? 'nav-active' : '' }}">
-            <a class="nav-link" href="{{ route('invoice.index') }}">
-                <i class="fas fa-file-alt"  aria-hidden="true"></i>
-                <span>Invoices</span>
+        <li class="{{ request()->is('orders*') ? 'nav-active' : '' }}">
+            <a class="nav-link" href="{{ route('order.main') }}">
+                <i class="fas fa-shopping-basket" aria-hidden="true"></i>
+                <span>Orders</span>
             </a>                        
         </li>
+
+
+        @if (auth()->user()->isClient())
+            <li class="{{ request()->is('dashboard/invoices*') ? 'nav-active' : '' }}">
+                <a class="nav-link" href="{{ route('invoice.client') }}">
+                    <i class="fas fa-file-alt"  aria-hidden="true"></i>
+                    <span>Invoices</span>
+                </a>                        
+            </li>
+        @else 
+            <li class="{{ request()->is('invoices*') ? 'nav-active' : '' }}">
+                <a class="nav-link" href="{{ route('invoice.index') }}">
+                    <i class="fas fa-file-alt"  aria-hidden="true"></i>
+                    <span>Invoices</span>
+                </a>                        
+            </li>
+        @endif
 
 
         @if (auth()->user()->isAdmin())
@@ -106,8 +107,8 @@
         </li>
 
         @if (auth()->user()->isAdmin())
-        <li class="{{ request()->is('settings/general') ? 'nav-active' : '' }}">
-            <a class="nav-link" href="{{ route('settings.general') }}">
+        <li class="{{ request()->is('settings*') ? 'nav-active' : '' }}">
+            <a class="nav-link" href="{{ route('settings') }}">
                 <i class="fas fa-cogs" aria-hidden="true"></i>
                 <span>Settings</span>
             </a>                        

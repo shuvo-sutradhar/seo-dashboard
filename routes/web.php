@@ -18,6 +18,8 @@ Route::get('/', function () {
 Route::get('/invoices/{path}', 'InvoiceController@index')->where('path','([A-z\d-\/_.]+)?');
 Route::get('/orders/{path}', 'OrderController@index')->where('path','([A-z\d-\/_.]+)?');
 Route::get('/discount/{path}', 'DiscountController@index')->where('path','([A-z\d-\/_.]+)?');
+Route::get('/clients/{path}', 'ClientController@index')->where('path','([A-z\d-\/_.]+)?');
+Route::get('/services/{path}', 'ServiceController@index')->where('path','([A-z\d-\/_.]+)?');
 
 Auth::routes(['verify' => true]);
 
@@ -44,11 +46,27 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function(){
 	Route::get('order/{number}', 'ClientDashboardController@getOrderpage')->name('order.single');
 	
 	//invoices
-	Route::post('invoices', 'ClientDashboardController@getInvoicePage')->name('invoice.client'); 
-
+	Route::get('invoices', 'ClientDashboardController@getInvoicePage')->name('invoice.client'); 
+	Route::get('/invoices/{path}', 'ClientDashboardController@getInvoicePage')->where('path','([A-z\d-\/_.]+)?');
 
 });
 
+Route::resource('/orders', 'OrderController', [
+    
+    'names' => [
+        'index' => 'order.main',
+        'create' => 'order.create',
+        'store' => 'order.store',
+        'show' => 'order.show',
+        'edit' => 'order.edit',
+        'update' => 'order.update',
+        'destroy' => 'order.delete',
+
+    ]
+]);
+Route::get('/profile', function () {
+    return view('profile');
+})->name('profile');
 
 Route::post('/main-account', 'HomeController@backToAccount')->name('account.back')->middleware('auth');
 
@@ -61,13 +79,14 @@ Route::get('/thanks', 'FormBuilderController@thanks')->name('custom.order.thanks
 
 Route::middleware(['auth', 'verified', 'IsAdmin'])->group(function () {
 
+	Route::get('settings', 'SettingController@index')->name('settings');
 	Route::get('settings/general', 'SettingController@getGeneralSettings')->name('settings.general');
 	Route::put('settings/general', 'SettingController@updateGeneralSettings')->name('general.updadate');
 
 
 	// Team account route
 	Route::post('accounts-access', 'HomeController@accessAccount')->name('account.access');
-	Route::resource('accounts', 'UserController', [
+	Route::resource('settings/accounts', 'UserController', [
 	    
 	    'names' => [
 	        'index' => 'account.index',
@@ -158,13 +177,6 @@ Route::middleware(['auth', 'verified', 'IsAdmin'])->group(function () {
 	    
 	    'names' => [
 	        'index' => 'client.index',
-	        'create' => 'client.create',
-	        'store' => 'client.store',
-	        'show' => 'client.show',
-	        'edit' => 'client.edit',
-	        'update' => 'client.update',
-	        'destroy' => 'client.delete',
-
 	    ]
 	]);
 
@@ -189,20 +201,6 @@ Route::middleware(['auth', 'verified', 'IsAdmin'])->group(function () {
 	//assign tags
 	Route::put('/orders/tags/{number}', 'OrderController@assignTags')->name('assign.tags');
 	
-
-	Route::resource('/orders', 'OrderController', [
-	    
-	    'names' => [
-	        'index' => 'order.main',
-	        'create' => 'order.create',
-	        'store' => 'order.store',
-	        'show' => 'order.show',
-	        'edit' => 'order.edit',
-	        'update' => 'order.update',
-	        'destroy' => 'order.delete',
-
-	    ]
-	]);
 
 	Route::resource('/invoices', 'InvoiceController', [
 	    
@@ -235,9 +233,7 @@ Route::middleware(['auth', 'verified', 'IsAdmin'])->group(function () {
 
 
 
-	Route::get('/profile', function () {
-	    return view('profile');
-	})->name('profile');
+
 });
 
 

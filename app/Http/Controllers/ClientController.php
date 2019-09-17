@@ -27,9 +27,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        
-        $users = User::where('account_role', 2)->latest()->paginate(10);
-        return view('clients.index', compact('users'));
+        return view('clients.index');
     }
 
     /**
@@ -130,8 +128,7 @@ class ClientController extends Controller
      */
     public function edit($email)
     {
-        $user = User::where('email', $email)->firstOrfail();
-        return view('clients.edit', compact('user'));
+        return view('clients.edit');
     }
 
     /**

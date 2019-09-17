@@ -17,7 +17,12 @@ use App\Tag;
 use App\OrderTag;
 
 class OrderController extends Controller
-{
+{    
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *

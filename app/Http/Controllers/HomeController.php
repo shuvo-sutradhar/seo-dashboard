@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\User;
+use App\Invoice;
+use App\Service;
+use DB;
 
 use App\Order;
 
@@ -29,7 +32,38 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        if(Auth()->user()->account_role == 2) {
+
+            $totalSpent = Invoice::where('user_id',auth()->user()->id)->sum('invoice_total');
+            $totalOrders = Order::where('user_id',auth()->user()->id)->count();
+            $unpaidOrders = Order::where('user_id',auth()->user()->id)->where('payment_staus','Not paid')->count();
+            $totalRunningOrder = Order::where('user_id',auth()->user()->id)->where('order_status','Working')->count();
+            return view('client-home',compact('totalSpent','totalOrders','unpaidOrders','totalRunningOrder'));
+
+        } else {
+            
+            $totalSales = Invoice::sum('invoice_total');
+
+            //Current month sales
+            $currentMonth = date('m');
+            $thisMonthSales = Invoice::whereRaw('MONTH(created_at) = ?',[$currentMonth])
+                ->where('invoice_status','paid')
+                ->sum('invoice_total');
+
+
+            $totalOrders = Order::count();
+            $unpaidOrders = Order::where('payment_staus','Not paid')->count();
+
+            //Current month total order
+            $thisMonthOrders =Order::whereRaw('MONTH(created_at) = ?',[$currentMonth])->count();
+
+            $totalClients = User::where('account_role',2)->count();
+            $totalTeam = User::where('account_role',0)->count();
+            $totalServices = Service::count();
+            $totalRunningOrder = Order::where('order_status','Working')->count();
+
+            return view('home', compact('totalSales','thisMonthSales','totalOrders','unpaidOrders','thisMonthOrders','totalClients','totalTeam','totalServices','totalRunningOrder'));
+        }
     }
 
 

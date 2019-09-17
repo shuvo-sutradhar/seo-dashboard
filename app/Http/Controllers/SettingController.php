@@ -16,7 +16,10 @@ use App\User;
 
 class SettingController extends Controller
 {
-    
+   
+    public function index(){
+        return view('settings.setting');
+    }
     //Return general settings page
     public function getGeneralSettings()
     {
@@ -49,7 +52,7 @@ class SettingController extends Controller
 
     	$companyData = (object) $companyData;
 
-    	return view('settings.general', compact('companyData'));
+    	return view('settings.general-setting', compact('companyData'));
     }
 
 

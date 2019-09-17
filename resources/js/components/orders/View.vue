@@ -4,12 +4,21 @@
     <!-- left side start -->
     <div class="col-md-8">
       <div class="card_header" v-if="isOrderPage()===true">
-        <h3 class="font-weight-semibold mt-3 dark">{{ orderDetails.order.order_service.name }}</h3>
+        <h3 class="font-weight-semibold mt-3 dark" v-show="!$auth.isClient()">{{ orderDetails.order.order_service.name }}</h3>
+        <h3 class="font-weight-semibold mt-3 dark" v-show="$auth.isClient()">#{{ orderDetails.order.order_number }}</h3>
       </div>
 
 
-      <!-- service name start -->
-      <div class="card-body" v-bind:class="orderDetails.order.order_note==null ? '' : 'borderLeft'">
+      <div v-show="$auth.isClient()">
+        <div class="orderSummary">
+          <OrderSummary :orderDetails="orderDetails"></OrderSummary>
+        </div>
+        <div class="alert alert-warning mb-4 mt-4">
+          We need some information to get started on your order. <a href="#">Click here to submit data</a>.        
+        </div>
+      </div>
+      <!-- service note start -->
+      <div v-if="!$auth.isClient()" class="card-body" v-bind:class="orderDetails.order.order_note==null ? '' : 'borderLeft'" >
         <form @submit.prevent="submitOrderNote(orderDetails.order.id)">
           <div class="form-group order-note-field" id="order-note-area">
 
@@ -32,20 +41,18 @@
           </div>
         </form>
       </div>
-      <!-- service name end -->
+      <!-- service note end -->
 
 
       <!-- order conversation start -->
       <Orderconversation :messages="orderMessage" @messageDel="deleteMessage"></Orderconversation>
       <ComposeOrderconversation @send="sendMessage" @new="saveNewMessage"></ComposeOrderconversation>
       <!-- order conversation end -->
-
     </div>
     <!-- left side end -->
 
     <!-- right side start -->
-    <div class="col-md-3 ">
-
+    <div class="col-md-3" v-show="!$auth.isClient()">
       <div class="order_right_details">
         <!-- top bar menu -->
         <div class="d-flex justify-content-center">
@@ -131,74 +138,22 @@
               <span class="float-right ">
                 <button type="button" class="btn dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
                 <div class="dropdown-menu dropdown-menu-right" role="menu">
-                  <a class="dropdown-item text-1" href="#"><i class="fa fa-edit"></i> Edit Details</a>
-
-                  <a onclick="deleteData(event)" class="dropdown-item text-1" href="#">
+                  <router-link :to="`/orders/edit/${orderDetails.order.order_number}`" class="dropdown-item text-1">
+                    <i class="fa fa-edit"></i> Edit Details
+                  </router-link>
+                  <a v-on:click="deleteData(orderDetails.order.id)" class="dropdown-item text-1" href="#">
                     <i class="fa fa-trash-alt"></i> Delete Order
                   </a>
                 </div>
               </span>
             </h3>
-            <table class="details">
-                <tbody>
-                  <tr>
-                      <th style="width: 150px">Client</th>
-                      <td>
-                          <a href="#">{{orderDetails.order.order_client.name}}</a>
-                      </td>
-                  </tr>
 
-                    <tr>
-                        <th>Payment</th>
-                        <td>{{orderDetails.order.payment_staus}}</td>
-                    </tr>
-                    <tr>
-                        <th>Amount</th>
-                        <td>${{orderDetails.order.order_service.price}}  </td>
-                    </tr>
-                    <tr v-if="orderDetails.order.invoice!=null">
-                        <th>Invoice</th>
-                        <td><a href="/invoice/B39U312Y">{{orderDetails.order.invoice.invoice_number}}</a></td>
-                    </tr>
-                    <!-- form origin -->
-                    <tr v-if="orderDetails.order.origin!=null">
-                        <th>Origin</th>
-                        <td>
-                          <a href="https://alok.spp.io/invoice/B39U312Y">{{orderDetails.order.order_form.formName}}  </a>
-                        </td>
-                    </tr>
-                    <tr v-if="orderDetails.order.payment_staus=='Manual'">
-                        <th>Origin</th>
-                        <td>
-                            Manual invoice
-                        </td>
-                    </tr>
-                    <!-- /. form origin -->
-                    <tr>
-                        <th>Order date</th>
-                        <td>{{ orderDetails.created_at | dateFormat }}</td>
-                    </tr>
-                
-                    <tr v-if="orderDetails.order.strated_at!=null">
-                        <th>Started</th>
-                        <td>{{ orderDetails.strated_at | dateFormat }}</td>
-                    </tr>
-                    <tr v-if="orderDetails.order.completed_at!=null">
-                        <th>Completed</th>
-                        <td>{{ orderDetails.completed_at | dateFormat }}</td>
-                    </tr>
-                    <tr>
-                        <th>Service</th>
-                        <td><a href="https://alok.spp.io/invoice/B39U312Y">{{ orderDetails.order.order_service.name }}</a></td>
-                    </tr>
-                
-                </tbody>
-            </table>
+            <OrderSummary :orderDetails="orderDetails"></OrderSummary>
+            
           </div>
         </div>
         <!-- details end -->
       </div>
-
       <div class="order_right_details">
         <div class="card mt-2">
           <div class="card-body order-body">
@@ -249,6 +204,7 @@
 
 <script>
 
+    import OrderSummary from './OrderSummary';
     import Orderconversation from './Orderconversation';
     import ComposeOrderconversation from './ComposeOrderconversation';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -278,16 +234,8 @@
                 axios.put('/api/orders/order-tag-status/'+this.orderDetails.order.id,{tag:this.tags})
                 .then((response)=>{
 
-
                   Fire.$emit('AfterUpdate');
                   this.$Progress.finish();
-
-                  //push data into active tag
-                  // let newTag = {
-                  //   id: response.data.tag.id,
-                  //   name: response.data.tag.name,
-                  //   slug: response.data.tag.slug
-                  // };
 
                   // this.tags.push(newTag);
                   this.tags=[]
@@ -296,23 +244,23 @@
                     this.$Progress.fail()
                 })
             },
+
             onTagAdded(data){
               //console.log(data.name)
               this.tags.push(data);
             },
+
             onTagRemoved(data){
               //console.log(data.name)
               this.tags.splice(data,1);
             },
-            onTagCreated(data,id = this.orderDetails.order.id){
-                //console.log(orderDetails.tags.length);
 
+            onTagCreated(data,id = this.orderDetails.order.id){
 
                 // //save new tag
                 this.$Progress.start();
                 axios.post('/api/orders/order-tag/'+id,{tag:data})
                 .then((response)=>{
-
 
                   Fire.$emit('AfterUpdate');
                   this.$Progress.finish();
@@ -330,6 +278,7 @@
                     this.$Progress.fail()
                 })
             },
+
             removeTag(data){
 
                 // //save new tag
@@ -354,7 +303,6 @@
                 })
             },
 
-
             //submit order note data
             submitOrderNote(id){
                 //
@@ -376,7 +324,6 @@
                 })
             },
 
-
             //change order status
             changeOrderStatus(attr,id){
                 this.$Progress.start();
@@ -395,7 +342,6 @@
                     this.$Progress.fail()
                 })
             },
-
 
             //change isFollowing status
             assignTeam(number,id){
@@ -435,7 +381,6 @@
                 })
             },
 
-
             //onclick chang text to texteditor
             noteEditor(attr = this.orderDetails.order.order_note){
               if(attr===null || attr===undefined){
@@ -454,7 +399,9 @@
             },
 
 
-            //load order data
+            /*
+            * load order data
+            */
             loadOrderData(){
                 axios.get(`/api/show-order/${this.$route.params.order_number}`).then(({ data }) => (this.orderDetails = data));
             },
@@ -462,7 +409,6 @@
             /*
             * Sending Message
             */
-
             saveNewMessage(message,usere){
               Vue.set(message, 'user', usere);
               this.orderMessage.push(message);
@@ -478,9 +424,7 @@
             //},
 
             sendMessage(text) {
-              // if(!this.contact) {
-              //   return;
-              // }
+
               axios.post('/api/order-message/send',{
                 order_id: this.orderDetails.order.id,
                 mesasge_body: text[1],
@@ -493,10 +437,12 @@
             },
 
             /*
-            * Delete Order Message
+            * Delete Order 
             */
+            deleteData(id){
+                
+                var url = window.location.origin+'/api/orders/'+id;
 
-          deleteMessage(id) {
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
@@ -505,39 +451,66 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
+                }).then((result) => {
                     // Send request to the server
                      if (result.value) {
-                        axios.delete('/api/order-message/'+id).then(()=>{
-                                Swal.fire(
-                                'Deleted!',
-                                'Your file has been deleted.',
-                                'success'
-                                )
-                            Fire.$emit('AfterDeleteOrderMsg');
-                        }).catch(()=> {
-                            Swal.fire("Failed!", "There was something wronge.", "warning");
-                        });
-                    }
+                            axios.delete(url).then(()=>{
+                                    Swal.fire(
+                                    'Deleted!',
+                                    'Your item has been deleted successfully.',
+                                    'success'
+                                    )
+                                Fire.$emit('AfterDelete');
+                                this.$router.push('/orders');
+                            }).catch(()=> {
+                                Swal.fire("Opps!", "Something is wrong.", "warning");
+                            });
+                     }
                 })
-          },
+
+            },
+
+            /*
+            * Delete Order Message
+            */
+
+            deleteMessage(id) {
+                  Swal.fire({
+                      title: 'Are you sure?',
+                      text: "You won't be able to revert this!",
+                      type: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Yes, delete it!'
+                      }).then((result) => {
+                      // Send request to the server
+                       if (result.value) {
+                          axios.delete('/api/order-message/'+id).then(()=>{
+                                  Swal.fire(
+                                  'Deleted!',
+                                  'Your file has been deleted.',
+                                  'success'
+                                  )
+                              Fire.$emit('AfterDeleteOrderMsg');
+                          }).catch(()=> {
+                              Swal.fire("Failed!", "There was something wronge.", "warning");
+                          });
+                      }
+                  })
+            },
 
 
-          loadOrderMessages() {
-            axios.get('/api/order-message/'+this.$route.params.order_number)
-              .then((response)=>{
-                this.orderMessage = response.data.orderMessage;
-            })
-          }
+            loadOrderMessages() {
+              axios.get('/api/order-message/'+this.$route.params.order_number)
+                .then((response)=>{
+                  this.orderMessage = response.data.orderMessage;
+              })
+            }
 
         },
 
         mounted() {
-
-          // Echo.private(`orderMessage.${this.user.id}`)
-          //     .listen('OrderMessages', (e) => {
-          //       this.handleIncoming(e.message);
-          //     })
 
           Echo.private('orderMessages')
           .listen('NewOrderMessage', (e) => {
@@ -556,7 +529,7 @@
 
         },
 
-        components: {Orderconversation,ComposeOrderconversation}
+        components: {Orderconversation,ComposeOrderconversation,OrderSummary}
     };
 
 </script>
@@ -640,5 +613,19 @@
   .tags__list-item-tag span[data-v-3336f93f] {
       color: #8c8c8c !important;
   }
+  .orderSummary {
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+  }
 
+  .orderSummary .details {
+      width: 100%;
+  }
+
+  .orderSummary .details tbody tr {
+      line-height: 30px;
+      display: flex;
+      justify-content: space-between;
+  }
 </style>

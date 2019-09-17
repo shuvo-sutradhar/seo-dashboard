@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Order;
 use App\User;
+use App\Invoice;
+use App\InvoiceItem;
 use App\Service;
 use App\OrderUnfollow;
 use Carbon\Carbon;
@@ -33,19 +35,38 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
-        $count1 = Order::where('order_status','!=','unpaid')->count(); 
-        $count2 = Order::where('order_status','Pending')->count(); 
-        $count3 = Order::where('order_status','Submitted')->count(); 
-        $count4 = Order::where('order_status','Working')->count(); 
-        $count5 = Order::where('order_status','Complete')->count(); 
-        $count6 = Order::where('order_status','Canceled')->count(); 
-        $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->with('orderTeam')->where('order_status','!=','unpaid')->paginate(10);
         
-        $users = User::where('account_role',2)->get(); 
-        $services = Service::where('is_active',1)->get();
-        
-        return  response()->json(compact('count1','count2','count3','count4','count5','count6','orders','users','services'), 200);
+        if(Auth()->user()->account_role == 2) {
+            /*
+            * For Client
+            */
+            $count1 = Order::where('order_status','!=','unpaid')->where('user_id',Auth()->user()->id)->count(); 
+            $count2 = Order::where('order_status','Pending')->where('user_id',Auth()->user()->id)->count(); 
+            $count3 = Order::where('order_status','Submitted')->where('user_id',Auth()->user()->id)->count(); 
+            $count4 = Order::where('order_status','Working')->where('user_id',Auth()->user()->id)->count(); 
+            $count5 = Order::where('order_status','Complete')->where('user_id',Auth()->user()->id)->count(); 
+            $count6 = Order::where('order_status','Canceled')->where('user_id',Auth()->user()->id)->count(); 
+            $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->where('order_status','!=','unpaid')->where('user_id',Auth()->user()->id)->paginate(10);
+            $users = User::where('account_role',2)->get(); 
+            $services = Service::where('is_active',1)->get();
+            return  response()->json(compact('count1','count2','count3','count4','count5','count6','orders','users','services'), 200);
+
+        } else {
+            /*
+            * For Admin an team
+            */
+            $count1 = Order::where('order_status','!=','unpaid')->count(); 
+            $count2 = Order::where('order_status','Pending')->count(); 
+            $count3 = Order::where('order_status','Submitted')->count(); 
+            $count4 = Order::where('order_status','Working')->count(); 
+            $count5 = Order::where('order_status','Complete')->count(); 
+            $count6 = Order::where('order_status','Canceled')->count(); 
+            $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->where('order_status','!=','unpaid')->paginate(10);
+            $users = User::where('account_role',2)->get(); 
+            $services = Service::where('is_active',1)->get();
+            return  response()->json(compact('count1','count2','count3','count4','count5','count6','orders','users','services'), 200);
+
+        }
     }
 
     /**
@@ -248,17 +269,27 @@ class OrderController extends Controller
      */
     public function show($order_number)
     {
-        //
-        $order = Order::with('orderClient')->with('orderService')->with('orderForm')->with('invoice')->with('orderTeam')->where('order_number', $order_number)->firstOrfail();
-        $teamMembers = User::where('account_role', 0)->orWhere('account_role',1)->get();
-        $matchThese = ['order_id' => $order->id, 'user_id' => auth('api')->id()];
-        $followOrUnfollow = OrderUnfollow::where($matchThese)->first();
-        $tags = Tag::all();
-        $order_tag = OrderTag::with('orderTag')->where('order_id',$order->id)->get();
-        $user =  Auth::user();
+        if(Auth()->user()->account_role == 2) {
+            /*
+            * For Client
+            */
+            $order = Order::with('orderClient')->with('orderService')->where('user_id', Auth()->user()->id)->where('order_number', $order_number)->firstOrfail();
+            $tags = Tag::all();
+            return  response()->json(compact('order','tags'), 200);
 
-        return  response()->json(compact('order', 'teamMembers', 'followOrUnfollow','tags','order_tag','user'), 200);
-
+        } else {
+            /*
+            * For admin
+            */
+            $order = Order::with('orderClient')->with('orderService')->with('orderForm')->with('invoice')->with('orderTeam')->where('order_number', $order_number)->firstOrfail();
+            $teamMembers = User::where('account_role', 0)->orWhere('account_role',1)->get();
+            $matchThese = ['order_id' => $order->id, 'user_id' => auth('api')->id()];
+            $followOrUnfollow = OrderUnfollow::where($matchThese)->first();
+            $tags = Tag::all();
+            $order_tag = OrderTag::with('orderTag')->where('order_id',$order->id)->get();
+            $user =  Auth::user();
+            return  response()->json(compact('order', 'teamMembers', 'followOrUnfollow','tags','order_tag','user'), 200);
+        }
     }
 
     /**
@@ -278,9 +309,14 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($order_number)
     {
         //
+            $order = Order::with('orderClient')->with('orderService')->with('invoice')->where('order_number', $order_number)->firstOrfail();
+            $users = User::where('account_role',2)->get(); 
+            $services = Service::where('is_active',1)->get();
+
+            return  response()->json(compact('order', 'users', 'services'), 200);
     }
 
     /**
@@ -290,9 +326,51 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $order_number)
     {
-        //
+        //update order table
+        $order = Order::where('order_number',$order_number)->first();
+        $order->update([
+            'created_at' => $request->created_at,
+            'strated_at' => $request->started_at,
+            'completed_at' => $request->completed_at,
+            'service_id' => $request->service['id'] ? $request->service['id'] : $order->service_id,
+            'user_id' => $request->client['id'] ? $request->client['id'] : $order->user_id,
+        ]);
+
+            
+        // Update invoice table
+        $invoice = Invoice::where('order_id',$order->id)->first();
+        $service_price = Service::select('price')->find($request->service['id']);
+        if(!empty($invoice) && !empty($request->due_date)){
+
+            if(!empty($request->service['id'])) {
+                $invoiceTotal = $service_price->price * $order->quantity;
+            } else {
+                $invoiceTotal = $invoice->invoice_total;
+            }
+
+            $invoice->update([
+                'user_id' => $request->client['id'],
+                'invoice_total' => $invoiceTotal,
+                'invoice_discount' => $invoiceTotal < $invoice->invoice_discount ? 0 : $invoice->invoice_discount,
+                'due_date' => $request->due_date,
+            ]);
+        }
+
+        // Update invoice item
+        if($invoice) {
+            $invoiceItem = InvoiceItem::where('invoice_id',$invoice->id)->first();
+            if(!empty($invoiceItem)){
+                $invoiceItem->update([
+                    'service_id' => $request->service['id']
+                ]);
+            }  
+        }
+
+
+
+        return ['Order Updated Successfuly.'];
     }
 
     /**

@@ -26,7 +26,7 @@ class CreateOrderMessagesTable extends Migration
             $table->string('message_link')->nullable();
             $table->string('message_for')->nullable();
             $table->boolean('is_read')->nullable();
-            $table->dateTime('read_at');
+            $table->dateTime('read_at')->nullable();
             $table->timestamps();
         });
     }

@@ -4,14 +4,14 @@
     <div class="template-wrap">
         
         <section class="card card-horizontal mb-4">
-            <div class="card_header" v-if="isOrderPage()===false">
+            <div class="card_header" v-if="isOrderOrEditPage()===false">
               <h3 class="font-weight-semibold mt-3 dark">Orders</h3>
-              <a href="" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light modal-with-move-anim" href="#modalAnim">
+              <a href="" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light modal-with-move-anim" href="#modalAnim"  v-show="!$auth.isClient() || $auth.can('order-create')">
                 <i class="fas fa-shopping-basket"></i> Add order
               </a>
             </div>
             
-            <div class="card_nav" v-if="isOrderPage()===false">
+            <div class="card_nav" v-if="isOrderOrEditPage()===false">
               <ul>
                 <li v-if="orderData.count1!=0">
                   <router-link to="/orders/all" class="nav-link order-all">
@@ -76,12 +76,18 @@
 
         methods: {
 
-            isOrderPage: function() {
+            isOrderOrEditPage: function() {
 
               let url = this.$route.path;
               url = url.slice(0, url.lastIndexOf('/'));
 
-              return url === '/orders/order';
+              if(url==='/orders/order'){
+                return true;
+              } else if (url==='/orders/edit') {
+                return true;
+              } else {
+                return false;
+              }
             },
 
             loadOrderData(){

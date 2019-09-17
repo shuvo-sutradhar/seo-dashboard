@@ -21,4 +21,5 @@ class Discount extends Model
     {
         return $this->hasMany('App\DiscountService');
     }   
+   
 }

@@ -793,11 +793,6 @@
                     order:16,
                     label:'Spreadsheet input',
                     isRequired:false,
-                    // services: [
-                    //     {service:"service 1"},
-                    //     {service:"service 1"},
-                    //     {service:"service 1"}
-                    // ],
                     hasItem: [
                         { option: "Option 1"},
                         { option: "Option 2"}

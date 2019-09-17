@@ -20,7 +20,7 @@ class CreateInvoiceItemTable extends Migration
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade')->onUpdate('no action');
 
             $table->integer('service_id')->unsigned()->nullable();
-            $table->foreign('service_id')->references('id')->on('services')->onDelete('set null')->onUpdate('no action');
+            $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade')->onUpdate('no action');
 
             $table->integer('quantity')->unsigned();
 

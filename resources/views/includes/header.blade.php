@@ -109,8 +109,6 @@
 						<i class="fas fa-shopping-basket"></i>
 						<span class="badge">{{ Cart::count() }}</span>
 					</a>
-					
-
 					<div class="dropdown-menu notification-menu">
 						<div class="notification-title">
 							<span class="float-right badge badge-default">{{ Cart::count() }}</span>
@@ -144,32 +142,60 @@
 								<a href="{{ route('cart.index') }}" class="view-more">View All</a><br/>
 							</div>
 						@endif
-					</div>
-
-						
+					</div>	
 				</li>
 			@endif
-
 			<li>
 				<a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
-					<i class="fas fa-question-circle"></i>
+					<i class="fab fa-facebook-messenger"></i>
+					<span class="badge">0</span>
 				</a>
-
 				<div class="dropdown-menu notification-menu">
 					<div class="notification-title">
 						<span class="float-right badge badge-default">3</span>
-						Support
+						Messages
 					</div>
 
 					<div class="content">
 						<ul>
-							<li><a href="#" class="clearfix">Documentations</a></li>
-							<li><a href="#" class="clearfix">Email Support</a></li>
-							<li><a href="#" class="clearfix">Updates</a></li>
+							<li>
+								<a href="#" class="clearfix">
+									<div class="image">
+										<i class="fas fa-thumbs-down bg-danger text-light"></i>
+									</div>
+									<span class="title">Server is Down!</span>
+									<span class="message">Just now</span>
+								</a>
+							</li>
+							<li>
+								<a href="#" class="clearfix">
+									<div class="image">
+										<i class="fas fa-lock bg-warning text-light"></i>
+									</div>
+									<span class="title">User Locked</span>
+									<span class="message">15 minutes ago</span>
+								</a>
+							</li>
+							<li>
+								<a href="#" class="clearfix">
+									<div class="image">
+										<i class="fas fa-signal bg-success text-light"></i>
+									</div>
+									<span class="title">Connection Restaured</span>
+									<span class="message">10/10/2017</span>
+								</a>
+							</li>
 						</ul>
+
+						<hr />
+
+						<div class="text-right">
+							<a href="{{ url('/message') }}" class="view-more">View All</a>
+						</div>
 					</div>
 				</div>
 			</li>
+
 		</ul>
 
 		<span class="separator"></span>

@@ -3,7 +3,82 @@
     <div class="card-body">
         <br/>
         <div v-if="orderData!=0">
-            <table class="table table-no-more table-bordered table-striped mb-0" id="table">
+
+            <!-- client table data start -->
+            <table class="table table-no-more table-bordered table-striped mb-0" id="table" v-if="$auth.isClient()">
+                <thead>
+                    <tr>
+                      <th class="text-left">ORDER</th>
+                      <th class="text-center">SERVICE</th>
+                      <th class="text-center">ADDED</th>
+                      <th class="text-center">COMPLETED</th>
+                      <th class="text-right">STATUS</th>
+                    </tr>
+                </thead>
+                <!-- admin view -->
+                <tbody>
+                    <tr v-for="(data, index) in orderData" class="order-wrap" v-show="isCurrentPage()=='/orders' || isCurrentPage()=='/orders/all'">
+
+                        <td>
+                            <router-link :to="`/orders/order/${data.order_number}`">
+                                {{ data.order_number  }} 
+                            </router-link>
+                        </td>
+                        <td class="text-center">
+                            {{ data.order_service.name  }}
+                        </td>
+                        <td class="text-center">
+                            {{ data.created_at | dateFormat }}
+                        </td>
+                        <td class="text-center">
+                            <span v-if="data.completed_at">{{ data.completed_at | dateFormat }}</span>
+                            <span v-else>--</span>
+                        </td>
+                        <td class="text-center">
+                            <span v-if="data.order_status == 'Submitted'" class="span-badge submitted">Submitted</span>
+                            <span v-if="data.order_status == 'Pending'" class="span-badge pending">Pending</span>
+                            <span v-if="data.order_status == 'Working'" class="span-badge working">Working</span>
+                            <span v-if="data.order_status == 'Complete'" class="span-badge complete">Complete</span>
+                            <span v-if="data.order_status == 'Canceled'" class="span-badge canceled">Canceled</span>
+                        </td>
+
+                    </tr>
+                    <tr v-for="(data, index) in orderData" class="order-wrap" v-if="isCurrentPage()=='/orders/'+data.order_status">
+
+                        <td>
+                            <router-link :to="`/orders/order/${data.order_number}`">
+                                {{ data.order_number  }} 
+                            </router-link>
+                        </td>
+                        <td class="text-center">
+                            {{ data.order_service.name  }}
+                        </td>
+                        <td class="text-center">
+                            {{ data.created_at | dateFormat }}
+                        </td>
+                        <td class="text-center">
+                            <span v-if="data.completed_at">{{ data.completed_at | dateFormat }}</span>
+                            <span v-else>--</span>
+                        </td>
+                        <td class="text-center">
+                            <span v-if="data.order_status == 'Submitted'" class="span-badge submitted">Submitted</span>
+                            <span v-if="data.order_status == 'Pending'" class="span-badge pending">
+                                Pending
+                            </span>
+                            <span v-if="data.order_status == 'Working'" class="span-badge working">Working</span>
+                            <span v-if="data.order_status == 'Complete'" class="span-badge complete">Complete</span>
+                            <span v-if="data.order_status == 'Canceled'" class="span-badge canceled">Canceled</span>
+                        </td>
+
+                    </tr>
+                </tbody>
+                <!-- client view -->
+    
+            </table>
+            <!-- admin table data end -->
+
+            <!-- admin table data start -->
+            <table class="table table-no-more table-bordered table-striped mb-0" id="table" v-show="!$auth.isClient() || $auth.can('orders')">
                 <thead>
                     <tr>
                       <th class="text-left">Client</th>
@@ -13,6 +88,7 @@
                       <th class="text-right">Action</th>
                     </tr>
                 </thead>
+                <!-- admin view -->
                 <tbody>
                     <tr v-for="(data, index) in orderData" class="order-wrap" v-show="isCurrentPage()=='/orders' || isCurrentPage()=='/orders/all'">
 
@@ -47,9 +123,9 @@
                                         <i class="far fa-eye"></i> View
                                     </router-link>
 
-                                    <a class="dropdown-item text-1"><i class="far fa-edit"></i> Edit</a>
-
-                                    <a class="dropdown-item text-1" href="#"><i class="far fa-bell-slash"></i> Unfollow</a>
+                                    <router-link :to="`/orders/edit/${data.order_number}`" class="dropdown-item text-1">
+                                        <i class="far fa-edit"></i> Edit
+                                    </router-link>
 
                                     <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
                                         <i class="fa fa-trash-alt"></i> Delete
@@ -90,9 +166,9 @@
                                         <i class="far fa-eye"></i> View
                                     </router-link>
 
-                                    <a class="dropdown-item text-1"><i class="far fa-edit"></i> Edit</a>
-
-                                    <a class="dropdown-item text-1" href="#"><i class="far fa-bell-slash"></i> Unfollow</a>
+                                    <router-link :to="`/orders/edit/${data.order_number}`" class="dropdown-item text-1">
+                                        <i class="far fa-edit"></i> Edit
+                                    </router-link>
 
                                     <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
                                         <i class="fa fa-trash-alt"></i> Delete
@@ -104,16 +180,23 @@
                         </td>
                     </tr>
                 </tbody>
+                <!-- client view -->
+    
             </table>
+            <!-- admin table data end -->
+
 
             <div class="pull-right mt-4">
             </div>
         </div>
         
         <div v-else>
-            <p class="no-order">
+            <p class="no-order" v-show="!$auth.isClient()">
                 Orders are added automatically when clients purchase your services.<br>
                 Start by setting up your <a :href="serviceLink()">services</a> and creating <a :href="orderFormLink()">an order form</a> where people can buy from you...
+            </p>
+            <p class="no-order" v-show="$auth.isClient()">
+                No orders yet...
             </p>
         </div>
     </div>
@@ -202,6 +285,14 @@
     .badge-info {
         color: rgb(23, 162, 184);
         background: rgb(212, 245, 250);
+    }
+
+    @media only screen and  (max-width: 991px) {
+        .table.table-no-more.table-bordered td {
+            text-align: center !important;
+            width: 100%;
+            padding: 10px 0px;
+        }
     }
 </style>
 

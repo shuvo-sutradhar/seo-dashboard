@@ -9,6 +9,8 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+
+
 // Import vue Router
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
@@ -28,6 +30,12 @@ Vue.component('vue-single-select', VueSingleSelect);
 
 // Import moment js for date time
 import moment from 'moment';
+
+import DatePick from 'vue-date-pick';
+import 'vue-date-pick/dist/vueDatePick.css';
+Vue.component('date-pick',DatePick);
+
+
 
 //vue content preload
 import Loading from 'vue-loading-overlay';
@@ -69,6 +77,10 @@ window.toast = toast;
 window.Fire =  new Vue();
 
 
+//
+//window.User = window.Laravel.user;
+
+
 Vue.component('formindex',require('./components/order-form/FormIndex.vue').default);
 Vue.component('formbuilder', require('./components/order-form/FormBuilder.vue').default);
 Vue.component('edit-formbuilder', require('./components/order-form/FormBuilderEdit.vue').default);
@@ -85,8 +97,18 @@ Vue.component('invoiceData', require('./components/invoice/Invocies.vue').defaul
 Vue.component('message', require('./components/message/Index.vue').default);
 //discount page
 Vue.component('discount', require('./components/discount/Index.vue').default);
+//client invoice
+Vue.component('client-invoice', require('./components/dashboard/invoice/Index.vue').default);
+//client 
+Vue.component('clients', require('./components/client/Main.vue').default);
+Vue.component('clients-show', require('./components/client/Show.vue').default);
+Vue.component('client-edit', require('./components/client/Edit.vue').default);
+//Service 
+Vue.component('services', require('./components/service/Main.vue').default);
 
 const routes = [
+
+  { path: '*', component: require('./components/NotFound.vue').default },
   //order route
   { path: '/orders', component: require('./components/orders/AllOrder.vue').default },
   { path: '/orders/all', component: require('./components/orders/AllOrder.vue').default },
@@ -96,6 +118,7 @@ const routes = [
   { path: '/orders/Complete', component: require('./components/orders/Complete.vue').default },
   { path: '/orders/Canceled', component: require('./components/orders/Canceled.vue').default },
   { path: '/orders/order/:order_number', component: require('./components/orders/View.vue').default },
+  { path: '/orders/edit/:order_number', component: require('./components/orders/Edit.vue').default },
   //order route
   { path: '/invoices', component: require('./components/invoice/Invocies.vue').default },
   { path: '/invoices/all', component: require('./components/invoice/Invocies.vue').default },
@@ -108,17 +131,34 @@ const routes = [
   //discount route
   { path: '/discount', component: require('./components/discount/Discount.vue').default },
   { path: '/discount/create', component: require('./components/discount/Create.vue').default },
-
+  
+  //clients
+  { path: '/clients', component: require('./components/client/Index.vue').default },
+  { path: '/clients/create', component: require('./components/client/Create.vue').default },
+  { path: '/clients/:email', component: require('./components/client/Show.vue').default },
+  { path: '/clients/:email/edit', component: require('./components/client/Edit.vue').default },
+  //service
+  { path: '/services', component: require('./components/service/Index.vue').default },
+  { path: '/services/create', component: require('./components/service/Create.vue').default },
+  { path: '/services/edit/:slug', component: require('./components/service/Edit.vue').default },
+  { path: '/services/variants/:slug', component: require('./components/service/Variants.vue').default },
+  { path: '/services/data/:slug', component: require('./components/service/Data.vue').default },
+ 
+  /*
+  * Dashboard route
+  */
+  { path: '/dashboard/invoices/', component: require('./components/dashboard/invoice/Invoice.vue').default },
+  { path: '/dashboard/invoices/:invoice_number', component: require('./components/dashboard/invoice/InvoiceView.vue').default },
+  
   // { path: '/orders/submitted', component: require('./components/orders/Submitted.vue').default },
   // { path: '/orders/working', component: require('./components/orders/Working.vue').default },
   // { path: '/orders/complete', component: require('./components/orders/Complete.vue').default },
-  // { path: '/orders/cancled', component: require('./components/orders/Cancled.vue').default },
 ]
 
 
 const router = new VueRouter({
 	mode: "history",
-  	routes // short for `routes: routes`
+  routes // short for `routes: routes`
 });
 
 /**
@@ -128,7 +168,9 @@ const router = new VueRouter({
  */
 
 
-
+//load current user and role & permission
+import Auth from './auth';
+Vue.prototype.$auth = new Auth(window.user);
 
 Vue.filter('dateFormat', function (creted) {
   return moment(creted).format('MMMM Do YYYY');

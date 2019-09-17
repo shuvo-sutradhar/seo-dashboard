@@ -73,7 +73,12 @@ class OrderMessageController extends Controller
     {
         $order = Order::where('order_number',$order_num)->first();
 
-        $orderMessage = OrderMessage::with('messageSender')->where('order_id',$order->id)->get();
+        if(auth()->user()->account_role == 2) {
+            $orderMessage = OrderMessage::with('messageSender')->where('order_id',$order->id)->where('message_for','!=','Team')->get();
+        } else {
+            $orderMessage = OrderMessage::with('messageSender')->where('order_id',$order->id)->get();
+        }
+
         return  response()->json(compact('orderMessage'), 200);
     }
 

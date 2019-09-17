@@ -114,7 +114,15 @@
 			
 		</section>
 
-
+	    <script>
+	        window.user = @json(
+	        [
+				'user' => auth()->user(),
+				'roles' => auth()->user()->roles,
+				'permissions' => auth()->user()->permissions
+	        ]
+	        );
+	    </script>
 		{{-- Vendor --}}
 		<script src="{{ asset('assets/vendor/jquery/jquery.js') }}"></script>
 

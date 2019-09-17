@@ -14,7 +14,7 @@
 
 				<form @submit.prevent="addInvoice">
 					<section>
-			            <div class="row">
+			            <div class="row w-100">
 			                <div class="col-md-8">
 			                    <div class="form-group custom-size">
 			                        <label for="user_id">Client</label>
@@ -37,7 +37,7 @@
 			                <div class="col-md-4">
 			                    <div class="form-group">
 			                        <label for="date_due">Date due</label>
-			                        <input type="date" class="form-control" v-model="form.due_date">
+			                        <!-- <input type="date" class="form-control" v-model="form.due_date"> -->			                        <date-pick v-model="form.due_date" :pickTime="true" :format="'YYYY-MM-DD HH:mm'" class="custom-calender"></date-pick>
 			                    </div>
 			                </div>
 			            </div>

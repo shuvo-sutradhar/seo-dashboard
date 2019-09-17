@@ -17,10 +17,10 @@ class CreateInvoicesTable extends Migration
             $table->increments('id');
 
             $table->integer('order_id')->unsigned()->nullable();
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('set null')->onUpdate('no action');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade')->onUpdate('no action');
 
             $table->integer('user_id')->unsigned()->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null')->onUpdate('no action');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('no action');
             
 
             $table->string('invoice_number');

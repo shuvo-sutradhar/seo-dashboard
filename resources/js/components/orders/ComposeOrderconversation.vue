@@ -1,8 +1,9 @@
 <template>
 	<div class="card mt-3 message-compose">
       <div class="card-header">
-        <h2 class="card-title">Message {{ selectedUser }}</h2>
-        <div>
+        <h2 class="card-title" v-if="$auth.isAdmin()">Message {{ selectedUser }}</h2>
+        <h2 class="card-title" v-if="$auth.isClient()">Send a message</h2>
+        <div v-if="$auth.isAdmin()">
             <a href="#" class="option-vertical" data-toggle="dropdown" >
             	Send to {{ selectedUser }} <i class="fas fa-angle-down" aria-hidden="true" ></i>
             </a>
@@ -17,8 +18,9 @@
       </div>
       <div class="card-footer compose-footer">
 	      <div class="d-flex">
-	      	<div class="help-block">Team members who are @mentioned, or following this order will be notified.</div>
-	      	<button type="submit" class="btn btn-primary" @click="send">Send to {{ selectedUser }}</button>
+	      	<div class="help-block" v-show="$auth.isAdmin()">Team members who are @mentioned, or following this order will be notified.</div>
+	      	<button v-if="$auth.isAdmin()" type="submit" class="btn btn-primary" @click="send">Send to {{ selectedUser }}</button>
+          <button v-show="!$auth.isAdmin()" type="submit" class="btn btn-primary" @click="send">Send message</button>
 	      </div>
       </div>
 	</div>

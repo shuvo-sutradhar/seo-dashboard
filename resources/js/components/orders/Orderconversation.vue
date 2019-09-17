@@ -7,12 +7,13 @@
       </div><!-- /. card-header -->
 
       <div class="messages order-messages" ref="feed">
-
-		<div class="message" v-for="(message,index) in messages" :key="message.id" :id="'#message-'+index">
+      	<!-- {{message.sender_id != $auth.auth().id && message.message_for=='Client'}} if true add class 'staff-message' or staff-note -->
+		<div class="message" v-for="(message,index) in messages" :key="message.id" :id="'#message-'+index"  :class="[(message.sender_id == $auth.auth().id && message.message_for=='Team' ? 'staff-note' : ''), (message.sender_id == $auth.auth().id && message.message_for=='Client' ? 'staff-message' : '')]">
 		   <div class="message-flex" >
 		      <div class="message-avatar">
 		         <div class="avatar css-avatar" v-if="message.message_sender">{{message.message_sender.name[0]}}</div>
-		         <div class="avatar css-avatar" v-else>{{message.user[0]}}</div>
+		         
+		         <div class="avatar css-avatar" v-else>{{message.user[0]}}</div> 
 		      </div>
 		      <div class="flex-fill">
 		         <div class="order-message-options">
@@ -34,7 +35,7 @@
 		            <!-- Aug 28th at 08:00 am -->
 		            {{ message.created_at | dateFormat1 }}   at  {{ message.created_at | timeFormat }}                                            
 		         </div>
-		         <div class="user-content mt-3 pb-3">
+		         <div class="user-content mt-2">
 		            <div v-html="message.message_body"></div>
 		         </div>
 		      </div>
@@ -174,5 +175,9 @@
 	.messages.order-messages {
 	    max-height: 60vh;
 	    overflow-y: auto;
+	}
+
+	.user-content p {
+	    margin-bottom: 0px;
 	}
 </style>

@@ -8,6 +8,15 @@ use App\Service;
 
 class ServiceController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
 
     /**
      * Display a listing of the resource.
@@ -17,6 +26,7 @@ class ServiceController extends Controller
     public function index()
     {
         //
+        return Service::paginate(10);
     }
 
     /**
@@ -28,7 +38,6 @@ class ServiceController extends Controller
     {
         //
         $services = Service::all();
-
         return  response()->json(compact('services'), 200);
     }
 
@@ -41,6 +50,36 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+
+            'name' => 'required|string|unique:services,name|max:255',
+            'one_time_price' => "required_if:service_type,==,1",
+            'recurring_price' => "required_if:service_type,==,2",
+
+        ]);
+        
+
+        /*
+        *   Inser service data
+        */
+        $input['name'] = $request->name;
+        $input['description'] = $request->description;
+
+        if($request->thumbnail_img){
+            $name = time().'.' . explode('/', explode(':', substr($request->thumbnail_img, 0, strpos($request->thumbnail_img, ';')))[1])[1];
+            \Image::make($request->thumbnail_img)->save(public_path('uploads/service_pic/').$name);
+            $input['thumbnail']      = $name;
+        }
+
+        $input['service_type'] = $request->service_type;
+        $input['price'] = $request->service_type==1 ? $request->one_time_price : $request->recurring_price;
+        $input['recurring_duration'] = $request->service_type==2 ? $request->recurring_duration : null;
+        $input['recurring_for'] = $request->service_type==2 ? $request->recurring_for : null;
+        $input['deadline'] = $request->isSetDeadline==true ? $request->deadline .' '. $request->deadline_type : null;
+        $input['is_active'] = $request->is_active;
+        $service = Service::create($input);
+
+        return  response()->json(compact('service'), 200);
     }
 
     /**
@@ -49,9 +88,11 @@ class ServiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
         //
+        return Service::where('slug',$slug)->with('variants')->first();
+
     }
 
     /**
@@ -72,9 +113,47 @@ class ServiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
+
+        $service = Service::where('slug',$slug)->first();
         //
+        $this->validate($request, [
+
+            'name' => 'required|string|max:191|unique:services,name,'.$service->id,
+            'one_time_price' => "required_if:service_type,==,1",
+            'recurring_price' => "required_if:service_type,==,2",
+
+        ]);
+        
+
+        /*
+        *   update service data
+        */
+        $service['name'] = $request->name;
+        $service['description'] = $request->description;
+        
+        //Upload image if request for image
+        $currentPhoto = $service->thumbnail;
+        if($request->thumbnail_img != $currentPhoto){
+            $name = time().'.' . explode('/', explode(':', substr($request->thumbnail_img, 0, strpos($request->thumbnail_img, ';')))[1])[1];
+            \Image::make($request->thumbnail_img)->save(public_path('uploads/service_pic/').$name);
+            $service['thumbnail']  = $name;
+            $userPhoto = public_path('uploads/service_pic/').$currentPhoto;
+            if(file_exists($userPhoto)){
+                @unlink($userPhoto);
+            }
+        }
+
+        $service['service_type'] = $request->service_type;
+        $service['price'] = $request->service_type==1 ? $request->one_time_price : $request->recurring_price;
+        $service['recurring_duration'] = $request->service_type==2 ? $request->recurring_duration : null;
+        $service['recurring_for'] = $request->service_type==2 ? $request->recurring_for : null;
+        $service['deadline'] = $request->isSetDeadline==true ? $request->deadline .' '. $request->deadline_type : null;
+        $service['is_active'] = $request->is_active;
+        $service->save();
+
+        return ['message' => 'Service updated successfuly.'];
     }
 
     /**
@@ -86,5 +165,31 @@ class ServiceController extends Controller
     public function destroy($id)
     {
         //
+        $service = Service::findOrFail($id);
+
+        $currentPhoto = $service->thumbnail;
+        if($currentPhoto){
+            $userPhoto = public_path('uploads/service_pic/').$currentPhoto;
+            if(file_exists($userPhoto)){
+                @unlink($userPhoto);
+            }
+        }
+        $service->delete();
+
+        return ['message' => 'User Deleted'];
+    }
+
+
+    /*
+    *   Duplicate row
+    */
+    public function duplicate($id)
+    {
+        //
+        $service = Service::find($id);
+        $newService = $service->replicate();
+        $newService['name'] = $service->name."(copy)";
+        $newService->save();
+        return ['message' => 'Service Duplicate Successfuly'];
     }
 }

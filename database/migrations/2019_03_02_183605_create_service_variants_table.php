@@ -15,11 +15,9 @@ class CreateServiceVariantsTable extends Migration
     {
         Schema::create('service_variants', function (Blueprint $table) {
             $table->increments('id');
-
             $table->integer('service_id')->unsigned()->index()->nullable();
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade')->onUpdate('no action');
-            $table->string('variant_name')->nullable();
-            $table->string('variant_value')->nullable();
+            $table->string('name')->nullable();
             $table->timestamps();
         });
     }

@@ -30,6 +30,8 @@ class CreateOrdersTable extends Migration
             $table->integer('quantity')->nullable();
             $table->string('order_status')->nullable();
             $table->string('payment_staus')->nullable();
+            $table->timestamp('strated_at')->nullable();
+            $table->timestamp('completed_at')->nullable();
             $table->timestamps();
         });
     }

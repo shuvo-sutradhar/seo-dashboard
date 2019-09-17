@@ -104,15 +104,15 @@
 		                     <tbody>
 		                        <tr class="b-top-0">
 		                           <td colspan="2">Subtotal</td>
-		                           <td class="text-left">${{invoiceData.invoice_total}}</td>
+		                           <td class="text-center">${{invoiceData.invoice_total}}</td>
 		                        </tr>
 		                        <tr>
 		                           <td colspan="2">Discount</td>
-		                           <td class="text-left">${{invoiceData.invoice_discount}}</td>
+		                           <td class="text-center">${{invoiceData.invoice_discount}}</td>
 		                        </tr>
 		                        <tr class="h4">
 		                           <td colspan="2">Grand Total</td>
-		                           <td class="text-left">${{ invoiceData.invoice_total - invoiceData.invoice_discount }}</td>
+		                           <td class="text-center">${{ invoiceData.invoice_total - invoiceData.invoice_discount }}</td>
 		                        </tr>
 		                     </tbody>
 		                  </table>

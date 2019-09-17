@@ -12,7 +12,7 @@ class Service extends Model
 
 
 	protected $fillable = [
-        'name', 'description', 'price', 'thumbnail', 'display', 'requirments', 'deadline', 'deadline_number', 'deadline_type', 'order', 'is_active'
+        'name', 'description', 'thumbnail', 'service_type', 'price', 'recurring_duration' , 'recurring_for', 'deadline', 'is_active'
     ];
 
 
@@ -40,7 +40,6 @@ class Service extends Model
     	return $this->hasMany('App\ServiceVariant');
     }
 
-
     // Return many to one relation with orders table
     public function serviceOrders()
     {
@@ -53,8 +52,7 @@ class Service extends Model
         return $this->hasMany('App\InvoiceItem');
     }    
 
-
-
+    // Return many to one relation with discount table
     public function discountService()
     {
         return $this->hasMany('App\DiscountService');

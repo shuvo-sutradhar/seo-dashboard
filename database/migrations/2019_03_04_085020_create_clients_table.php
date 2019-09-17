@@ -18,12 +18,10 @@ class CreateClientsTable extends Migration
 
             $table->integer('user_id')->unsigned()->index()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('no action');
-
             $table->string('phone')->nullable();
             $table->string('profile_picture')->nullable();
             $table->string('address')->nullable();
             $table->string('city')->nullable();
-            $table->string('country')->nullable();
             $table->string('state')->nullable();
             $table->string('post_code')->nullable();
             $table->string('company_name')->nullable();

@@ -100,6 +100,6 @@ class Order extends Model
     // Return one to many relationship with INVOICE
     public function invoice()
     {
-        return $this->hasOne('App\Invoice');
+        return $this->hasOne('App\Invoice', 'order_id');
     }
 }
