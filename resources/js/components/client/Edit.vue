@@ -12,7 +12,7 @@
 
 				<div class="invoice-body">
 
-				<form @submit.prevent="updateClient">
+				<form @submit.prevent="updateClient" class="client-form">
 					<section>
 			            <div class="row w-100">
 			                <div class="col-md-12 mb-3">
@@ -273,7 +273,7 @@ export default{
 
 
 <style type="text/css">
-	.help-block {
+	.client-form .help-block {
 	    margin-top: 3px;
 	    color: #dc3545;
 	}

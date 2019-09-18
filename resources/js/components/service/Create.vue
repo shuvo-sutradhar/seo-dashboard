@@ -12,11 +12,11 @@
 
 				<div class="invoice-body">
 
-				<form @submit.prevent="addService">
+				<form @submit.prevent="addService" class="service-form">
 
 					<!-- service top form start -->
 					<section>
-			            <div class="row w-100">
+			            <div class="row w-100 service-form">
 			                <div class="col-md-12 mb-3">
 			                    <div class="form-group custom-size">
 			                        <label for="name">Service name <span>*</span></label>
@@ -254,7 +254,7 @@ export default{
 
 
 <style type="text/css">
-	.help-block {
+	.service-form .help-block {
 	    margin-top: 3px;
 	    color: #dc3545;
 	}

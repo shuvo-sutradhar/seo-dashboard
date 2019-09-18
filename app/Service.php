@@ -58,4 +58,10 @@ class Service extends Model
         return $this->hasMany('App\DiscountService');
     }  
 
+    // Return many to one relation with discount table
+    public function ServiceData()
+    {
+        return $this->hasOne('App\ServiceData','service_id');
+    }  
+
 }

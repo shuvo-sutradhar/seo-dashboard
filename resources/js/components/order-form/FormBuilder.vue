@@ -222,7 +222,7 @@
 
                                         <!-- Multiple line of text start -->
                                         <div class="form-group" v-if="data.field === 'multiText'" :class="{ 'is-active': data === activeForm  }">
-                                            <button type="button" data-delete="" class="btn btn-sm remove-input" @click.prevent="clearField(field, index)"><i class="fas fa-trash"></i></button>
+                                            <button type="button" data-delete="" class="btn btn-sm remove-input" @click.prevent="clearField(data.field, index)"><i class="fas fa-trash"></i></button>
                                             <div @click="editElementProperties(data)">
                                                 <label for="clientName">{{ data.label }} <small v-show="data.isRequired == false">(optional)</small></label>
                                                 <textarea class="form-control" spellcheck="false" :placeholder="data.placeholder"></textarea>
@@ -234,7 +234,7 @@
 
                                         <!-- Checkbox start -->
                                         <div class="form-group" v-if="data.field === 'checkbox'" :class="{ 'is-active': data === activeForm  }">
-                                            <button type="button" data-delete="" class="btn btn-sm remove-input" @click.prevent="clearField(field, index)"><i class="fas fa-trash"></i></button>
+                                            <button type="button" data-delete="" class="btn btn-sm remove-input" @click.prevent="clearField(data.field, index)"><i class="fas fa-trash"></i></button>
                                             <div class="custom-control custom-checkbox" @click="editElementProperties(data)">
                                                 <input type="checkbox" id="action-2" class="custom-control-input"> 
                                                 <label for="action-2" class="custom-control-label">{{ data.label }} <small v-show="data.isRequired == false">(optional)</small></label> 

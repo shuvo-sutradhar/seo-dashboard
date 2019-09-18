@@ -89,6 +89,9 @@ Route::get('/clients_get_country','API\ClientController@getAllCountry');
 */
 Route::apiResources(['/services' => 'API\ServiceController']);
 Route::get('/duplicate/{id}','API\ServiceController@duplicate');
+Route::patch('/services/data-field/{slug}','API\ServiceController@dataField');
+Route::get('/services/data-field/{slug}','API\ServiceController@getDataField');
+Route::delete('/services/data-field/{id}','API\ServiceController@dataFieldDelete');
 
 /*
 * Client Dashboard

@@ -17,6 +17,7 @@ class CreateServiceDatasTable extends Migration
             $table->increments('id');
             $table->integer('service_id')->unsigned()->index()->nullable();
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade')->onUpdate('no action');
+            $table->text('dataForm');
             $table->timestamps();
         });
     }

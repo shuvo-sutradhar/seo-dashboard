@@ -20,7 +20,7 @@ class CreateOrdersTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('no action');
 
             $table->integer('service_id')->unsigned()->index()->nullable();
-            $table->foreign('service_id')->references('id')->on('services')->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade')->onUpdate('no action');
             
             $table->integer('team_member_id')->unsigned()->nullable();
             $table->foreign('team_member_id')->references('id')->on('users')->onDelete('set null')->onUpdate('no action');

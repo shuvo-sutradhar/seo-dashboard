@@ -3,12 +3,15 @@
     <div class="template-wrap">
         
         <section class="card card-horizontal mb-4">
-            <div class="card-body">
-                <h3 class="font-weight-semibold mt-3 dark">Order forms</h3>
-                <a :href="route" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button">
-                    <i class="fas fa-user"></i> Add form
-                </a>
 
+            <div class="card_header">
+              <h3 class="font-weight-semibold mt-3 dark">Order forms</h3>
+              <a :href="route" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button">
+                  <i class="fas fa-plus"></i> Add form
+              </a>
+            </div>
+
+            <div class="card-body" v-if="formData.length > 0">
                 <!-- <a :href="route2">{{ route2 }}</a> -->
                 
                 <br/>
@@ -60,6 +63,9 @@
                 <div class="pull-right mt-4">
                     
                 </div>
+            </div>
+            <div class="card-body" v-else>
+              No order form.
             </div>
         </section>
     </div>

@@ -28,7 +28,7 @@
 
 				<div class="invoice-body">
 
-				<form @submit.prevent="updateService">
+				<form @submit.prevent="updateService" class="service-form">
 
 					<!-- service top form start -->
 					<section>
@@ -284,7 +284,7 @@ export default{
 
 
 <style type="text/css">
-	.help-block {
+	.service-form .help-block {
 	    margin-top: 3px;
 	    color: #dc3545;
 	}

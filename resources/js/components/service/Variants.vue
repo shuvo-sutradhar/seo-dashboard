@@ -4,7 +4,7 @@
 			<div class="invoice-wrap">
 
 				<div class="card_header mb-4">
-	                <h3 class="font-weight-semibold mt-3 dark">Project name variants</h3>
+	                <h3 class="font-weight-semibold mt-3 dark">{{ this.$route.params.slug }} variants</h3>
 	                <div class="pull-right">
 		                <router-link :to="`/services/edit/${this.$route.params.slug}`" class="mb-1 mt-1 mr-1 btn btn-warning list-add-button text-light" >
 		                  <i class="fas fa-edit"></i> Edit service
@@ -25,59 +25,58 @@
 			                </div>
 			            </a>
 	                </div>
-	              </div>
+	            </div>
 
 				<div class="invoice-body">
 
-				<form @submit.prevent="updateService">
+					<form @submit.prevent="updateService">
 
-					<!-- service top form start -->
-					<section>
-			            <div class="row w-100">
-			                <div class="col-md-12 mb-4">
-			                    <div class="form-group custom-size">
-			                        <label for="name">Option category <span>*</span></label>
-									<input type="text" v-model="form.name" class="form-control" id="name" :class="{ 'is-invalid': form.errors.has('name') }" placeholder="e.g. Size, Word Count, or Number of Links">
-                  					<has-error :form="form" field="name"></has-error>
-			                    </div>
-			                </div>
-			                <div class="col-md-12 mb-2">
-								<div class="form-group">
-									<label for="block-form-module">Option values</label> 
-									<table id="dynamic_field" class="table table-bordered">
-										<thead>
-											<tr>
-												<th>Option</th>
-												<th>Price</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td width="50%">
-													<input type="text" name="designation[]" placeholder="e.g. Small" class="form-control name_list">
-												</td> 
-												<td width="40%">
-													<input type="number" name="designation[]" placeholder="0.00" class="form-control name_list">
-												</td>
-												<td width="10%" class="text-center">
-													<button type="button" name="add" id="addRow" class="btn btn-primary">
-														<i class="fa fa-plus"></i>
-													</button>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-			                </div>
- 
-			            </div>
-			        </section>
-					<!-- service top form end -->
-
-				</form>
-                <!-- notification warning messge modal -->
-                <notifications group="checkErrors" position="top center" />
+						<!-- service top form start -->
+						<section>
+				            <div class="row w-100">
+				                <div class="col-md-12 mb-4">
+				                    <div class="form-group custom-size">
+				                        <label for="name">Option category <span>*</span></label>
+										<input type="text" v-model="form.name" class="form-control" id="name" :class="{ 'is-invalid': form.errors.has('name') }" placeholder="e.g. Size, Word Count, or Number of Links">
+	                  					<has-error :form="form" field="name"></has-error>
+				                    </div>
+				                </div>
+				                <div class="col-md-12 mb-2">
+									<div class="form-group">
+										<label for="block-form-module">Option values</label> 
+										<table id="dynamic_field" class="table table-bordered variants">
+											<thead>
+												<tr>
+													<th>Option</th>
+													<th>Price</th>
+													<th></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td width="50%">
+														<input type="text" name="designation[]" placeholder="e.g. Small" class="form-control name_list">
+													</td> 
+													<td width="40%">
+														<input type="number" name="designation[]" placeholder="0.00" class="form-control name_list">
+													</td>
+													<td width="10%" class="text-center">
+														<button type="button" name="add" id="addRow" class="btn btn-primary">
+															<i class="fa fa-plus"></i>
+														</button>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+				                </div>
+	 
+				            </div>
+				        </section>
+						<!-- service top form end -->
+					</form>
+	                <!-- notification warning messge modal -->
+	                <notifications group="checkErrors" position="top center" />
 
 				</div><!-- /. invoice-hader -->
 
@@ -168,11 +167,12 @@ export default{
 
 <style type="text/css">
 
-	.table-bordered th, .table-bordered td {
+	.variants .table-bordered th, 
+	.variants .table-bordered td {
 	    border: 1px solid #dee2e647;
 	}
 
-	.table thead th {
+	.variants .table thead th {
 	    border-bottom: 1px solid #dee2e647;
 	    font-size: 12px;
 	    padding: 5px 15px;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Service;
+use App\ServiceData;
 
 class ServiceController extends Controller
 {
@@ -179,7 +180,6 @@ class ServiceController extends Controller
         return ['message' => 'User Deleted'];
     }
 
-
     /*
     *   Duplicate row
     */
@@ -191,5 +191,47 @@ class ServiceController extends Controller
         $newService['name'] = $service->name."(copy)";
         $newService->save();
         return ['message' => 'Service Duplicate Successfuly'];
+    }
+
+    /*
+    *   Duplicate row
+    */
+    public function dataField(Request $request, $slug) 
+    {
+        //
+        $service = Service::where('slug',$slug)->pluck('id');
+        $serviceData = ServiceData::where('service_id',$service[0])->first();
+        //return $serviceData;
+
+
+        if(!$serviceData){
+            $serviceData = new ServiceData;
+            $serviceData->service_id = $service[0];
+        }
+
+        $serviceData->dataForm = json_encode($request->form);
+        $serviceData->save();
+
+        return ['Service data added successfuly.'];
+    }
+
+
+    /*
+    *   Get data field
+    */
+    public function getDataField($slug)
+    {
+        $service = Service::where('slug',$slug)->pluck('id');
+        return ServiceData::where('service_id',$service[0])->first();
+
+    }
+
+
+    /*
+    *   Delete service data
+    */
+    public function dataFieldDelete($id)
+    {
+        return ServiceData::destroy($id);
     }
 }

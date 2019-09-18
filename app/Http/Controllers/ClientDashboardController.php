@@ -30,7 +30,7 @@ class ClientDashboardController extends Controller
 	// return client service page
     public function getServicesPage()
     {
-    	$services = Service::where('display', 1)->latest()->paginate(8);
+    	$services = Service::where('is_active', 1)->latest()->paginate(8);
     	return view('dashboard.services', compact('services'));
     }
 
