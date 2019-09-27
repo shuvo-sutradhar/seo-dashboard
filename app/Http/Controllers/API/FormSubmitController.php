@@ -12,6 +12,7 @@ use App\InvoiceBilling;
 use App\User;
 use App\Client;
 use App\OrderForm;
+use App\Discount;
 
 use Carbon\Carbon;
 use Stripe;
@@ -88,6 +89,29 @@ class FormSubmitController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+
+    //verify token
+    public function verifyCupon($cupon)
+    {
+        $total_used = Invoice::where('invoice_discount',$cupon)->count();
+
+        $discount = Discount::where('cupon_code', $cupon)
+                    ->where('is_active',1)
+                    ->where(function($q) use ($total_used){
+                          $q->where('total_limit', null)
+                            ->orWhere('total_limit',0)
+                            ->orWhere('total_limit','>',$total_used);
+                      })
+                    ->where(function($q){
+                          $q->whereDate('expiry_date','>=', Carbon::now())
+                            ->orWhere('expiry_date',null);
+                      })
+                    ->with('discount')
+                    ->first();
+
+        return  response()->json(compact('discount'), 200);
     }
 
     /**
@@ -211,7 +235,7 @@ class FormSubmitController extends Controller
                     'team_member_id' => null,
                     'order_number' => $orderNumber.'_'.$i,
                     'order_note' => 'Write your order note',
-                    'quantity' => $key['quantity'],
+                    'quantity' => isset($key['quantity']) ? $key['quantity'] : 1,
                     'order_status' => 'Pending',
                     'payment_staus' => 'By Card',
                     'origin' => $formLink->id,
@@ -226,7 +250,7 @@ class FormSubmitController extends Controller
                 'user_id' => $user->id,
                 'invoice_number' => $orderNumber,
                 'invoice_total' => $request->total,
-                'invoice_discount' => 0.0,
+                'invoice_discount' => $request->getCuponData ? $request->getCuponData['cupon_code'] : 0.0,
                 'invoice_vat' => 0.0,
                 'invoice_status' => 'paid',
                 'payment_method' => 'checkout',
@@ -238,16 +262,40 @@ class FormSubmitController extends Controller
 
                 'invoice_id' => $invoice->id,
                 'first_name' => $name,
-                'email' => $request->email
+                'email' => $request->email,
+                'address'       => $request->address,
+                'city'          => $request->city,
+                'country'       => $request->country,
+                'state'         => $request->state,
+                'post_code'     => $request->postalCode,
+                'company_name'  => $request->companyName,
+                'tax_id'        => $request->taxId,
+
             ]);
 
 
             // insert row for each billing item
+            $j=0;
             foreach($array as $key){
+
+                $disPrice = 0;
+                if($request->getCuponData) {
+                    foreach ($request->getCuponData['discount'] as $cuponData) {
+                        if($cuponData['service_id']==null || $cuponData['service_id'] == $key['id']) {
+                            if($request->getCuponData['discount_type']==2) {
+                                $disPrice = ($cuponData['discount_amount'] / 100) * $key['price'];
+                            } else {
+                                $disPrice = $cuponData['discount_amount'];
+                            }
+                        }
+                    }
+                }
+
                 $invoiceItem = InvoiceItem::create([
                     'invoice_id' => $invoice->id,
                     'service_id' => $key['id'],
-                    'quantity' => $key['quantity']
+                    'quantity' => isset($key['quantity']) ? $key['quantity'] : 1,
+                    'discount' => $disPrice,
                 ]);
             }
             

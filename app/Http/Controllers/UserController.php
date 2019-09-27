@@ -241,5 +241,36 @@ class UserController extends Controller
     }
 
 
-    
+    //update login user profile
+    public function profile(){
+        return view('profile');
+    }
+    public function profile_update(Request $request, $email){
+
+        $user = User::where('email', $email)->firstOrFail();
+
+        $request->validate([
+            'name'=>'required|string|max:255',
+        ]);
+        
+        if (isset($request['current_password']) && !Hash::check($request['current_password'], $user->password)) {
+            return back()->with('current_password', 'The specified password does not match the database password');
+        } else {
+            // write code to update password
+            return "Okay";
+
+        }
+
+        /*
+        *   update user table
+        */
+        $user->name = $request['name'];
+        $user->email = auth()->user()->email;
+        if($request['password']) {
+            $user->password = Hash::make($request['password']);
+        }
+        $user->save();
+
+        return "Okay";
+    }
 }

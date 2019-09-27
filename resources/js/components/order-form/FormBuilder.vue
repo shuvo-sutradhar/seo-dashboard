@@ -50,7 +50,10 @@
                                                             <!-- {{ data.selectedService[roll] }} -->
                                                             <input type="radio" name="option0" id="action-0-0" class="custom-control-input" checked="checked"> 
                                                             <label for="action-0-0" class="custom-control-label">{{ item[data.selectedService[roll]].name }}</label> 
-                                                            <p>{{ item[data.selectedService[roll]].price }}</p>
+                                                            <p>
+                                                                ${{ item[data.selectedService[roll]].price }}
+                                                                <span v-if="item[data.selectedService[roll]].service_type == 2"> / {{ item[data.selectedService[roll]].recurring_duration }} {{ item[data.selectedService[roll]].recurring_for }}(s)</span>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -70,7 +73,11 @@
                                                             <input type="checkbox" name="option1" :id="index" class="custom-control-input" checked="checked">
                                                             
                                                            <label :for="index" class="custom-control-label">{{ item[data.selectedService[roll]].name }} </label>
-                                                            <p>{{ item[data.selectedService[roll]].price }}</p>
+                                                            
+                                                            <p>
+                                                                ${{ item[data.selectedService[roll]].price }}
+                                                                <span v-if="item[data.selectedService[roll]].service_type == 2">/{{ item[data.selectedService[roll]].recurring_duration }} {{ item[data.selectedService[roll]].recurring_for }}(s)</span>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -91,7 +98,10 @@
                                                     </button> 
                                                     <div class="dropdown-menu w-100" x-placement="bottom-start" style="">
                                                         <a href="#" class="dropdown-item" draggable="false">{{ data.defaultSelected }}</a> 
-                                                        <a href="#" click.prevent="1" class="dropdown-item" draggable="false" v-for="(item, roll) in data.hasServices">{{ item[data.selectedService[roll]].name }}</a>
+                                                        <a href="#" click.prevent="1" class="dropdown-item" draggable="false" v-for="(item, roll) in data.hasServices">{{ item[data.selectedService[roll]].name }}
+                                                            (${{ item[data.selectedService[roll]].price }}
+                                                            <span v-if="item[data.selectedService[roll]].service_type == 2">/{{ item[data.selectedService[roll]].recurring_duration }} {{ item[data.selectedService[roll]].recurring_for }}(s)</span>)
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -112,7 +122,10 @@
                                                     </button> 
                                                     <div class="dropdown-menu w-100" x-placement="bottom-start" style="">
                                                         <a href="#" class="dropdown-item" draggable="false">{{ data.defaultSelected }}</a> 
-                                                        <a href="#" click.prevent="1" class="dropdown-item" draggable="false" v-for="(item, roll) in data.hasServices">{{ item[data.selectedService[roll]].name }}</a>
+                                                        <a href="#" click.prevent="1" class="dropdown-item" draggable="false" v-for="(item, roll) in data.hasServices">{{ item[data.selectedService[roll]].name }}
+                                                            (${{ item[data.selectedService[roll]].price }}
+                                                            <span v-if="item[data.selectedService[roll]].service_type == 2">/{{ item[data.selectedService[roll]].recurring_duration }} {{ item[data.selectedService[roll]].recurring_for }}(s)</span>)
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -308,13 +321,13 @@
                                         <!-- section break end -->
 
                                         <!-- page break start -->
-                                        <div class="form-group" v-if="data.field === 'pageBreak'" :class="{ 'is-active': data === activeForm  }">
+                                        <!-- <div class="form-group" v-if="data.field === 'pageBreak'" :class="{ 'is-active': data === activeForm  }">
                                             <button type="button" data-delete="" class="btn btn-sm remove-input" @click.prevent="clearField(data.field, index)"><i class="fas fa-trash"></i></button>
                                             <div @click="editElementProperties(data)">
                                                 <button type="button" class="btn btn-success pl-5 pr-5 disabled">Next</button>
                                                 <p class="mb-0 mt-2">{{ data.helpBlock }}</p>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <!-- page break end -->
                                     </div>
                                 </draggable>
@@ -434,10 +447,10 @@
                                         </button>
 
                                         <!-- 18. page break -->
-                                        <button type="button" class="list-group-item list-group-item-action" @click="pageBreak">
+                                        <!-- <button type="button" class="list-group-item list-group-item-action" @click="pageBreak">
                                             <i class="fas fa-clone"></i> 
                                             <span class="ml-2">Page break</span>
-                                        </button>
+                                        </button> -->
                                     </div>
                                 </div>
                                 <div v-show="elementInput === false">
@@ -579,7 +592,7 @@
                 baseForm: new Form({
                     formName: '',
                     formInfo: '',
-                    cuponCode: '',
+                    cuponCode: false,
                     form: []
                 })
             }

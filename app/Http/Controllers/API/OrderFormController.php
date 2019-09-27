@@ -32,7 +32,7 @@ class OrderFormController extends Controller
     public function create()
     {
         //
-        $services = Service::all('id','name','price');
+        $services = Service::where('is_active',1)->get();
         return  response()->json(compact('services'), 200);
     }
 

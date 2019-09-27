@@ -21,6 +21,13 @@ Route::get('/discount/{path}', 'DiscountController@index')->where('path','([A-z\
 Route::get('/clients/{path}', 'ClientController@index')->where('path','([A-z\d-\/_.]+)?');
 Route::get('/services/{path}', 'ServiceController@index')->where('path','([A-z\d-\/_.]+)?');
 
+// Profile
+Route::get('/profile', 'UserController@profile')->name('profile')->middleware('auth');
+Route::get('/profile/{email}', 'UserController@profile_update')->name('profile.update')->middleware('auth');
+Route::patch('/profile/{email}', 'UserController@profile_update')->name('profile.update')->middleware('auth');
+
+
+
 Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
@@ -64,9 +71,6 @@ Route::resource('/orders', 'OrderController', [
 
     ]
 ]);
-Route::get('/profile', function () {
-    return view('profile');
-})->name('profile');
 
 Route::post('/main-account', 'HomeController@backToAccount')->name('account.back')->middleware('auth');
 
@@ -229,11 +233,6 @@ Route::middleware(['auth', 'verified', 'IsAdmin'])->group(function () {
 
 	    ]
 	]);
-
-
-
-
-
 });
 
 

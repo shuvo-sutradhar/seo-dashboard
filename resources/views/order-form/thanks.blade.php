@@ -35,7 +35,6 @@
 			    border-radius: .25rem;
 			    padding: 3rem;
 			}
-
 			.main-content-right{
 			    padding: 15px;
 			    background: #fff;
@@ -45,14 +44,12 @@
 			.table.last-right tr td:last-child {
 			    text-align: right;
 			}
-
 			.strong {
 			    font-weight: 700;
 			}
 			.content-right {
 			    margin-top: 119px;
 			}
-
 			.container-wrap{
 				margin-top: 50px;
 			}
@@ -60,7 +57,6 @@
 			    color: #000;
 			    font-weight: 600;
 			}
-
 			.main-content-top h2 {
 			    font-weight: 700;
 			    color: #000;
@@ -72,7 +68,6 @@
 			    justify-content: space-between;
 			    align-items: center;
 			}
-
 			.form-wrap-addr {
 			    border-top: 1px solid #ddd;
 			    margin-top: 10px;
@@ -80,7 +75,6 @@
 			    border-bottom: 1px solid #ddd;
 			    padding-top: 20px;
 			}
-
 			.preloder_loding {
 				background:#fff;
 			    height: 100vh;
@@ -185,13 +179,23 @@
 								@endphp
 
 								@foreach($invoice->invoiceItems as $key => $invoiceItems) 
+
 								@php
-									$total += $invoiceItems->invoiceService->price * $invoiceItems->quantity;
+									$total += ($invoiceItems->invoiceService->price - $invoiceItems->discount) * $invoiceItems->quantity;
 								@endphp
                                 <tr>
                                     <td class="quantity">{{ $invoiceItems->quantity }}×</td>
                                     <td>{{ $invoiceItems->invoiceService->name }}</td>
-                                    <td>{{ $invoiceItems->invoiceService->price }}</td>
+                                    <td>
+                                    	@if($invoiceItems->discount == 0.0)
+                                    		${{ $invoiceItems->invoiceService->price }}
+                                    	@else 
+                                    		<strike>
+                                    			${{ $invoiceItems->invoiceService->price }}
+                                    		</strike><br>
+                                    		${{ $invoiceItems->invoiceService->price -$invoiceItems->discount }}
+                                    	@endif
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>

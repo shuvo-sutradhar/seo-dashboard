@@ -17,6 +17,7 @@
           We need some information to get started on your order. <a href="#">Click here to submit data</a>.        
         </div>
       </div>
+
       <!-- service note start -->
       <div v-if="!$auth.isClient()" class="card-body" v-bind:class="orderDetails.order.order_note==null ? '' : 'borderLeft'" >
         <form @submit.prevent="submitOrderNote(orderDetails.order.id)">
@@ -52,12 +53,12 @@
     <!-- left side end -->
 
     <!-- right side start -->
-    <div class="col-md-3" v-show="!$auth.isClient()">
+    <div class="col-md-3" v-show="$auth.isAdmin() || $auth.can('order-details')">
       <div class="order_right_details">
         <!-- top bar menu -->
         <div class="d-flex justify-content-center">
             <div class="form-inline">
-                 <div class="form-group order-wrap ">
+                 <div class="form-group order-wrap" v-if="$auth.isAdmin() || $auth.can('order-status-change')">
                     <button v-if="orderDetails.order.order_status=='Submitted'" type="button" class="btn submitted dropdown-toggle" data-toggle="dropdown" id="change_status">
                       Submitted <i class="fas fa-angle-down ml-1" aria-hidden="true"></i>
                     </button>
@@ -98,7 +99,7 @@
                        </a>
                     </div>
                  </div>
-                 <div class="form-group ml-2">
+                 <div class="form-group ml-2" v-if="$auth.isAdmin() || $auth.can('order-team-member-assign')">
                     <button type="button" class="btn badge-info dropdown-toggle" data-toggle="dropdown" id="change_employee" v-if="orderDetails.order.team_member_id==null">
                       Anyone <i class="fas fa-angle-down ml-1" aria-hidden="true"></i>
                     </button>
@@ -135,13 +136,13 @@
         <div class="card card-horizontal mt-2">
           <div class="card-body order-body">
             <h3>Order #B39U312Y 
-              <span class="float-right ">
+              <span class="float-right " v-if="$auth.isAdmin() || $auth.can('order-delete') || $auth.can('order-edit')">
                 <button type="button" class="btn dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
                 <div class="dropdown-menu dropdown-menu-right" role="menu">
-                  <router-link :to="`/orders/edit/${orderDetails.order.order_number}`" class="dropdown-item text-1">
+                  <router-link :to="`/orders/edit/${orderDetails.order.order_number}`" class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('order-edit')">
                     <i class="fa fa-edit"></i> Edit Details
                   </router-link>
-                  <a v-on:click="deleteData(orderDetails.order.id)" class="dropdown-item text-1" href="#">
+                  <a v-on:click="deleteData(orderDetails.order.id)" class="dropdown-item text-1" href="#" v-if="$auth.isAdmin() || $auth.can('order-delete')">
                     <i class="fa fa-trash-alt"></i> Delete Order
                   </a>
                 </div>
@@ -154,7 +155,7 @@
         </div>
         <!-- details end -->
       </div>
-      <div class="order_right_details">
+      <div class="order_right_details" v-if="$auth.isAdmin() || $auth.can('order-tag-create') || $auth.can('order-tag')">
         <div class="card mt-2">
           <div class="card-body order-body">
             <h3>Tags</h3>
@@ -164,7 +165,7 @@
                   <button type="submit" class="btn btn-default ml-2" id="tag-save">Add</button>
               </div>
             </form> -->
-            <form @submit.prevent="addTag" class="d-flex">
+            <form @submit.prevent="addTag" class="d-flex" v-if="$auth.isAdmin() || $auth.can('order-tag-create')">
               <vue-tags
                   :active="tags"
                   :all="orderDetails.tags"
@@ -181,10 +182,10 @@
               />
               <button type="submit" class="btn btn-secondary ml-2" id="tag-save">Add</button>
             </form>
-            <div class="tag-wrap mt-3">
+            <div class="tag-wrap mt-3" v-if="$auth.isAdmin() || $auth.can('order-tag')">
               <transition-group name="list" tag="div" class="field is-grouped-multiline" enter-active-class="animated zoomInUp" leave-active-class="animated zoomOutDown">
-                <button type="submit" class="btn btn-primary btn-sm mr-2 mb-2 tag" v-for='(tag, id) in orderDetails.order_tag' v-on:click="removeTag(tag)" :key="tag.id">
-                  {{tag.order_tag.name}} <span>×</span>
+                <button type="submit" class="btn btn-primary btn-sm mr-2 mb-2 tag" v-for='(tag, id) in orderDetails.order_tag'  :key="tag.id">
+                  {{tag.order_tag.name}} <span v-on:click="removeTag(tag)" v-if="$auth.isAdmin() || $auth.can('order-tag-delete')">×</span>
                 </button>
               </transition-group>
 
@@ -194,9 +195,6 @@
       </div>
     </div>
     <!-- right side end -->
-
-
-
   </div>
 
 </template>

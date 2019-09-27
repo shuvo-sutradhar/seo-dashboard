@@ -38,8 +38,11 @@
                                 <td class="text-center">
                                   {{service.name}}
                                 </td>
-                                <td class="text-center">
-                                  ${{service.price}}
+                                <td class="text-center" v-if="service.service_type==2">
+                                 ${{service.price}} / {{ service.recurring_duration  }} {{ service.recurring_for }}(s)
+                                </td>
+                                <td class="text-center" v-else>
+                                  ${{service.price}} 
                                 </td>
                                 <td class="text-right">
                                     <div class="btn-group flex-wrap">

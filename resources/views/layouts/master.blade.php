@@ -56,7 +56,7 @@
 			{{-- start: header --}}
 			@include('includes.header')
 			{{-- end: header --}}
-
+			
 			<div class="inner-wrapper">
 				{{-- start: sidebar --}}
 				<aside id="sidebar-left" class="sidebar-left">
@@ -111,15 +111,14 @@
 					{{-- end: page content --}}
 				</section>
 			</div>
-			
 		</section>
 
 	    <script>
 	        window.user = @json(
 	        [
 				'user' => auth()->user(),
-				'roles' => auth()->user()->roles,
-				'permissions' => auth()->user()->permissions
+				'roles' => auth()->user()->getRoleNames(),
+				'permissions' => auth()->user()->getPermissionsViaRoles()
 	        ]
 	        );
 	    </script>

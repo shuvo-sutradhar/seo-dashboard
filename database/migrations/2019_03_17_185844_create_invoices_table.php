@@ -26,7 +26,7 @@ class CreateInvoicesTable extends Migration
             $table->string('invoice_number');
             $table->text('invoice_note')->nullable();
             $table->float('invoice_total', 8, 2)->nullable();
-            $table->float('invoice_discount', 6, 2)->nullable();
+            $table->string('invoice_discount',100)->nullable();
             $table->float('invoice_vat', 6, 2)->nullable();
             $table->string('invoice_status')->nullable();
             $table->string('payment_getway')->nullable();

@@ -15,16 +15,12 @@ class CreateInvoiceItemTable extends Migration
     {
         Schema::create('invoice_item', function (Blueprint $table) {
             $table->increments('id');
-
             $table->integer('invoice_id')->unsigned()->nullable();
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade')->onUpdate('no action');
-
             $table->integer('service_id')->unsigned()->nullable();
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade')->onUpdate('no action');
-
             $table->integer('quantity')->unsigned();
-
-
+            $table->float('discount', 6, 2)->nullable();
             $table->timestamps();
         });
     }

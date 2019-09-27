@@ -131,7 +131,8 @@ class RoleController extends Controller
             $role->givePermissionTo($newPermission);  
         }
 
-        return redirect()->route('account.index')->with('success', 'Role updated successfully');
+        // return redirect()->route('account.index')->with('success', 'Role updated successfully');
+        return redirect()->back()->with('success', 'Role updated successfully');
     }
 
     /**

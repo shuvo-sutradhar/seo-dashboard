@@ -1,58 +1,63 @@
 <template>
 
 
-    <div class="template-wrap">
-        
-        <section class="card card-horizontal mb-4">
-            <div class="card_header" v-if="isOrderOrEditPage()===false">
-              <h3 class="font-weight-semibold mt-3 dark">Orders</h3>
-              <a href="" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light modal-with-move-anim" href="#modalAnim"  v-show="!$auth.isClient() || $auth.can('order-create')">
-                <i class="fas fa-shopping-basket"></i> Add order
-              </a>
-            </div>
-            
-            <div class="card_nav" v-if="isOrderOrEditPage()===false">
-              <ul>
-                <li v-if="orderData.count1!=0">
-                  <router-link to="/orders/all" class="nav-link order-all">
-                    <span>{{orderData.count1}}</span> All
-                  </router-link>
-                </li>
-                <li v-if="orderData.count2!=0">
-                  <router-link to="/orders/Pending" class="nav-link order-pending">
-                    <span>{{orderData.count2}}</span> Pending
-                  </router-link>
-                </li>
-                <li v-if="orderData.count3!=0">
-                  <router-link to="/orders/Submitted" class="nav-link order-submit">
-                    <span>{{orderData.count3}}</span> Submitted
-                  </router-link>
-                </li>
-                <li v-if="orderData.count4!=0">
-                  <router-link to="/orders/Working" class="nav-link order-working">
-                    <span>{{orderData.count4}}</span> Working
-                  </router-link>
-                </li>
-                <li v-if="orderData.count5!=0">
-                  <router-link to="/orders/Complete" class="nav-link order-complete">
-                    <span>{{orderData.count5}}</span> Complete
-                  </router-link>
-                </li>
-                <li v-if="orderData.count6!=0">
-                  <router-link to="/orders/Canceled" class="nav-link order-cancle">
-                    <span>{{orderData.count6}}</span> Canceled
-                  </router-link>
-                </li>
-              </ul>
-            </div>
+    <div>
+      <div class="template-wrap" v-if="$auth.isClient() || $auth.isAdmin() || $auth.can('orders')">
+          
+          <section class="card card-horizontal mb-4">
+              <div class="card_header" v-if="isOrderOrEditPage()===false">
+                <h3 class="font-weight-semibold mt-3 dark">Orders</h3>
+                <a href="" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light modal-with-move-anim" href="#modalAnim"  v-show="$auth.isAdmin() || $auth.can('order-create')">
+                  <i class="fas fa-shopping-basket"></i> Add order
+                </a>
+              </div>
+              
+              <div class="card_nav" v-if="isOrderOrEditPage()===false">
+                <ul>
+                  <li v-if="orderData.count1!=0">
+                    <router-link to="/orders/all" class="nav-link order-all">
+                      <span>{{orderData.count1}}</span> All
+                    </router-link>
+                  </li>
+                  <li v-if="orderData.count2!=0">
+                    <router-link to="/orders/Pending" class="nav-link order-pending">
+                      <span>{{orderData.count2}}</span> Pending
+                    </router-link>
+                  </li>
+                  <li v-if="orderData.count3!=0">
+                    <router-link to="/orders/Submitted" class="nav-link order-submit">
+                      <span>{{orderData.count3}}</span> Submitted
+                    </router-link>
+                  </li>
+                  <li v-if="orderData.count4!=0">
+                    <router-link to="/orders/Working" class="nav-link order-working">
+                      <span>{{orderData.count4}}</span> Working
+                    </router-link>
+                  </li>
+                  <li v-if="orderData.count5!=0">
+                    <router-link to="/orders/Complete" class="nav-link order-complete">
+                      <span>{{orderData.count5}}</span> Complete
+                    </router-link>
+                  </li>
+                  <li v-if="orderData.count6!=0">
+                    <router-link to="/orders/Canceled" class="nav-link order-cancle">
+                      <span>{{orderData.count6}}</span> Canceled
+                    </router-link>
+                  </li>
+                </ul>
+              </div>
 
-            <div>
-              <router-view :orderdata="orderData"></router-view>
-            </div>
-        </section>
+              <div>
+                <router-view :orderdata="orderData"></router-view>
+              </div>
+          </section>
 
-        <!-- add new order -->
-        <Add></Add>
+          <!-- add new order -->
+          <Add></Add>
+      </div>
+      <div v-else>
+        <h2 class="align-center pt-4" style="text-align: center;color: #d2312d;">You have no permission to access this page.</h2>
+      </div>
     </div>
 
 </template>
@@ -64,7 +69,6 @@
 
 
 <script>
-
 
     export default {
 
@@ -104,6 +108,7 @@
         }
 
     };
+
 </script>
 
 

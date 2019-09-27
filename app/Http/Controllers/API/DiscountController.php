@@ -71,7 +71,7 @@ class DiscountController extends Controller
         ]);
 
 
-        if(count($request->items) == 1) {
+        if(count($request->items) == 1 && is_null($request->items[0]['selectedService'])) {
             $discount_service = DiscountService::create([
                 'discount_id' => $discount->id,
                 'service_id' => $request->items[0]['selectedService'],

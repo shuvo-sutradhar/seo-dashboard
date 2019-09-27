@@ -32,6 +32,7 @@
         "sweetalert2": "^8.13.6",
         "vform": "^1.0.1",
         "vue-date-pick": "^1.2.1",
+        "vue-good-table": "^2.18.0",
         "vue-js-toggle-button": "^1.3.2",
         "vue-loading-overlay": "^3.2.0",
         "vue-notification": "^1.3.16",

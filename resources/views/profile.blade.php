@@ -48,19 +48,33 @@
 			
 			<section class="card mb-4">
 				<div class="card-body">
-					<form class="p-3">
+					<form class="p-3" action="{{ route('profile.update',auth()->user()->email) }}" method="patch" enctype="multipart/form-data" >
+
+						@csrf
+						@method('patch')
 						<h4 class="mb-3">Personal Information</h4>
 						<div class="form-group">
 							<label for="email">Email Address</label>
-							<input type="text" class="form-control" id="email" value="{{ auth()->user()->email }}" required>
+							<input type="text" class="form-control" name="email" id="email" value="{{ auth()->user()->email }}" disabled>
 						</div>
 						<div class="form-group">
 							<label for="name">Name</label>
-							<input type="text" class="form-control" id="name" required value="{{ auth()->user()->name }}">
+							<input type="text" class="form-control" name="name" id="name" required value="{{ auth()->user()->name }}">
+
+							@if ($errors->has('name'))
+		                        <span class="invalid-feedback" role="alert">
+		                            <strong>{{ $errors->first('name.') }}</strong>
+		                        </span>
+		                    @endif
 						</div>
 						<div class="form-group">
-							<label for="name">Phone</label>
-							<input type="text" class="form-control" id="name" required value="{{ auth()->user()->name }}">
+							<label for="phone">Phone</label>
+							<input type="text" class="form-control" placeholder="Enter your number." id="phone" name="phone" value="{{ auth()->user()->profile ? auth()->user()->profile->contact_number : '+' }}" >
+							@if ($errors->has('phone'))
+		                        <span class="invalid-feedback" role="alert">
+		                            <strong>{{ $errors->first('phone.') }}</strong>
+		                        </span>
+		                    @endif
 						</div>
 						<div class="card card-default widget-toggle-expand card-header-ban mt-4">
 							<div class="card-header">
@@ -78,14 +92,18 @@
 										</div>
 										<div class="form-group col-md-8">
 											<label for="new-photo">Upload Photo</label>
-											<input type="file" class="form-control" id="new-photo" placeholder="" required>
+											<input type="file" class="form-control" id="new-photo" placeholder="">
+
+											@if ($errors->has('new-photo'))
+						                        <span class="invalid-feedback" role="alert">
+						                            <strong>{{ $errors->first('new-photo') }}</strong>
+						                        </span>
+						                    @endif
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						
-
 						<div class="card card-default widget-toggle-expand card-header-ban">
 							<div class="card-header">
 								<h4 class="card-title m-0">
@@ -97,25 +115,37 @@
 							<div id="change-password" class="widget-content-expanded" style="">
 								<div class="card-body">
 									<div class="form-row">
-										<div class="form-group col-md-6">
-											<label for="inputPassword4">Current Password</label>
-											<input type="password" class="form-control" id="inputPassword4" placeholder="Required to change password" required>
+										<div class="form-group col-md-12">
+											<label for="current_password">Current Password</label>
+											<input type="password" class="form-control" id="current_password" name="current_password" autocomplete="new-password">
+											@if ($errors->has('current_password'))
+						                        <span class="invalid-feedback" role="alert">
+						                            <strong>{{ $errors->first('current_password') }}</strong>
+						                        </span>
+						                    @endif
 										</div>
-										<div class="form-group col-md-6">
-											<label for="inputPassword4">New Password</label>
-											<input type="password" class="form-control" id="inputPassword4" placeholder="" required>
+										<div class="form-group col-md-12">
+											<label for="password">New Password</label>
+											<input type="password" class="form-control" id="password" name="password" placeholder="">
+											@if ($errors->has('current_password'))
+						                        <span class="invalid-feedback" role="alert">
+						                            <strong>{{ $errors->first('current_password') }}</strong>
+						                        </span>
+						                    @endif
+										</div>
+										<div class="form-group col-md-12">
+											<label for="confirm-password">Confirm Password</label>
+											<input type="password" class="form-control" id="confirm-password" name="confirm-password" placeholder="">
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-
 						<div class="form-row">
 							<div class="col-md-12 text-right mt-3">
-								<button class="btn btn-primary modal-confirm">Save Changes</button>
+								<button type="submit" class="btn btn-primary modal-confirm">Save Changes</button>
 							</div>
 						</div>
-
 					</form>
 				</div>
 

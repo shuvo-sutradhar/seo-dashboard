@@ -5,7 +5,7 @@
             <div class="container">
                 <div class="row navbar navbar-public">
                    <a href="#" class="navbar-brand">
-                   Seodashboard
+                    Seodashboard
                    </a>
                 </div>
              </div>
@@ -36,9 +36,12 @@
                                                             <input type="radio" v-model="form.opt_single_service" :value="item[data.selectedService[roll]]" :id="'opt_single_service'+roll" class="custom-control-input" @change="updateCart()" > 
 
                                                             <label :for="'opt_single_service'+roll" class="custom-control-label">{{ item[data.selectedService[roll]].name }}</label> 
-                                                            <p style="margin-bottom:0">{{ item[data.selectedService[roll]].price }}</p>
+                                                            <p style="margin-bottom:0">
+                                                                ${{ item[data.selectedService[roll]].price }}
+                                                                <span v-if="item[data.selectedService[roll]].service_type == 2"> / {{ item[data.selectedService[roll]].recurring_duration }} {{ item[data.selectedService[roll]].recurring_for }}(s)</span>
+                                                            </p>
 
-                                                            <small>This is a sample one-time service. Feel free to delete it by going back to the services list.</small>
+                                                            <small>{{ item[data.selectedService[roll]].description }}</small>
                                                             <div class="item-quantity" v-show="data.hasQuantaty == true">
                                                                <span>Qty: </span>
                                                                <input type="hidden" name="quantity_3" class="form-control form-control-sm custom-quantity" data-quantity="">
@@ -73,8 +76,12 @@
                                                         <div class="custom-control custom-checkbox">
                                                             <input type="checkbox" v-model="form.ckboxMultiServices" :value="item[data.selectedService[roll]]" :id="'ckboxMultiServices'+roll" class="custom-control-input" @change="updateCart()"> 
                                                            <label :for="'ckboxMultiServices'+roll" class="custom-control-label">{{ item[data.selectedService[roll]].name }} </label>
-                                                            <p>{{ item[data.selectedService[roll]].price }}</p>
+                                                            <p>
+                                                                ${{ item[data.selectedService[roll]].price }}
+                                                                <span v-if="item[data.selectedService[roll]].service_type == 2">/{{ item[data.selectedService[roll]].recurring_duration }} {{ item[data.selectedService[roll]].recurring_for }}(s)</span>
+                                                            </p>
 
+                                                            <small>{{ item[data.selectedService[roll]].description }}</small>
                                                             <div class="item-quantity" v-show="data.hasQuantaty == true">
                                                                <span>Qty: </span>
                                                                <input type="hidden" name="quantity_3" class="form-control form-control-sm custom-quantity" data-quantity="">
@@ -106,7 +113,10 @@
                                              
                                                 <select v-model="form.dropDownSingleService" class="form-control" @change="updateCart()">
                                                     <option disabled>{{ data.defaultSelected }}</option>
-                                                    <option v-for="(item, roll) in data.hasServices" :value="item[data.selectedService[roll]]">{{ item[data.selectedService[roll]].name }}</option>
+                                                    <option v-for="(item, roll) in data.hasServices" :value="item[data.selectedService[roll]]">{{ item[data.selectedService[roll]].name }}
+                                                      (${{ item[data.selectedService[roll]].price }}
+                                                            <span v-if="item[data.selectedService[roll]].service_type == 2">/{{ item[data.selectedService[roll]].recurring_duration }} {{ item[data.selectedService[roll]].recurring_for }}(s)</span>)
+                                                    </option>
                                                 </select>
                                                 <div class="item-quantity" v-show="data.hasQuantaty == true" style="justify-content: end;">
                                                    <span>Qty : </span>
@@ -138,6 +148,8 @@
                                                     <option disabled value="">{{ data.defaultSelected }}</option>
                                                     <option v-for="(item, roll) in data.hasServices" :value="item[data.selectedService[roll]]" >
                                                         {{ item[data.selectedService[roll]].name }}
+                                                        (${{ item[data.selectedService[roll]].price }}
+                                                            <span v-if="item[data.selectedService[roll]].service_type == 2">/{{ item[data.selectedService[roll]].recurring_duration }} {{ item[data.selectedService[roll]].recurring_for }}(s)</span>)
                                                     </option>
                                                 </select>
                                                 <div class="item-quantity" style="justify-content: space-between;">
@@ -461,29 +473,67 @@
                                         <tbody>
                                             <!-- single service -->
                                             <tr v-if="form.opt_single_service.length != 0">
-                                                <td class="quantity">{{ form.opt_single_service.quantity }}×</td>
+                                                <td class="quantity">{{ form.opt_single_service.quantity ? form.opt_single_service.quantity : 1 }}×</td>
                                                 <td>{{ form.opt_single_service.name }}</td>
-                                                <td>${{ form.opt_single_service.price }}</td>
+                                                <!-- <td>${{ form.opt_single_service.price }}</td> -->
+                                                <!-- <td>{{showPrice(form.opt_single_service)}}</td> -->
+                                                <td v-if="form.getCuponData!=null">
+                                                  <p v-if="form.opt_single_service.price == showPrice(form.opt_single_service)">
+                                                    ${{ form.opt_single_service.price }}
+                                                  </p>
+                                                  <p v-else>
+                                                    <strike>${{ form.opt_single_service.price }}</strike><br>
+                                                    ${{showPrice(form.opt_single_service)}}
+                                                  </p>
+                                                </td>
+                                                <td v-else>${{ form.opt_single_service.price }}</td>
                                             </tr>
                                             <!-- multiple service -->
                                             <tr v-if="form.ckboxMultiServices.length != 0" v-for="service in form.ckboxMultiServices">
-                                                <td class="quantity">{{ service.quantity }}×</td>
+                                                <td class="quantity">{{ service.quantity ? service.quantity : 1 }}×</td>
                                                 <td>{{ service.name }}</td>
-                                                <td>${{ service.price }}</td>
+                                                <td v-if="form.getCuponData!=null">
+                                                  <p v-if="service.price == showPrice(service)">
+                                                    ${{ service.price }}
+                                                  </p>
+                                                  <p v-else>
+                                                    <strike>${{ service.price }}</strike><br>
+                                                    ${{showPrice(service)}}
+                                                  </p>
+                                                </td>
+                                                <td v-else>${{ service.price }}</td>
                                             </tr>
                                             <!-- dropdown single service -->
                                             <tr v-if="form.dropDownSingleService.length != 0" >
                                                 <td class="quantity" v-if="form.dropSingleQty.length != 0">{{ form.dropSingleQty }}×</td>
                                                 <td class="quantity" v-else>1×</td>
                                                 <td>{{ form.dropDownSingleService.name}}</td>
-                                                <td>${{ form.dropDownSingleService.price }}</td>
+                                                <td v-if="form.getCuponData!=null">
+                                                  <p v-if="form.dropDownSingleService.price == showPrice(form.dropDownSingleService)">
+                                                    ${{ form.dropDownSingleService.price }}
+                                                  </p>
+                                                  <p v-else>
+                                                    <strike>${{ form.dropDownSingleService.price }}</strike><br>
+                                                    ${{showPrice(form.dropDownSingleService)}}
+                                                  </p>
+                                                </td>
+                                                <td v-else>${{ form.dropDownSingleService.price }}</td>
                                             </tr>
                                             <!-- dropdown multiple service -->
                                             <tr v-if="form.dropDownMultipleServices.length != 0" v-for="(service, index) in form.dropDownMultipleServices">
                                                 <td class="quantity" v-if="form.dropMultiQty[index] >= 2">{{ form.dropMultiQty[index] }}×</td>
                                                 <td class="quantity" v-else>1×</td>
                                                 <td>{{ service.name}}</td>
-                                                <td>${{ service.price }}</td>
+                                                <td v-if="form.getCuponData!=null">
+                                                  <p v-if="service.price == showPrice(service)">
+                                                    ${{ service.price }}
+                                                  </p>
+                                                  <p v-else>
+                                                    <strike>${{ service.price }}</strike><br>
+                                                    ${{showPrice(service)}}
+                                                  </p>
+                                                </td>
+                                                <td v-else>${{ service.price }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -496,10 +546,18 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div class="d-flex align-items-center justify-content-between coupon-row mt-2">
-                                        <a href="#" id="coupon-link" class="mr-2">Have a coupon?</a>
+                                    <div class="d-flex align-items-center justify-content-between coupon-row mt-2"  v-if="isCuponInput==false">
+                                        <a href="#" id="coupon-link" class="mr-2" v-if="baseForm.cuponCode" @click="isCuponInput=true">Have a coupon?</a>
                                         <button type="submit" class="btn btn-outline-primary ml-auto">Continue to Payment</button>
                                     </div>
+                                    <!-- apply cupon input start -->
+                                    <div class="input-group" id="coupon-fields" v-if="isCuponInput==true">
+                                        <input type="text" name="coupon" id="coupon-field" class="form-control" placeholder="Coupon code" v-model="cuponInput">
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-default" @click="varifyCupon(cuponInput)">Apply</button>
+                                        </div>
+                                    </div>
+                                    <!-- apply cupon input end -->
                                 </div>
                                 <div class="text-center">
                                    <img src="https://seodashboard.spp.io/img/badge-secure.png" title="Secure order form" width="100" alt="Secure checkout badge">
@@ -557,12 +615,15 @@
                     hidePostalCode: true
                 },
                 errors:[],
+
+                //baseform
                 baseForm: new Form({
                     formName: this.data.formName,
                     formInfo: this.data.formInfo,
-                    cuponCode: this.data.cuponCode,
-                    form:JSON.parse(this.data.orderForm)
+                    cuponCode: this.data.cuponCode==0 ? false : true,
+                    form:JSON.parse(this.data.orderForm),
                 }),
+
 
                 form: new Form({
                     formLink: this.data.formLink,
@@ -587,8 +648,13 @@
                     taxId:'',
                     emailOption:'',
                     stripeToken:'',
-                    total:0
+                    total:0,
+                    getCuponData:null,
                 }),
+
+                //cupon input data
+                isCuponInput:false,
+                cuponInput:'',
                 multiDropdown: 1,
                 
             }
@@ -597,6 +663,41 @@
         components: { Card },
 
         methods: {
+            showPrice(service){
+              var total;
+              if(this.form.getCuponData && this.form.getCuponData.discount){
+                for (var i = 0; i < this.form.getCuponData.discount.length; i++) {
+
+                  if(this.form.getCuponData.discount[i].service_id==null ) {
+                    if(this.form.getCuponData.discount_type==2){
+                      total = service.price - ((this.form.getCuponData.discount[i].discount_amount / 100) * service.price);
+                      break;
+                    } else {
+                      total = service.price - this.form.getCuponData.discount[i].discount_amount;
+                      break;
+                    }
+                  }
+
+                  else if(this.form.getCuponData.discount[i].service_id==service.id) {
+                    if(this.form.getCuponData.discount_type==2){
+                      total = service.price - ((this.form.getCuponData.discount[i].discount_amount / 100) * service.price);
+                      break;
+                    } else {
+                      total = service.price - this.form.getCuponData.discount[i].discount_amount;
+                      break;
+                    }
+                  }
+
+                }
+              }
+
+              if(total){
+                return total;
+              } else {
+                return service.price;
+              }
+
+            },
             // pay () {
             //   // createToken returns a Promise which resolves in a result object with
             //   // either a token or an error key.
@@ -616,83 +717,174 @@
             // for single service radio button
             rdBtnSingleAddQut() {
 
-                var valObj = this.baseForm.form.filter(function(elem){
-                    if(elem.field == "opt_single_service") {
-                        var count1 = elem.hasServices.length;
-                        var count2 = elem.hasServices[0].length;
-                        //console.log(count2)
-                        for (var i = 0; i < count1; i++) {
-                            for (var j = 0; j < count2; j++) {
-                                elem.hasServices[i][j] = Object.assign({}, elem.hasServices[i][j], {quantity: 1})
-                            }
-                        }
-                    }
+                // var valObj = this.baseForm.form.filter(function(elem){
+                //     if(elem.field == "opt_single_service") {
+                //         var count1 = elem.hasServices.length;
+                //         var count2 = elem.hasServices[0].length;
+                //         //console.log(count2)
+                //         for (var i = 0; i < count1; i++) {
+                //             for (var j = 0; j < count2; j++) {
+                //                //elem.hasServices[i][j] = Object.assign({}, elem.hasServices[i][j], {quantity: 1})
+                //             }
+                //         }
+                //     }
                    
-                });
+                // });
+
             },
 
             // for multiple service checkbox
             ckBoxServiceAddQut() {
 
-                var valObj = this.baseForm.form.filter(function(elem){
-                    if(elem.field == "ckboxMultiServices") {
-                        var count1 = elem.hasServices.length;
-                        var count2 = elem.hasServices[0].length;
-                        //console.log(count2)
-                        for (var i = 0; i < count1; i++) {
-                            for (var j = 0; j < count2; j++) {
-                                elem.hasServices[i][j] = Object.assign({}, elem.hasServices[i][j], {quantity: 1})
-                            }
-                        }
-                    }
+                // var valObj = this.baseForm.form.filter(function(elem){
+                //     if(elem.field == "ckboxMultiServices") {
+                //         var count1 = elem.hasServices.length;
+                //         var count2 = elem.hasServices[0].length;
+                //         //console.log(count2)
+                //         for (var i = 0; i < count1; i++) {
+                //             for (var j = 0; j < count2; j++) {
+                //                 elem.hasServices[i][j] = Object.assign({}, elem.hasServices[i][j], {quantity: 1})
+                //             }
+                //         }
+                //     }
                    
-                }); 
+                // }); 
             },
 
             profileLink(email){
                 return '../profile';
             },
+
             login(){
                 return '../login';
             },
+
             addMultiDropdown() {
                 this.multiDropdown++ ;
                 //console.log(this.multiDropdown);
             },
+
+            /*
+            * calculate total
+            */
+            calculateTotal(service, serviceQty){
+              var totalPrice;
+              if(this.form.getCuponData && this.form.getCuponData.discount) {
+                for (var i = 0; i < this.form.getCuponData.discount.length; i++) {
+                  if (this.form.getCuponData.discount[i].service_id==null || this.form.getCuponData.discount[i].service_id == service.id) {
+
+                    if(this.form.getCuponData.discount_type==2) {
+
+                      let disPrice = service.price - ((this.form.getCuponData.discount[i].discount_amount / 100) * service.price) ;
+          
+                       totalPrice = disPrice * Number(serviceQty);
+                       break;
+                        //console.log(radioBtnTotal);  
+                    } else {
+                      totalPrice =  (service.price - this.form.getCuponData.discount[i].discount_amount) * Number(serviceQty);  
+                      break;
+                    }
+                  } 
+                }
+              }
+
+              if(totalPrice){
+                return totalPrice;
+              } else {
+                return Number(service.price) * Number(serviceQty);
+              }
+            },
+
             //add cart item
             updateCart() {
                 //total
-                //let total = 0;
                 let radioBtnTotal = 0;
                 let ckBoxTotal = 0;
                 let dropdownSingleTotal = 0;
                 let dropServiceTotal = 0;
-
                 //radio button single service
                 if(this.form.opt_single_service && this.form.opt_single_service.length !== 0){
-                    radioBtnTotal = Number(this.form.opt_single_service.price) * Number(this.form.opt_single_service.quantity);
+                  radioBtnTotal = this.calculateTotal(this.form.opt_single_service, this.form.opt_single_service.quantity ? this.form.opt_single_service.quantity : 1);
                 }
+
                 //checkbox multiple service
                 if(this.form.ckboxMultiServices) {
                     for (var i = 0; i < this.form.ckboxMultiServices.length; i++) {
-                        ckBoxTotal += this.form.ckboxMultiServices[i].price * this.form.ckboxMultiServices[i].quantity;
+                        //ckBoxTotal += this.form.ckboxMultiServices[i].price * this.form.ckboxMultiServices[i].quantity;
+                        ckBoxTotal += this.calculateTotal(this.form.ckboxMultiServices[i], this.form.ckboxMultiServices[i].quantity ? this.form.ckboxMultiServices[i].quantity : 1);
                     }
                 }
 
                 //dropdown single service
                 if(this.form.dropDownSingleService && this.form.dropDownSingleService.length !== 0){
-                    dropdownSingleTotal = this.form.dropDownSingleService.price * this.form.dropSingleQty;
+
+                  dropdownSingleTotal = this.calculateTotal(this.form.dropDownSingleService, this.form.dropSingleQty);
+                    // dropdownSingleTotal = this.form.dropDownSingleService.price * this.form.dropSingleQty;
                 }
 
                 //dropdown multiple service 
                 if(this.form.dropDownMultipleServices) {
                     for (var i = 0; i < this.form.dropDownMultipleServices.length; i++) {
                         var qty = this.form.dropMultiQty[i] ? this.form.dropMultiQty[i] : 1;
-                        dropServiceTotal += this.form.dropDownMultipleServices[i].price * qty;
+                        //dropServiceTotal += this.form.dropDownMultipleServices[i].price * qty;
+                        dropServiceTotal += this.calculateTotal(this.form.dropDownMultipleServices[i], qty);
                     } 
                 }
                 //console.log(radioBtnTotal+ckBoxTotal+dropdownSingleTotal+dropServiceTotal);
                 return this.form.total =  radioBtnTotal+ckBoxTotal+dropdownSingleTotal+dropServiceTotal;
+            },
+
+            /*
+            * varify cupon
+            */
+            varifyCupon(cuponInput) {
+
+              //check if form data is not empty
+              if(this.form.opt_single_service.length == 0 && this.form.ckboxMultiServices.length == 0 && this.form.dropDownSingleService.length == 0 && this.form.dropDownMultipleServices.length == 0) {
+                  this.$notify({
+                    group: 'checkErrors',
+                    //title: 'Important message',
+                    text: 'You must select a service for apply cupon...',
+                    type:"warn"
+                  });
+              } else  {
+
+
+                // If any service is selected
+                axios.get("/api/verify-cupon/"+cuponInput)
+                .then((response)=>{
+                  
+                  this.$Progress.finish();
+                  // 
+                  if(response.data.discount) {
+
+                    this.form.getCuponData = response.data.discount;
+                    Fire.$emit('UpdateCard');
+
+
+                  }else {
+                    this.$notify({
+                      group: 'checkErrors',
+                      //title: 'Important message',
+                      text: 'Coupon invalid or expired...',
+                      type:"warn"
+                    });
+                  }
+   
+                }).catch(()=>{
+
+                    this.$notify({
+                      group: 'checkErrors',
+                      //title: 'Important message',
+                      text: 'Coupon invalid or expired...',
+                      type:"warn"
+                    });
+                    this.$Progress.fail();
+                })
+
+              }
+
+
             },
 
             // form data submit to database
@@ -761,7 +953,10 @@
 
         mounted() {
             this.rdBtnSingleAddQut();
-            this.ckBoxServiceAddQut();
+            this.ckBoxServiceAddQut();           
+            Fire.$on('UpdateCard',() => {
+               this.updateCart();
+           });
         },
     };
 </script>

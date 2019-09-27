@@ -34,7 +34,7 @@
                             <span v-if="data.completed_at">{{ data.completed_at | dateFormat }}</span>
                             <span v-else>--</span>
                         </td>
-                        <td class="text-center">
+                        <td class="text-right">
                             <span v-if="data.order_status == 'Submitted'" class="span-badge submitted">Submitted</span>
                             <span v-if="data.order_status == 'Pending'" class="span-badge pending">Pending</span>
                             <span v-if="data.order_status == 'Working'" class="span-badge working">Working</span>
@@ -60,7 +60,7 @@
                             <span v-if="data.completed_at">{{ data.completed_at | dateFormat }}</span>
                             <span v-else>--</span>
                         </td>
-                        <td class="text-center">
+                        <td class="text-right">
                             <span v-if="data.order_status == 'Submitted'" class="span-badge submitted">Submitted</span>
                             <span v-if="data.order_status == 'Pending'" class="span-badge pending">
                                 Pending
@@ -73,12 +73,11 @@
                     </tr>
                 </tbody>
                 <!-- client view -->
-    
             </table>
             <!-- admin table data end -->
 
             <!-- admin table data start -->
-            <table class="table table-no-more table-bordered table-striped mb-0" id="table" v-show="!$auth.isClient() || $auth.can('orders')">
+            <table class="table table-no-more table-bordered table-striped mb-0" id="table" v-show="!$auth.isClient()">
                 <thead>
                     <tr>
                       <th class="text-left">Client</th>
@@ -90,16 +89,17 @@
                 </thead>
                 <!-- admin view -->
                 <tbody>
-                    <tr v-for="(data, index) in orderData" class="order-wrap" v-show="isCurrentPage()=='/orders' || isCurrentPage()=='/orders/all'">
+                    <tr v-for="(data, index) in orderData" class="order-wrap" v-if="isCurrentPage()=='/orders' || isCurrentPage()=='/orders/all'">
 
                         <td>
-                            <router-link :to="`/orders/order/${data.order_number}`">
+                            <router-link :to="`/orders/order/${data.order_number}`" v-if="$auth.isAdmin() || $auth.can('order-view')">
                                 {{ data.order_client.name  }} <span class="badge badge-info" v-if="data.team_member_id!= null">{{ data.order_team.name  }}</span>
                                 <p>{{ data.order_service.name  }} (${{ data.order_service.price }})</p>
-                                <!-- <ul v-if="data.order_assign_tag!=null">
-                                    <li v-for="(tag in key) data.order_assign_tag">}</li>
-                                </ul> -->
                             </router-link>
+                            <span v-else>
+                                {{ data.order_client.name  }} <span class="badge badge-info" v-if="data.team_member_id!= null">{{ data.order_team.name  }}</span>
+                                <p>{{ data.order_service.name  }} (${{ data.order_service.price }})</p>
+                            </span>
                         </td>
                         <td class="text-center">
                             <span v-if="data.order_status == 'Submitted'" class="span-badge submitted">Submitted</span>
@@ -119,19 +119,17 @@
                             <div class="btn-group flex-wrap">
                                 <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
                                 <div class="dropdown-menu" role="menu">
-                                    <router-link :to="`/orders/order/${data.order_number}`"  class="dropdown-item text-1">
+                                    <router-link :to="`/orders/order/${data.order_number}`"  class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('order-view')">
                                         <i class="far fa-eye"></i> View
                                     </router-link>
 
-                                    <router-link :to="`/orders/edit/${data.order_number}`" class="dropdown-item text-1">
+                                    <router-link :to="`/orders/edit/${data.order_number}`" class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('order-edit')">
                                         <i class="far fa-edit"></i> Edit
                                     </router-link>
 
-                                    <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
+                                    <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)" v-if="$auth.isAdmin() || $auth.can('order-delete')">
                                         <i class="fa fa-trash-alt"></i> Delete
                                     </a>
-
-                                    
                                 </div>
                             </div>
                         </td>
@@ -139,10 +137,14 @@
                     <tr v-for="(data, index) in orderData" class="order-wrap" v-if="isCurrentPage()=='/orders/'+data.order_status">
 
                         <td>
-                            <router-link :to="`/orders/order/${data.order_number}`">
+                            <router-link :to="`/orders/order/${data.order_number}`" v-if="$auth.isAdmin() || $auth.can('order-view')">
                                 {{ data.order_client.name  }} <span class="badge badge-info" v-if="data.team_member_id!= null">{{ data.order_team.name  }}</span>
                                 <p>{{ data.order_service.name  }} (${{ data.order_service.price }})</p>
                             </router-link>
+                            <span v-else>
+                                {{ data.order_client.name  }} <span class="badge badge-info" v-if="data.team_member_id!= null">{{ data.order_team.name  }}</span>
+                                <p>{{ data.order_service.name  }} (${{ data.order_service.price }})</p>
+                            </span>
                         </td>
                         <td class="text-center">
                             <span v-if="data.order_status == 'Submitted'" class="span-badge submitted">Submitted</span>
@@ -161,20 +163,19 @@
                         <td class="text-right">
                             <div class="btn-group flex-wrap">
                                 <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-                                <div class="dropdown-menu" role="menu">
-                                    <router-link :to="`/orders/order/${data.order_number}`"  class="dropdown-item text-1">
+                                <div class="dropdown-menu" role="menu">                                
+                                    <router-link :to="`/orders/order/${data.order_number}`"  class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('order-view')">
                                         <i class="far fa-eye"></i> View
                                     </router-link>
 
-                                    <router-link :to="`/orders/edit/${data.order_number}`" class="dropdown-item text-1">
+                                    <router-link :to="`/orders/edit/${data.order_number}`" class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('order-edit')">
                                         <i class="far fa-edit"></i> Edit
                                     </router-link>
 
-                                    <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
+                                    <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)" v-if="$auth.isAdmin() || $auth.can('order-delete')">
                                         <i class="fa fa-trash-alt"></i> Delete
                                     </a>
 
-                                    
                                 </div>
                             </div>
                         </td>

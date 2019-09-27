@@ -26,6 +26,7 @@ Route::get('/order-form-duplocate/{id}','API\OrderFormController@duplicate')->na
 */
 Route::apiResources(['/submit-form' => 'API\FormSubmitController']);
 Route::post('/create-order','API\FormSubmitController@createOrder');
+Route::get('/verify-cupon/{cupon}','API\FormSubmitController@verifyCupon');
 
 /*
 * Order controller
