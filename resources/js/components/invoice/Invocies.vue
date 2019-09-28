@@ -18,9 +18,12 @@
                     <!-- for all invoice -->
                     <tr v-for="(data, index) in invoiceData" class="order-wrap" v-show="isInvoceCurrentPage()=='/invoices' || isInvoceCurrentPage()=='/invoices/all'">
                             <td>
-                                <router-link :to="`/invoices/view/${data.invoice_number}`">
+                                <router-link :to="`/invoices/view/${data.invoice_number}`" v-if="$auth.isAdmin() || $auth.can('invoice-view')">
                                 {{ data.invoice_number }}
                                 </router-link>
+                                <span v-else>
+                                {{ data.invoice_number }}
+                                </span>
                             </td>
                             <td class="text-center">
                                 {{ data.invoice_client.name }}
@@ -41,13 +44,13 @@
                                     <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
                                     <div class="dropdown-menu" role="menu">
                                         
-                                        <router-link :to="`/invoices/view/${data.invoice_number}`" class="dropdown-item text-1">
+                                        <router-link :to="`/invoices/view/${data.invoice_number}`" class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('invoice-view')">
                                           <i class="far fa-eye"></i> View
                                         </router-link>
-                                        <router-link :to="`/invoices/edit/${data.invoice_number}`" class="dropdown-item text-1">
+                                        <router-link :to="`/invoices/edit/${data.invoice_number}`" class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('invoice-edit')">
                                           <i class="far fa-edit"></i> Edit
                                         </router-link>
-                                        <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
+                                        <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)" v-if="$auth.isAdmin() || $auth.can('invoice-delete')">
                                             <i class="fa fa-trash-alt"></i> Delete
                                         </a>
                                     </div>
@@ -59,7 +62,12 @@
                     <!-- for specific invoice based on route -->
                     <tr v-for="(data, index) in invoiceData" class="order-wrap" v-if="isInvoceCurrentPage()=='/invoices/'+data.invoice_status">
                         <td>
-                            <router-link :to="`/invoices/view/${data.invoice_number}`">{{ data.invoice_number }}</router-link>
+                            <router-link :to="`/invoices/view/${data.invoice_number}`" v-if="$auth.isAdmin() || $auth.can('invoice-view')">
+                                {{ data.invoice_number }}
+                            </router-link>
+                            <span v-else>
+                                {{ data.invoice_number }}
+                            </span>
                         </td>
                         <td class="text-center">
                             {{ data.invoice_client.name }}
@@ -79,15 +87,16 @@
                             <div class="btn-group flex-wrap">
                                 <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
                                 <div class="dropdown-menu" role="menu">
-                                    <router-link :to="`/invoices/view/${data.invoice_number}`" class="dropdown-item text-1">
-                                      <i class="far fa-eye"></i> View
-                                    </router-link>
-                                    <router-link :to="`/invoices/edit/${data.invoice_number}`" class="dropdown-item text-1">
-                                      <i class="far fa-edit"></i> Edit
-                                    </router-link>
-                                    <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
-                                        <i class="fa fa-trash-alt"></i> Delete
-                                    </a>
+                                   
+                                        <router-link :to="`/invoices/view/${data.invoice_number}`" class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('invoice-view')">
+                                          <i class="far fa-eye"></i> View
+                                        </router-link>
+                                        <router-link :to="`/invoices/edit/${data.invoice_number}`" class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('invoice-edit')">
+                                          <i class="far fa-edit"></i> Edit
+                                        </router-link>
+                                        <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)" v-if="$auth.isAdmin() || $auth.can('invoice-delete')">
+                                            <i class="fa fa-trash-alt"></i> Delete
+                                        </a>
                                 </div>
                             </div>
                         </td>

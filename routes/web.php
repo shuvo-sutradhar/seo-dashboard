@@ -81,7 +81,7 @@ Route::get('/order/{link}', 'FormBuilderController@order')->name('custom.order')
 Route::post('/thanks', 'FormBuilderController@thanks')->name('custom.order.thanks')->middleware('web');
 Route::get('/thanks', 'FormBuilderController@thanks')->name('custom.order.thanks')->middleware('web');
 
-Route::middleware(['auth', 'verified', 'IsAdmin'])->group(function () {
+Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 
 	Route::get('settings', 'SettingController@index')->name('settings');
 	Route::get('settings/general', 'SettingController@getGeneralSettings')->name('settings.general');

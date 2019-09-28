@@ -11,7 +11,6 @@
                   <i class="fas fa-shopping-basket"></i> Add order
                 </a>
               </div>
-              
               <div class="card_nav" v-if="isOrderOrEditPage()===false">
                 <ul>
                   <li v-if="orderData.count1!=0">
@@ -48,7 +47,7 @@
               </div>
 
               <div>
-                <router-view :orderdata="orderData"></router-view>
+                <router-view :orderdata="orderData.orders"></router-view>
               </div>
           </section>
 

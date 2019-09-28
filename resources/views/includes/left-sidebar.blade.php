@@ -28,14 +28,19 @@
         </li> --}}
 
 
+        <!-- Order route start -->
+        @if (auth()->user()->isClient() || auth()->user()->isAdmin() || auth()->user()->can('orders'))
         <li class="{{ request()->is('orders*') ? 'nav-active' : '' }}">
             <a class="nav-link" href="{{ route('order.main') }}">
                 <i class="fas fa-shopping-basket" aria-hidden="true"></i>
                 <span>Orders</span>
             </a>                        
         </li>
+        @endif
+        <!-- Order route end -->
 
 
+        <!-- Invoice route start -->
         @if (auth()->user()->isClient())
             <li class="{{ request()->is('dashboard/invoices*') ? 'nav-active' : '' }}">
                 <a class="nav-link" href="{{ route('invoice.client') }}">
@@ -43,7 +48,8 @@
                     <span>Invoices</span>
                 </a>                        
             </li>
-        @else 
+        @endif
+        @if (auth()->user()->isAdmin() || auth()->user()->can('invoices'))
             <li class="{{ request()->is('invoices*') ? 'nav-active' : '' }}">
                 <a class="nav-link" href="{{ route('invoice.index') }}">
                     <i class="fas fa-file-alt"  aria-hidden="true"></i>
@@ -51,9 +57,12 @@
                 </a>                        
             </li>
         @endif
+        <!-- Invoice route end -->
 
 
-        @if (auth()->user()->isAdmin())
+
+        <!-- client route start -->
+        @if (auth()->user()->isAdmin() || auth()->user()->can('clients'))
             <li class="{{ request()->is('clients*') ? 'nav-active' : '' }}">
                 <a class="nav-link" href="{{ route('client.index') }}">
                     <i class="fas fa-users"></i>
@@ -61,8 +70,11 @@
                 </a>                        
             </li>
         @endif
+        <!-- client route end -->
 
-        @if (auth()->user()->isAdmin())
+
+        <!-- Discounts route start -->
+        @if (auth()->user()->isAdmin() || auth()->user()->can('discounts'))
             <li class="{{ request()->is('discount*') ? 'nav-active' : '' }}">
                 
                 <a class="nav-link" href="{{ route('discount.index') }}">
@@ -71,6 +83,11 @@
                 </a>
 
             </li>
+        @endif
+        <!-- Discounts route end -->
+
+        <!-- service route start -->
+        @if (auth()->user()->isAdmin() || auth()->user()->can('services'))
 
             <li class="{{ request()->is('services*') ? 'nav-active' : '' }}">
                 
@@ -80,6 +97,10 @@
                 </a>
 
             </li>
+        @endif
+        <!-- service route start -->
+
+        @if (auth()->user()->isAdmin() || auth()->user()->can('order-form'))
             <li class="{{ request()->is('order-form*') ? 'nav-active' : '' }}">
                 
                 <a class="nav-link" href="{{ route('order-form.index') }}">
@@ -88,7 +109,9 @@
                 </a>
 
             </li>
-        @else
+        @endif
+
+        @if (auth()->user()->isClient())
             <li class="{{ request()->is('dashboard/services') ? 'nav-active' : '' }}">
                 
                 <a class="nav-link" href="{{ route('services') }}">

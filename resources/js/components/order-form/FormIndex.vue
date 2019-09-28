@@ -6,7 +6,7 @@
 
             <div class="card_header">
               <h3 class="font-weight-semibold mt-3 dark">Order forms</h3>
-              <a :href="route" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button">
+              <a :href="route" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button" v-if="$auth.isAdmin() || $auth.can('order-form-create')">
                   <i class="fas fa-plus"></i> Add form
               </a>
             </div>
@@ -25,7 +25,10 @@
                     </thead>
                     <tbody>
                         <tr v-for="(data, index) in formData" :key="index">
-                            <td :class="data.status == 1 ? 'activeClass' : ''"><a :href="getEditLink(data.id)"> {{ data.formName }} </a></td>
+                            <td :class="data.status == 1 ? 'activeClass' : ''">
+                              <a :href="getEditLink(data.id)" v-if="$auth.isAdmin() || $auth.can('order-form-edit')"> {{ data.formName }} </a>
+                              <span v-else>{{ data.formName }}</span>
+                            </td>
                             <td>{{ data.formLink }}</td>
                             <td class="actions">
                                <div class="btn-group flex-wrap">
@@ -35,22 +38,21 @@
                                      <a class="dropdown-item text-1" :href="getOrderForm(data.formLink)">
                                         View
                                      </a>
-                                     <a class="dropdown-item text-1" href="#">
-                                        Share
-                                     </a>
-                                     <a class="dropdown-item text-1" href="#" v-if="data.status==1" @click="changeStatus(data.id,0)">
-                                        Make Private
-                                     </a>
-                                     <a class="dropdown-item text-1" href="#" v-else @click="changeStatus(data.id,1)">
-                                        Make Public
-                                     </a>
-                                     <a class="dropdown-item text-1" :href="getEditLink(data.id)">
-                                        Edit
-                                     </a>
-                                     <a class="dropdown-item text-1" href="#" @click="makeDuplicate(data.id)">
-                                        Duplicate
-                                     </a>
-                                     <a class="dropdown-item text-1" @click="deleteForm(data.formLink)" href="#">
+                                     <span v-if="$auth.isAdmin() || $auth.can('order-form-edit')">
+                                       <a class="dropdown-item text-1" href="#" v-if="data.status==1" @click="changeStatus(data.id,0)">
+                                          Make Private
+                                       </a>
+                                       <a class="dropdown-item text-1" href="#" v-else @click="changeStatus(data.id,1)">
+                                          Make Public
+                                       </a>
+                                       <a class="dropdown-item text-1" :href="getEditLink(data.id)">
+                                          Edit
+                                       </a>
+                                       <a class="dropdown-item text-1" href="#" @click="makeDuplicate(data.id)">
+                                          Duplicate
+                                       </a>
+                                     </span>
+                                     <a class="dropdown-item text-1" @click="deleteForm(data.formLink)" href="#" v-if="$auth.isAdmin() || $auth.can('order-form-delete')">
                                         Delete
                                      </a>
                                   </div>

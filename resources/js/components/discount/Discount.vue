@@ -18,44 +18,41 @@
                 <tbody>
                     <!-- for all invoice -->
                     <tr v-for="(data, index) in discounts" class="order-wrap" >
-                            <td>
-                               #{{index+1}}
-                            </td>
-                            <td class="text-center">
-                               {{data.cupon_code}}
-                            </td>
-                            <td class="text-center">
-                              <span v-if="data.discount_type==1" class="badge badge-info">$</span>
-                              <span v-else class="badge badge-success">%</span>
-                            </td>
-                            <td class="text-center">
-                                <span v-if="data.expiry_date">{{ data.expiry_date | dateFormat }}</span>
-                                <span v-else>--</span>
-                            </td>
-                            <td class="text-center">
-                                <span v-if="data.total_limit">{{ data.total_limit }}</span>
-                                <span v-else>--</span>
-                            </td>
-                            <td class="text-center">
-                                sddf
-                            </td>
-                            <td class="text-right">
-                                <div class="btn-group flex-wrap">
-                                    <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-                                    <div class="dropdown-menu" role="menu">
-                                        
-                                        <router-link :to="`/discount`" class="dropdown-item text-1">
-                                          <i class="far fa-eye"></i> View
-                                        </router-link>
-                                        <router-link :to="`/discount`" class="dropdown-item text-1">
-                                          <i class="far fa-edit"></i> Edit
-                                        </router-link>
-                                        <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
-                                            <i class="fa fa-trash-alt"></i> Delete
-                                        </a>
-                                    </div>
+                        <td>
+                           #{{index+1}}
+                        </td>
+                        <td class="text-center">
+                           {{data.cupon_code}}
+                        </td>
+                        <td class="text-center">
+                          <span v-if="data.discount_type==1" class="badge badge-info">$</span>
+                          <span v-else class="badge badge-success">%</span>
+                        </td>
+                        <td class="text-center">
+                            <span v-if="data.expiry_date">{{ data.expiry_date | dateFormat }}</span>
+                            <span v-else>--</span>
+                        </td>
+                        <td class="text-center">
+                            <span v-if="data.total_limit">{{ data.total_limit }}</span>
+                            <span v-else>--</span>
+                        </td>
+                        <td class="text-center">
+                            sddf
+                        </td>
+                        <td class="text-right">
+                            <div class="btn-group flex-wrap">
+                                <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                                <div class="dropdown-menu" role="menu">
+                                    
+                                    <router-link :to="`/discount`" class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('discount-edit')">
+                                      <i class="far fa-edit"></i> Edit
+                                    </router-link>
+                                    <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)" v-if="$auth.isAdmin() || $auth.can('discount-delete')">
+                                        <i class="fa fa-trash-alt"></i> Delete
+                                    </a>
                                 </div>
-                            </td>
+                            </div>
+                        </td>
                     </tr>
 
 

@@ -46,7 +46,7 @@ class OrderController extends Controller
             $count4 = Order::where('order_status','Working')->where('user_id',Auth()->user()->id)->count(); 
             $count5 = Order::where('order_status','Complete')->where('user_id',Auth()->user()->id)->count(); 
             $count6 = Order::where('order_status','Canceled')->where('user_id',Auth()->user()->id)->count(); 
-            $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->where('order_status','!=','unpaid')->where('user_id',Auth()->user()->id)->paginate(10);
+            $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->where('order_status','!=','unpaid')->where('user_id',Auth()->user()->id)->latest()->paginate(10);
             $users = User::where('account_role',2)->get(); 
             $services = Service::where('is_active',1)->get();
             return  response()->json(compact('count1','count2','count3','count4','count5','count6','orders','users','services'), 200);
@@ -61,7 +61,7 @@ class OrderController extends Controller
             $count4 = Order::where('order_status','Working')->count(); 
             $count5 = Order::where('order_status','Complete')->count(); 
             $count6 = Order::where('order_status','Canceled')->count(); 
-            $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->where('order_status','!=','unpaid')->paginate(10);
+            $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->where('order_status','!=','unpaid')->latest()->paginate(10);
             $users = User::where('account_role',2)->get(); 
             $services = Service::where('is_active',1)->get();
             return  response()->json(compact('count1','count2','count3','count4','count5','count6','orders','users','services'), 200);

@@ -8,7 +8,7 @@
 
               <div class="card_header">
                 <h3 class="font-weight-semibold mt-3 dark">Services</h3>
-                <router-link to="/services/create" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light" >
+                <router-link to="/services/create" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light" v-if="$auth.isAdmin() || $auth.can('service-create')">
                   <i class="fas fa-plus"></i> Add Service
                 </router-link>
               </div>
@@ -49,13 +49,13 @@
                                         <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
                                         <div class="dropdown-menu" role="menu">
                                             
-                                            <router-link :to="`/services/edit/${service.slug}`" class="dropdown-item text-1">
+                                            <router-link :to="`/services/edit/${service.slug}`" class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('service-edit')">
                                                Edit
                                             </router-link>
-                                            <a class="dropdown-item text-1" href="#" @click="duplocateService(service.id)">
+                                            <a class="dropdown-item text-1" href="#" @click="duplocateService(service.id)" v-if="$auth.isAdmin() || $auth.can('service-edit')">
                                                 Duplicate
                                             </a>
-                                            <a class="dropdown-item text-1" href="#" @click="deleteData(service.id)">
+                                            <a class="dropdown-item text-1" href="#" @click="deleteData(service.id)" v-if="$auth.isAdmin() || $auth.can('service-delete')">
                                                 Delete
                                             </a>
                                         </div>

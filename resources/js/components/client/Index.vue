@@ -8,7 +8,7 @@
 
               <div class="card_header">
                 <h3 class="font-weight-semibold mt-3 dark">Clients</h3>
-                <router-link to="/clients/create" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light" >
+                <router-link to="/clients/create" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light"  v-if="$auth.isAdmin() || $auth.can('client-create')">
                   <i class="fas fa-plus"></i> Add clients
                 </router-link>
               </div>
@@ -34,9 +34,12 @@
                                        #{{index+1}}
                                     </td>
                                     <td class="text-center">
-                                      <router-link :to="`/clients/${data.email}`">
+                                      <router-link :to="`/clients/${data.email}`" v-if="$auth.isAdmin() || $auth.can('client-view')">
                                        {{data.name}}
                                       </router-link>
+                                      <span v-else>
+                                       {{data.name}}
+                                      </span>
                                     </td>
                                     <td class="text-center">
                                        {{data.email}}
@@ -53,16 +56,16 @@
                                             <button type="button" class="mb-1 mt-1 mr-1 btn btn-default dropdown-toggle action-btn role-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
                                             <div class="dropdown-menu" role="menu">
                                                 
-                                                <router-link :to="`/clients/${data.email}`" class="dropdown-item text-1">
+                                                <router-link :to="`/clients/${data.email}`" class="dropdown-item text-1"  v-if="$auth.isAdmin() || $auth.can('client-view')">
                                                   <i class="far fa-eye"></i> View
                                                 </router-link>
-                                                <router-link :to="`/clients/${data.email}/edit`" class="dropdown-item text-1">
+                                                <router-link :to="`/clients/${data.email}/edit`" class="dropdown-item text-1"  v-if="$auth.isAdmin() || $auth.can('client-edit')">
                                                   <i class="far fa-edit"></i> Edit
                                                 </router-link>
-                                                <a class="dropdown-item text-1" href="#" @click="accessAccount(data.email)">
+                                                <a class="dropdown-item text-1" href="#" @click="accessAccount(data.email)" v-if="$auth.isAdmin() || $auth.can('client-login')">
                                                     <i class="fa fa-user"></i> Sign in as user
                                                 </a>
-                                                <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)">
+                                                <a class="dropdown-item text-1" href="#" @click="deleteData(data.id)" v-if="$auth.isAdmin() || $auth.can('client-delete')">
                                                     <i class="fa fa-trash-alt"></i> Delete
                                                 </a>
                                             </div>

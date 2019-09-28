@@ -3,7 +3,7 @@
     <div>
         <div class="card_header" v-if="isDiscountPage()===false">
             <h3 class="font-weight-semibold mt-3 dark">Discount</h3>
-            <router-link to="/discount/create" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light" >
+            <router-link to="/discount/create" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light" v-if="$auth.isAdmin() || $auth.can('discount-create')">
               <i class="fas fa-plus"></i> Add discount
             </router-link>
         </div>

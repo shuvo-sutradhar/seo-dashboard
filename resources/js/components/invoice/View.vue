@@ -8,14 +8,18 @@
 	                <button type="button" class="btn dropdown-toggle action-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
 	                <div class="dropdown-menu dropdown-menu-right" role="menu">
 	                  <a class="dropdown-item text-1" href="#">Email Invoice</a>
-                      <router-link :to="`/invoices/edit/${invoiceData.invoice_number}`" class="dropdown-item text-1">
-                        Edit Invoice
-                      </router-link>
-	                  <a class="modal-with-move-anim dropdown-item text-1" href="#modalAnim">Edit Address</a>
-	                  <a class="dropdown-item text-1" href="#" v-if="invoiceData.invoice_status=='unpaid'" @click="makeAsPaid(invoiceData.id)">Make as paid</a>
-	                  <a class="dropdown-item text-1" href="#" v-if="invoiceData.invoice_status=='unpaid'">Charge Now</a>
-	                  <a class="dropdown-item text-1" href="#" v-if="invoiceData.invoice_status=='paid'">Refund</a>
-	                  <a class="dropdown-item text-1" href="#"  @click="deleteData(invoiceData.id)">Delete</a>
+	                  <span v-if="$auth.isAdmin() || $auth.can('invoice-edit')">
+	                      <router-link :to="`/invoices/edit/${invoiceData.invoice_number}`" class="dropdown-item text-1">
+	                        Edit Invoice
+	                      </router-link>
+		                  <a class="modal-with-move-anim dropdown-item text-1" href="#modalAnim">Edit Address</a>
+	                  </span>
+	                  <span v-if="$auth.isAdmin() || $auth.can('invoice-charge')">
+		                  <a class="dropdown-item text-1" href="#" v-if="invoiceData.invoice_status=='unpaid'" @click="makeAsPaid(invoiceData.id)">Make as paid</a>
+		                  <a class="dropdown-item text-1" href="#" v-if="invoiceData.invoice_status=='unpaid'">Charge Now</a>
+		                  <a class="dropdown-item text-1" href="#" v-if="invoiceData.invoice_status=='paid'">Refund</a>
+		              </span>
+	                  <a class="dropdown-item text-1" href="#"  @click="deleteData(invoiceData.id)" v-if="$auth.isAdmin() || $auth.can('invoice-delete')">Delete</a>
 	                </div>
 	              </a>
 			</div>
@@ -90,7 +94,7 @@
 		               <tr v-for="(data, index) in invoiceItems">
 		                  <td>{{index+1}}</td>
 		                  <td class="font-weight-semibold text-dark">{{data.invoice_service.name}}</td>
-		                  <td>{{data.description}}</td>
+		                  <td>{{data.invoice_service.description}}</td>
 		                  <td class="text-center">
 		                  	<span v-if="data.discount==0.00">
 		                  		${{data.invoice_service.price}}

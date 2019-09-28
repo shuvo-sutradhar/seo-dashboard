@@ -76,9 +76,26 @@
 		                  <td>{{index+1}}</td>
 		                  <td class="font-weight-semibold text-dark">{{data.invoice_service.name}}</td>
 		                  <td>{{data.invoice_service.description}}</td>
-		                  <td class="text-center">${{data.invoice_service.price}}</td>
+		                  <td class="text-center">
+		                  	<span v-if="data.discount==0.00">
+		                  		${{data.invoice_service.price}}
+		                  	</span>
+		                  	<span v-else>
+		                  		<strike>${{data.invoice_service.price}}</strike><br>
+		                  		${{data.invoice_service.price - data.discount}}
+		                  	</span>
+		                  	
+		                  </td>
 		                  <td class="text-center">{{data.quantity}}</td>
-		                  <td class="text-center">${{data.quantity * data.invoice_service.price}}</td>
+		                  <td class="text-center">
+		                  	<span v-if="data.discount==0.00">
+		                  		${{data.quantity * data.invoice_service.price}}
+		                  	</span>
+		                  	<span v-else>
+		                  		${{(data.invoice_service.price - data.discount) * data.quantity}}
+		                  	</span>
+		                  	
+		                  </td>
 		               </tr>
 		            </tbody>
 		         </table>
@@ -87,17 +104,9 @@
 		               <div class="col-sm-4">
 		                  <table class="table h6 text-dark">
 		                     <tbody>
-		                        <tr class="b-top-0">
-		                           <td colspan="2">Subtotal</td>
-		                           <td class="text-left">${{invoiceData.invoice_total}}</td>
-		                        </tr>
-		                        <tr>
-		                           <td colspan="2">Discount</td>
-		                           <td class="text-left">${{invoiceData.invoice_discount}}</td>
-		                        </tr>
-		                        <tr class="h4">
+		                        <tr class="h4 b-top-0">
 		                           <td colspan="2">Grand Total</td>
-		                           <td class="text-left">${{ invoiceData.invoice_total - invoiceData.invoice_discount }}</td>
+		                           <td class="text-center">${{invoiceData.invoice_total}}</td>
 		                        </tr>
 		                     </tbody>
 		                  </table>

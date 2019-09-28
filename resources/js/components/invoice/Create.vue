@@ -84,7 +84,7 @@
 					            	<input v-if="item.selectedService== null" type="text" class="form-control" placeholder="0.00">
 					            </td>
 					            <td><input placeholder="0.00" type="text" class="form-control"  v-model="item.serviceDiscount"></td>
-					            <td class="d-flex">
+					            <td class="d-flex item-flex">
 					               <input type="number" class="form-control d-flex-grow-1" v-model="item.serviceQty"> 
 					               <button v-if="form.items.length>1" type="button" data-delete="" class="btn btn-sm removeServ" @click="deleteItem(index)"><i class="fas fa-trash"></i></button>
 					            </td>
@@ -310,5 +310,19 @@ export default{
 	}
 	.vue-single-select {
 	    width: 100%;
+	}
+
+	.item-flex {
+	    position: relative;
+	}
+
+	.item-flex input {
+	    width: 70%;
+	}
+
+	.item-flex button {
+	    position: absolute;
+	    top: 11px;
+	    right: 4px;
 	}
 </style>

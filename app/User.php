@@ -34,6 +34,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
 
 
+    public function isAdminOrClient()
+    {
+        return $this->account_role == 1 || $this->account_role == 0 ? true : false;
+    }
+
+
     public function isAdmin()
     {
         return $this->account_role == 1 ? true : false;

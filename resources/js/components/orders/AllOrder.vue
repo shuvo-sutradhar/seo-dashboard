@@ -182,7 +182,6 @@
                     </tr>
                 </tbody>
                 <!-- client view -->
-    
             </table>
             <!-- admin table data end -->
 

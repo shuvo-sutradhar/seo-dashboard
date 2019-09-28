@@ -2,13 +2,13 @@
 
 
     <div>
-      <div class="template-wrap">
+      <div class="template-wrap" v-if="$auth.isClient() || $auth.isAdmin() || $auth.can('invoices')">
           
           <section class="card card-horizontal mb-4" >
 
               <div class="card_header" v-if="isInvoiceSinglePage()===false">
                 <h3 class="font-weight-semibold mt-3 dark">Invoices</h3>
-                <router-link to="/invoices/create" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light" >
+                <router-link to="/invoices/create" class="mb-1 mt-1 mr-1 btn btn-primary pull-right list-add-button text-light"  v-if="$auth.isAdmin() || $auth.can('invoice-create')">
                   <i class="fas fa-plus"></i> Add invoice
                 </router-link>
               </div>
@@ -40,7 +40,7 @@
               </div>
              
               <div>
-                <router-view></router-view>
+                <router-view :invoiceData="invoiceData.invoices"></router-view>
               </div>
           </section>
 

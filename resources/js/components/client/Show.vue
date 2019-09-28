@@ -12,13 +12,13 @@
 	                <button type="button" class="btn dropdown-toggle action-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
 	                <div class="dropdown-menu dropdown-menu-right" role="menu">
 
-	                  <router-link :to="`/clients/${client.email}/edit`" class="dropdown-item text-1">
+	                  <router-link :to="`/clients/${client.email}/edit`" class="dropdown-item text-1" v-if="$auth.isAdmin() || $auth.can('client-edit')">
 		                 Edit client
 		              </router-link>
-                      <a class="dropdown-item text-1" href="#" @click="accessAccount(client.email)">
+                      <a class="dropdown-item text-1" href="#" @click="accessAccount(client.email)" v-if="$auth.isAdmin() || $auth.can('client-login')">
                          Sign in as user
                       </a>
-	                  <a class="dropdown-item text-1" href="#"  @click="deleteData(client.id)">Delete</a>
+	                  <a class="dropdown-item text-1" href="#"  @click="deleteData(client.id)" v-if="$auth.isAdmin() || $auth.can('client-delete')">Delete</a>
 	                </div>
 	              </a>
 			</div>
