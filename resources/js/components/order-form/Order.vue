@@ -272,12 +272,20 @@
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="dropdown">
-                                                            <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle w-100 text-left" aria-expanded="false">
-                                                                    United States
-                                                                <span class="bs-caret float-right"><span class="caret"></span></span>
-                                                            </button> 
-                                                            <div class="dropdown-menu w-100" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 35px, 0px);"><a href="#" class="dropdown-item" draggable="false">United States</a>
-                                                            </div>
+                                                         
+                                                            <vue-single-select 
+                                                              placeholder="Select country" 
+                                                              you-want-to-select-a-post="id" 
+                                                              v-model="form.country" 
+                                                              out-of-all-these-posts="makes sense" 
+                                                              :options="countries" 
+                                                              you-like-bootstrap="yes" 
+                                                              a-post-has-an-id="id" 
+                                                              option-value="id" 
+                                                              the-post-has-a-title="make sure to show these" 
+                                                              option-label="countryname" 
+                                                              class="vue-single-select" :class="{ 'is-invalid': form.errors.has('country') }">
+                                                            </vue-single-select>
                                                             <small>Country</small>
                                                         </div>
                                                     </div>
@@ -592,6 +600,7 @@
         data () {
     
             return {
+                countries:[],
                 stripeErrorMessage: '',
                 complete: false,
                 stripeOptions: {
@@ -772,7 +781,6 @@
               if(this.form.getCuponData && this.form.getCuponData.discount) {
                 for (var i = 0; i < this.form.getCuponData.discount.length; i++) {
                   if (this.form.getCuponData.discount[i].service_id==null || this.form.getCuponData.discount[i].service_id == service.id) {
-
                     if(this.form.getCuponData.discount_type==2) {
 
                       let disPrice = service.price - ((this.form.getCuponData.discount[i].discount_amount / 100) * service.price) ;
@@ -781,6 +789,7 @@
                        break;
                         //console.log(radioBtnTotal);  
                     } else {
+
                       totalPrice =  (service.price - this.form.getCuponData.discount[i].discount_amount) * Number(serviceQty);  
                       break;
                     }
@@ -789,6 +798,7 @@
               }
 
               if(totalPrice){
+                this.isCuponInput=false;
                 return totalPrice;
               } else {
                 return Number(service.price) * Number(serviceQty);
@@ -949,9 +959,16 @@
                 }
             },
 
+            //load country
+            loadAllCountry(){
+                axios.get("/api/get_country").then(({ data }) => (this.countries = data));
+            },
+
+
         },
 
         mounted() {
+            this.loadAllCountry();
             this.rdBtnSingleAddQut();
             this.ckBoxServiceAddQut();           
             Fire.$on('UpdateCard',() => {
@@ -1068,6 +1085,8 @@
     div#card-errors {
         color: #fa755a;
     }
-
+    .search-input {
+        padding: 9px !important;
+    }
 </style>
 

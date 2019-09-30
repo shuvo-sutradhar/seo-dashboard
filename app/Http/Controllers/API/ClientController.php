@@ -9,6 +9,7 @@ use App\Client;
 use App\Country;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use App\Notifications\WelcomeClient;
 
 class ClientController extends Controller
 {    
@@ -30,7 +31,7 @@ class ClientController extends Controller
     public function index()
     {
         //
-        return User::where('account_role', 2)->with('client')->latest()->get();
+        return User::where('account_role', 2)->with('client')->latest()->paginate(10);
     }
 
     /**
@@ -91,6 +92,10 @@ class ClientController extends Controller
         ]);
 
         //send mail is sendNotification==true
+        if($request->emailNotification == true) {
+            $user->setAttribute('realPassword', $request->password);
+            $user->notify(new WelcomeClient($user));
+        }
     }
 
     /**
@@ -195,6 +200,14 @@ class ClientController extends Controller
         $clientProfile->company_name = $request->companyName;
         $clientProfile->tax_id = $request->taxId;
         $clientProfile->save();
+
+
+
+        //send mail is sendNotification==true
+        if($request->password && $request->emailNotification == true) {
+            $user->setAttribute('realPassword', $request->password);
+            $user->notify(new WelcomeClient($user));
+        }
 
         return ['message' => "Success"];
 

@@ -279,7 +279,7 @@
 		              //console.log();
 		              //window.location.href = "../orders/"+order.data.order.order_number;
 
-		              //this.$router.push('/orders/order/'+order.data.order.order_number);
+		              this.$router.push('/discount');
 		            }).catch(()=>{
 		                this.$Progress.fail()
 		            })

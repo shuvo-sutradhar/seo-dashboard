@@ -21,7 +21,7 @@ class OrderFormController extends Controller
     public function index()
     {
         //
-        return OrderForm::paginate(10);
+        return OrderForm::latest()->paginate(10);
     }
 
     /**

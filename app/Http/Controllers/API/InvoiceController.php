@@ -12,6 +12,8 @@ use App\InvoiceBilling;
 use App\InvoiceItem;
 use App\GeneralSetting;
 use App\Client;
+use App\Notifications\InvoicePaid;
+use App\Notifications\NewInvoice;
 
 class InvoiceController extends Controller
 {
@@ -36,10 +38,32 @@ class InvoiceController extends Controller
         $unpaid_total = Invoice::where('invoice_status','unpaid')->count(); 
         $refund_total = Invoice::where('invoice_status','refund')->count(); 
         //
-        $invoices     = Invoice::with('invoiceItems')->with('invoiceClient')->paginate(10);  
-
+        $invoices     = Invoice::with('invoiceItems')->with('invoiceClient')->latest()->paginate(10);  
         return  response()->json(compact('total','paid_total','unpaid_total','refund_total','invoices'), 200);
     }
+
+    //unpaid invoice
+    public function unpaid()
+    {
+        $invoices = Invoice::with('invoiceItems')->with('invoiceClient')->where('invoice_status','unpaid')->latest()->paginate(10);  
+        return  response()->json(compact('invoices'), 200);
+    }
+
+    //refund invoice
+    public function refund()
+    {
+        $invoices = Invoice::with('invoiceItems')->with('invoiceClient')->where('invoice_status','refund')->latest()->paginate(10);  
+        return  response()->json(compact('invoices'), 200);
+    }
+
+    //paid invoice
+    public function paid()
+    {
+        $invoices = Invoice::with('invoiceItems')->with('invoiceClient')->where('invoice_status','paid')->latest()->paginate(10);  
+        return  response()->json(compact('invoices'), 200);
+    }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -73,18 +97,16 @@ class InvoiceController extends Controller
         // insert row for every ervery service
         $i = 1;
         $total = 0;
-        $discount = 0;
 
         foreach($request->items as $key){
 
             //get total amount / discount / vat 
             if($key['selectedService']['id']==0){
-                $total += $key['servicePrice'] * $key['serviceQty'];
+                $total += ($key['servicePrice'] - $key['serviceDiscount']) * $key['serviceQty'];
             } else {
-                $total += $key['selectedService']['price'] * $key['serviceQty'];
+                $total += ($key['selectedService']['price'] - $key['serviceDiscount']) * $key['serviceQty'];
             }
             // all discount
-            $discount += $key['serviceDiscount'];
 
 
             //check if the service new then add it into service table 1st
@@ -122,18 +144,17 @@ class InvoiceController extends Controller
             'order_id' => $order->id,
             'user_id' => $request->client['id'],
             'invoice_number' => $orderNumber,
+            'invoice_note' => $request->invoice_note,
             'invoice_total' => $total ,
-            'invoice_discount' => $discount,
             'invoice_vat' => 0.0,
             'invoice_status' => 'unpaid',
             'due_date' => $request->due_date,
-            'invoice_note' => $request->invoice_note,
 
         ]);
 
 
         // insert billing information 
-        $client = Client::where('user_id',$request->client['id'])->first();
+        $client = Client::where('user_id',$request->client['id'])->with('country')->first();
         $invoiceBilling = InvoiceBilling::create([
 
             'invoice_id' => $invoice->id,
@@ -144,7 +165,7 @@ class InvoiceController extends Controller
             'tax_id' => $client ? $client->tax_id : '',
             'address' => $client ? $client->address : '',
             'city' => $client ? $client->city : '',
-            'country' => $client ? $client->country : '',
+            'country' => $client && $client->country ? $client->country->countryname : '',
             'state' => $client ? $client->state : '',
             'post_code' => $client ? $client->post_code : '',
         ]);
@@ -154,19 +175,41 @@ class InvoiceController extends Controller
             $invoiceItem = InvoiceItem::create([
                 'invoice_id' => $invoice->id,
                 'service_id' => $key['selectedService']['id']==0 ? $service->id : $key['selectedService']['id'],
-                'quantity' => $key['serviceQty']
+                'quantity' => $key['serviceQty'],
+                'discount' => $key['serviceDiscount']
             ]);
         }
 
         // Send mail notification
         if($request->send_email == true){
            //send mail 
+            $user = User::find($request->client['id']);
+            $user->notify(new NewInvoice($invoice));
+
         }
 
         return  ['message'=>'successfully inserted.'];
 
     }
 
+
+    //invoice email 
+    public function invoiceEmail($id) 
+    {
+        $invoice = Invoice::findOrFail($id);
+        if($invoice) {
+
+            $user = User::findOrFail($invoice->user_id);
+            if ($invoice->invoice_status=='unpaid') {
+                $user->notify(new NewInvoice($invoice));
+            } else {
+                $user->notify(new InvoicePaid($invoice));
+            }
+
+        }
+
+        return  ['message'=>'successfully.'];
+    }
     /**
      * Display the specified resource.
      *
@@ -214,6 +257,11 @@ class InvoiceController extends Controller
             ]);
             $message = 'Order make as unpaid';
         }
+
+        //send mail
+        $user = User::find($invoice->user_id);
+        $user->notify(new InvoicePaid($invoice));
+
         return ['message'=>$message];
     }
 

@@ -29,7 +29,7 @@
                         </thead>
                         <tbody>
                             <!-- for all invoice -->
-                            <tr v-for="(data, index) in clients" class="order-wrap" >
+                            <tr v-for="(data, index) in clients.data" class="order-wrap" >
                                     <td>
                                        #{{index+1}}
                                     </td>
@@ -78,6 +78,7 @@
                     </table>
 
                     <div class="pull-right mt-4">
+                       <pagination :data="clients" @pagination-change-page="loadClient"></pagination>
                     </div>
                 </div>
                 <div v-else>
@@ -159,7 +160,7 @@
 
 
             //load all client
-            loadClient(){
+            loadClient(page=1){
                let loader = this.$loading.show({
                   // Optional parameters
                   container: this.fullPage ? null : this.$refs.formContainer,
@@ -168,9 +169,9 @@
                 });
 
 
-                axios.get("/api/clients").then(({ data }) => (this.clients = data));
+                axios.get('/api/clients?page='+page).then(({ data }) => (this.clients = data));
 
-
+      
 
               // simulate AJAX
               setTimeout(() => {

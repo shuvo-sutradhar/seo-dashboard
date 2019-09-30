@@ -13,6 +13,7 @@ class WelcomeTeam extends Notification
 {
     use Queueable;
 
+    public $user;
     /**
      * Create a new notification instance.
      *

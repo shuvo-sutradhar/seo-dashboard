@@ -27,7 +27,7 @@ class ServiceController extends Controller
     public function index()
     {
         //
-        return Service::paginate(10);
+        return Service::where('service_type','!=',null)->latest()->paginate(10);
     }
 
     /**

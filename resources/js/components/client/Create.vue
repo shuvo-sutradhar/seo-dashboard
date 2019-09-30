@@ -64,7 +64,7 @@
 			                    <div class="form-group custom-size">
 			                        <label for="country">Country </label>
 									<vue-single-select 
-					                    placeholder="Select client" 
+					                    placeholder="Select country" 
 					                    you-want-to-select-a-post="id" 
 					                    v-model="form.country" 
 					                    out-of-all-these-posts="makes sense" 
@@ -241,7 +241,7 @@ export default{
               //console.log();
               //window.location.href = "../orders/"+order.data.order.order_number;
 
-              //this.$router.push('/orders/order/'+order.data.order.order_number);
+              this.$router.push('/clients');
             }).catch(()=>{
                 this.$Progress.fail()
             })

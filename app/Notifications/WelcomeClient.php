@@ -13,6 +13,7 @@ class WelcomeClient extends Notification
 {
     use Queueable;
 
+    public $user;
     /**
      * Create a new notification instance.
      *
@@ -42,7 +43,8 @@ class WelcomeClient extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->view('emails.client', ['user' => $this->user]);
+        return (new MailMessage)->subject('Welcome')
+                ->view('emails.client', ['user' => $this->user]);
     }
 
     /**

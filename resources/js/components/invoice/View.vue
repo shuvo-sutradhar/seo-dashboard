@@ -7,7 +7,7 @@
 		         <a class="float-right ml-3">
 	                <button type="button" class="btn dropdown-toggle action-btn" data-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
 	                <div class="dropdown-menu dropdown-menu-right" role="menu">
-	                  <a class="dropdown-item text-1" href="#">Email Invoice</a>
+	                  <a class="dropdown-item text-1" href="#" @click="sendInvoice(invoiceData.id)">Email Invoice</a>
 	                  <span v-if="$auth.isAdmin() || $auth.can('invoice-edit')">
 	                      <router-link :to="`/invoices/edit/${invoiceData.invoice_number}`" class="dropdown-item text-1">
 	                        Edit Invoice
@@ -96,7 +96,7 @@
 		                  <td class="font-weight-semibold text-dark">{{data.invoice_service.name}}</td>
 		                  <td>{{data.invoice_service.description}}</td>
 		                  <td class="text-center">
-		                  	<span v-if="data.discount==0.00">
+		                  	<span v-if="data.discount==null">
 		                  		${{data.invoice_service.price}}
 		                  	</span>
 		                  	<span v-else>
@@ -107,7 +107,7 @@
 		                  </td>
 		                  <td class="text-center">{{data.quantity}}</td>
 		                  <td class="text-center">
-		                  	<span v-if="data.discount==0.00">
+		                  	<span v-if="data.discount==null">
 		                  		${{data.quantity * data.invoice_service.price}}
 		                  	</span>
 		                  	<span v-else>
@@ -230,6 +230,27 @@
 	                  })
 
 	              Fire.$emit('AfterUpdate');
+
+	            }).catch(()=>{
+	                this.$Progress.fail()
+	            })
+		    },
+
+		    /*
+			* Send invoice via email
+		    */
+		    sendInvoice(id){
+		    	console.log(id);
+		    	// invoice-paid
+	            this.$Progress.start();
+	            axios.get('/api/invoice-email/'+id)
+	            .then((response)=>{
+
+	              this.$Progress.finish();
+	              toast.fire({
+	                    type: 'success',
+	                    title: 'Invoice has been sent successfully.'
+	                  })
 
 	            }).catch(()=>{
 	                this.$Progress.fail()

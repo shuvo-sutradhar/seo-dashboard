@@ -121,16 +121,15 @@
 
 			                <div class="col-md-12 mb-3">
 			                    <div class="form-group custom-size">
-			                        <label for="password">Password </label>
+			                        <label for="password">Reset Password </label>
 									<input type="password" v-model="form.password" class="form-control" id="password" autocomplete="new-password"/>
-									<small>Default password is: 123456</small>
 			                    </div>
 			                </div>
 
                             <div class="col-md-12 mb-3">
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" id="action-3" class="custom-control-input" v-model="form.emailNotification"> 
-                                    <label for="action-3" class="custom-control-label">Send welcome email</label>
+                                    <label for="action-3" class="custom-control-label">Reset password and send welcome email</label>
                                 </div>
                             </div>
 
@@ -188,9 +187,13 @@ export default{
 		*  edit data
 		*/
 		updateClient(){
+			//update client
+            this.$Progress.start();
+
             this.form.patch(`/api/clients/${this.$route.params.email}`)
             .then(()=>{
 
+              this.$Progress.finish();
               toast.fire({
                 type: 'success',
                 title: 'Client Updated Successfuly.'
@@ -199,6 +202,7 @@ export default{
               
             }).catch(()=>{
               // shoe message if data not saved
+                this.$Progress.fail()
             })
 		},
 

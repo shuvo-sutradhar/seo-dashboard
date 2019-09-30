@@ -82,13 +82,14 @@
 
         methods: {
         	/*
-			* Modal dismiss
+			    * Modal dismiss
         	*/
           	modalDismiss(){
           		this.form.client='',
           		this.form.service='',
           		$.magnificPopup.close()
           	},
+
             // form data submit to database
             formSubmit() {
 
@@ -104,22 +105,20 @@
                     title: 'Order created successfully.'
                   })
                   //console.log();
-                  //window.location.href = "../orders/"+order.data.order.order_number;
+                  window.location.href = "/orders/order/"+order.data.order.order_number;
+                  //this.$router.push('/orders/order/'+order.data.order.order_number);
 
-                  this.$router.push('/orders/order/'+order.data.order.order_number);
                 }).catch(()=>{
                     this.$Progress.fail()
                 })
 
             },
 
+
             loadOrderData(){
-                axios.get("/api/orders").then(({ data }) => (this.orderData = data));
+                axios.get("/api/order-create").then(({ data }) => (this.orderData = data));
             },
 
-            invoiceCreateLink(){
-                return this.link;
-            },
         },
 
         created() {

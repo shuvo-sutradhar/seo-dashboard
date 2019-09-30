@@ -17,7 +17,7 @@
                 </thead>
                 <tbody>
                     <!-- for all invoice -->
-                    <tr v-for="(data, index) in discounts" class="order-wrap" >
+                    <tr v-for="(data, index) in discounts.data" class="order-wrap" >
                         <td>
                            #{{index+1}}
                         </td>
@@ -33,11 +33,12 @@
                             <span v-else>--</span>
                         </td>
                         <td class="text-center">
-                            <span v-if="data.total_limit">{{ data.total_limit }}</span>
+                            <span v-if="data.total_used">{{ data.total_used }}</span>
                             <span v-else>--</span>
                         </td>
                         <td class="text-center">
-                            sddf
+                            <span v-if="data.total_limit">{{ data.total_limit }}</span>
+                            <span v-else>--</span>
                         </td>
                         <td class="text-right">
                             <div class="btn-group flex-wrap">
@@ -60,6 +61,7 @@
             </table>
 
             <div class="pull-right mt-4">
+                <pagination :data="discounts" @pagination-change-page="loadData"></pagination>
             </div>
         </div>
         
@@ -87,8 +89,8 @@
 
         methods: {
 
-            loadData() {
-              axios.get("/api/discount").then(({ data }) => (this.discounts = data));
+            loadData(page=1) {
+              axios.get("/api/discount?page="+page).then(({ data }) => (this.discounts = data));
             },
 
 

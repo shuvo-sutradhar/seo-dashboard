@@ -11,43 +11,54 @@
                   <i class="fas fa-shopping-basket"></i> Add order
                 </a>
               </div>
-              <div class="card_nav" v-if="isOrderOrEditPage()===false">
-                <ul>
-                  <li v-if="orderData.count1!=0">
-                    <router-link to="/orders/all" class="nav-link order-all">
-                      <span>{{orderData.count1}}</span> All
-                    </router-link>
-                  </li>
-                  <li v-if="orderData.count2!=0">
-                    <router-link to="/orders/Pending" class="nav-link order-pending">
-                      <span>{{orderData.count2}}</span> Pending
-                    </router-link>
-                  </li>
-                  <li v-if="orderData.count3!=0">
-                    <router-link to="/orders/Submitted" class="nav-link order-submit">
-                      <span>{{orderData.count3}}</span> Submitted
-                    </router-link>
-                  </li>
-                  <li v-if="orderData.count4!=0">
-                    <router-link to="/orders/Working" class="nav-link order-working">
-                      <span>{{orderData.count4}}</span> Working
-                    </router-link>
-                  </li>
-                  <li v-if="orderData.count5!=0">
-                    <router-link to="/orders/Complete" class="nav-link order-complete">
-                      <span>{{orderData.count5}}</span> Complete
-                    </router-link>
-                  </li>
-                  <li v-if="orderData.count6!=0">
-                    <router-link to="/orders/Canceled" class="nav-link order-cancle">
-                      <span>{{orderData.count6}}</span> Canceled
-                    </router-link>
-                  </li>
-                </ul>
-              </div>
 
-              <div>
-                <router-view :orderdata="orderData.orders"></router-view>
+              <div v-if="orderData.count1!=0">
+                <div class="card_nav" v-if="isOrderOrEditPage()===false">
+                  <ul>
+                    <li v-if="orderData.count1!=0">
+                      <router-link to="/orders/all" class="nav-link order-all">
+                        <span>{{orderData.count1}}</span> All
+                      </router-link>
+                    </li>
+                    <li v-if="orderData.count2!=0">
+                      <router-link to="/orders/Pending" class="nav-link order-pending">
+                        <span>{{orderData.count2}}</span> Pending
+                      </router-link>
+                    </li>
+                    <li v-if="orderData.count3!=0">
+                      <router-link to="/orders/Submitted" class="nav-link order-submit">
+                        <span>{{orderData.count3}}</span> Submitted
+                      </router-link>
+                    </li>
+                    <li v-if="orderData.count4!=0">
+                      <router-link to="/orders/Working" class="nav-link order-working">
+                        <span>{{orderData.count4}}</span> Working
+                      </router-link>
+                    </li>
+                    <li v-if="orderData.count5!=0">
+                      <router-link to="/orders/Complete" class="nav-link order-complete">
+                        <span>{{orderData.count5}}</span> Complete
+                      </router-link>
+                    </li>
+                    <li v-if="orderData.count6!=0">
+                      <router-link to="/orders/Canceled" class="nav-link order-cancle">
+                        <span>{{orderData.count6}}</span> Canceled
+                      </router-link>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <router-view :orderdata="orderData.orders"></router-view>
+                </div>
+              </div>        
+              <div class="card-body" v-else>
+                <p class="no-order" v-show="!$auth.isClient()">
+                    Orders are added automatically when clients purchase your services.<br>
+                    Start by setting up your <a :href="serviceLink()">services</a> and creating <a :href="orderFormLink()">an order form</a> where people can buy from you...
+                </p>
+                <p class="no-order" v-show="$auth.isClient()">
+                    No orders yet...
+                </p>
               </div>
           </section>
 
@@ -73,6 +84,7 @@
 
         data() {
             return {
+                link:window.location.origin,
                 orderData : {}
             }
         },
@@ -97,9 +109,16 @@
                 axios.get("/api/orders").then(({ data }) => (this.orderData = data));
             },
 
+            orderFormLink(){
+                return this.link+"/order-form/create";
+            },
+            serviceLink(){
+                return this.link+"/services/";
+            },
+
         },
 
-        created() {
+        mounted() {
            this.loadOrderData();
            Fire.$on('AfterDelete',() => {
                this.loadOrderData();

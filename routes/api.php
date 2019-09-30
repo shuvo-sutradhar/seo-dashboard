@@ -27,12 +27,19 @@ Route::get('/order-form-duplocate/{id}','API\OrderFormController@duplicate')->na
 Route::apiResources(['/submit-form' => 'API\FormSubmitController']);
 Route::post('/create-order','API\FormSubmitController@createOrder');
 Route::get('/verify-cupon/{cupon}','API\FormSubmitController@verifyCupon');
+Route::get('/get_country','API\FormSubmitController@getAllCountry');
 
 /*
 * Order controller
 */
 
 Route::apiResources(['/orders' => 'API\OrderController']);
+Route::get('/order-create','API\OrderController@create');
+Route::get('/pending-order','API\OrderController@pending');
+Route::get('/submitted-order','API\OrderController@submitted');
+Route::get('/working-order','API\OrderController@working');
+Route::get('/complete-order','API\OrderController@complete');
+Route::get('/canceled-order','API\OrderController@canceled');
 Route::get('/show-order/{order_number}','API\OrderController@show');
 Route::get('/edit-order/{order_number}','API\OrderController@edit');
 Route::patch('/update-order/{order_number}','API\OrderController@update');
@@ -65,6 +72,11 @@ Route::get('/invoices/edit/{invoice_number}', 'API\InvoiceController@edit');
 Route::get('/create-invoice','API\InvoiceController@create');
 Route::put('/invoice-paid/{id}','API\InvoiceController@makeAsPaid');
 Route::put('/invoices/address/{id}','API\InvoiceController@address');
+
+Route::get('/unpaid-invoice', 'API\InvoiceController@unpaid');
+Route::get('/refund-invoice', 'API\InvoiceController@refund');
+Route::get('/paid-invoice', 'API\InvoiceController@paid');
+Route::get('/invoice-email/{id}', 'API\InvoiceController@invoiceEmail');
 
 /*
 * Discount controller

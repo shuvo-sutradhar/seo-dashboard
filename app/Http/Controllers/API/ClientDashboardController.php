@@ -25,7 +25,7 @@ class ClientDashboardController extends Controller
      */
     public function invoice() {
 
-        return Invoice::with('invoiceItems')->with('invoiceClient')->where('user_id', auth('api')->user()->id)->get(); 
+        return Invoice::with('invoiceItems')->with('invoiceClient')->where('user_id', auth('api')->user()->id)->latest()->paginate(10); 
 
     }
     /**

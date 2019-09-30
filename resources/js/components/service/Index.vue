@@ -68,6 +68,7 @@
                     </table>
 
                     <div class="pull-right mt-4">
+                      <pagination :data="services" @pagination-change-page="loadServices"></pagination>
                     </div>
                 </div>
                 <div v-else>
@@ -95,7 +96,7 @@
         data() {
             return {
                 fullPage:false,
-                services : []
+                services : {}
             }
         },
 
@@ -163,7 +164,7 @@
             },
 
             //load all client
-            loadServices(){
+            loadServices(page=1){
                let loader = this.$loading.show({
                   // Optional parameters
                   container: this.fullPage ? null : this.$refs.formContainer,
@@ -171,7 +172,7 @@
                   onCancel: this.onCancel,
                 });
 
-                axios.get("/api/services").then(({ data }) => (this.services = data));
+                axios.get('/api/services?page='+page).then(({ data }) => (this.services = data));
 
                 // simulate AJAX
                 setTimeout(() => {

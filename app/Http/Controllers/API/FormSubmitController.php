@@ -13,6 +13,7 @@ use App\User;
 use App\Client;
 use App\OrderForm;
 use App\Discount;
+use App\Country;
 
 use Carbon\Carbon;
 use Stripe;
@@ -46,6 +47,12 @@ class FormSubmitController extends Controller
         //
     }
 
+
+    public function getAllCountry()
+    {
+        //
+        return Country::all();
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -95,14 +102,14 @@ class FormSubmitController extends Controller
     //verify token
     public function verifyCupon($cupon)
     {
-        $total_used = Invoice::where('invoice_discount',$cupon)->count();
+        //$total_used = Invoice::where('invoice_discount',$cupon)->count();
 
         $discount = Discount::where('cupon_code', $cupon)
                     ->where('is_active',1)
-                    ->where(function($q) use ($total_used){
+                    ->where(function($q){
                           $q->where('total_limit', null)
                             ->orWhere('total_limit',0)
-                            ->orWhere('total_limit','>',$total_used);
+                            ->orWhereRaw('total_limit > total_used');
                       })
                     ->where(function($q){
                           $q->whereDate('expiry_date','>=', Carbon::now())
@@ -127,7 +134,6 @@ class FormSubmitController extends Controller
 
     //order form submit
     public function createOrder(Request $request){
-
         $this->validate($request, [
             'email' => 'required|string|max:191|unique:users'
         ]);
@@ -260,12 +266,12 @@ class FormSubmitController extends Controller
             // insert billing information 
             $invoiceBilling = InvoiceBilling::create([
 
-                'invoice_id' => $invoice->id,
-                'first_name' => $name,
-                'email' => $request->email,
+                'invoice_id'    => $invoice->id,
+                'first_name'    => $name,
+                'email'         => $request->email,
                 'address'       => $request->address,
                 'city'          => $request->city,
-                'country'       => $request->country,
+                'country'       => $request->country['countryname'] ? $request->country['countryname'] : $request->country,
                 'state'         => $request->state,
                 'post_code'     => $request->postalCode,
                 'company_name'  => $request->companyName,
@@ -276,12 +282,14 @@ class FormSubmitController extends Controller
 
             // insert row for each billing item
             $j=0;
+            $discount_used = 0;
             foreach($array as $key){
 
                 $disPrice = 0;
                 if($request->getCuponData) {
                     foreach ($request->getCuponData['discount'] as $cuponData) {
                         if($cuponData['service_id']==null || $cuponData['service_id'] == $key['id']) {
+                            $discount_used = 1;
                             if($request->getCuponData['discount_type']==2) {
                                 $disPrice = ($cuponData['discount_amount'] / 100) * $key['price'];
                             } else {
@@ -298,12 +306,20 @@ class FormSubmitController extends Controller
                     'discount' => $disPrice,
                 ]);
             }
-            
+
+            //update discount table
+            if($request->getCuponData){
+                $discount = Discount::where('cupon_code',$request->getCuponData['cupon_code'])->first();
+                $discount->update([
+                    'total_used' => $discount->total_used + $discount_used
+                ]);
+            }
+
             // Create activity log 
             activity()->performedOn($user)->causedBy(auth()->user())->log('Created client account for '. $user->name);
 
             // Send mail notification
-            $user->setAttribute('realPassword', 123456);
+            $user->setAttribute('realPassword', $password);
             $user->notify(new WelcomeClient($user));
 
             return  response()->json(compact('orderNumber'), 200);

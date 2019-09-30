@@ -10,10 +10,8 @@
                   <i class="fas fa-plus"></i> Add form
               </a>
             </div>
-
-            <div class="card-body" v-if="formData.length > 0">
+            <div class="card-body" v-if="formData">
                 <!-- <a :href="route2">{{ route2 }}</a> -->
-                
                 <br/>
                 <table class="table table-no-more table-bordered table-striped mb-0" id="table">
                     <thead>
@@ -24,7 +22,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(data, index) in formData" :key="index">
+                        <tr v-for="(data, index) in formData.data" :key="index">
                             <td :class="data.status == 1 ? 'activeClass' : ''">
                               <a :href="getEditLink(data.id)" v-if="$auth.isAdmin() || $auth.can('order-form-edit')"> {{ data.formName }} </a>
                               <span v-else>{{ data.formName }}</span>
@@ -63,7 +61,7 @@
                 </table>
 
                 <div class="pull-right mt-4">
-                    
+                  <pagination :data="formData" @pagination-change-page="loadFormData"></pagination>
                 </div>
             </div>
             <div class="card-body" v-else>
@@ -157,8 +155,8 @@
             },
  
 
-            loadFormData(){
-                axios.get("/api/order-form").then(({ data }) => (this.formData = data.data));
+            loadFormData(page=1){
+                axios.get('/api/order-form?page='+page).then(({ data }) => (this.formData = data));
             },
 
         },

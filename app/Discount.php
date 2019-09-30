@@ -13,7 +13,7 @@ class Discount extends Model
      * @var array
      */
     protected $fillable = [
-        'cupon_code', 'description', 'discount_type','discount_duration','service_id','discount_amount','limit_1','total_limit','expiry_date','is_active'
+        'cupon_code', 'description', 'discount_type','discount_duration','service_id','discount_amount','limit_1','total_limit','expiry_date','total_used','is_active'
     ];
 
     // Return many to one relation with discount_services table

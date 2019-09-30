@@ -18,7 +18,7 @@
                 </thead>
                 <tbody>
                     <!-- for all invoice -->
-                    <tr v-for="(data, index) in invoiceData" class="order-wrap">
+                    <tr v-for="(data, index) in invoiceData.data" class="order-wrap">
                             <td>
                                 <router-link :to="`/dashboard/invoices/${data.invoice_number}`">
                                 {{ data.invoice_number }}
@@ -41,6 +41,7 @@
             </table>
 
             <div class="pull-right mt-4">
+                <pagination :data="invoiceData" @pagination-change-page="loadInvoiceData"></pagination>
             </div>
         </div>
         
@@ -68,8 +69,8 @@
 
         methods: {
 
-            loadInvoiceData(){
-                axios.get("/api/client-invoice").then(({ data }) => (this.invoiceData = data));
+            loadInvoiceData(page=1){
+                axios.get('/api/client-invoice?page=' + page).then(({ data }) => (this.invoiceData = data));
             },
 
         },

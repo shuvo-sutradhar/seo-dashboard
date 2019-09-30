@@ -51,7 +51,7 @@
 					         <tr>
 					            <th>Item</th>
 					            <th style="width: 100px;">Price</th>
-					            <th style="width: 100px;">Discount(%)</th>
+					            <th style="width: 100px;">Discount($)</th>
 					            <th style="width: 130px;">Qty</th>
 					         </tr>
 					      </thead>
@@ -257,7 +257,7 @@ export default{
 	              //console.log();
 	              //window.location.href = "../orders/"+order.data.order.order_number;
 
-	              //this.$router.push('/orders/order/'+order.data.order.order_number);
+	              this.$router.push('/invoices');
 	            }).catch(()=>{
 	                this.$Progress.fail()
 	            })

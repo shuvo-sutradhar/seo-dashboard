@@ -22,6 +22,7 @@ class CreateDiscountsTable extends Migration
             $table->boolean('limit_1')->nullable();
             $table->integer('total_limit')->nullable();
             $table->timestamp('expiry_date')->nullable();
+            $table->integer('total_used')->nullable();
             $table->boolean('is_active');
             $table->timestamps();
         });

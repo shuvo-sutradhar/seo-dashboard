@@ -27,7 +27,7 @@ class DiscountController extends Controller
     public function index()
     {
         //
-        return Discount::all();
+        return Discount::latest()->paginate(10);
     }
 
     /**

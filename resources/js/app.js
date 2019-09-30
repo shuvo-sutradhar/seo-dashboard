@@ -11,10 +11,14 @@ window.Vue = require('vue');
 
 
 
+
 // Import vue Router
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 window.routes = VueRouter;
+
+
+
 
 // Vue progress bar
 import VueProgressBar from 'vue-progressbar'
@@ -24,16 +28,32 @@ Vue.use(VueProgressBar, {
   height: '4px'
 })
 
+
+
+
+// Vue data table
+Vue.component('pagination', require('laravel-vue-pagination'));
+
+
 // Vue.component('v-select', vSelect)
 import VueSingleSelect from "vue-single-select";
 Vue.component('vue-single-select', VueSingleSelect);
 
+
+
+
 // Import moment js for date time
 import moment from 'moment';
+
+
+
+
 
 import DatePick from 'vue-date-pick';
 import 'vue-date-pick/dist/vueDatePick.css';
 Vue.component('date-pick',DatePick);
+
+
 
 
 
@@ -42,21 +62,34 @@ import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 Vue.use(Loading);
 
+
+
+
+
 // Ck-editor
 import Vue from 'vue';
 import CKEditor from '@ckeditor/ckeditor5-vue';
-
 Vue.use( CKEditor );
+
+
+
 
 //toggle button
 import { ToggleButton } from 'vue-js-toggle-button';
 Vue.component('ToggleButton', ToggleButton);
+
+
+
+
 
 // Import vue form
 import { Form, HasError, AlertError } from 'vform';
 window.Form = Form;
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
+
+
+
 
 // VueTags
 import { VueTags } from 'vue-tags-component';
@@ -77,10 +110,10 @@ window.toast = toast;
 window.Fire =  new Vue();
 
 
+
+
 //
 //window.User = window.Laravel.user;
-
-
 Vue.component('formindex',require('./components/order-form/FormIndex.vue').default);
 Vue.component('formbuilder', require('./components/order-form/FormBuilder.vue').default);
 Vue.component('edit-formbuilder', require('./components/order-form/FormBuilderEdit.vue').default);
