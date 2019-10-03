@@ -100,7 +100,7 @@
         @endif
         <!-- service route start -->
 
-        @if (auth()->user()->isAdmin() || auth()->user()->can('order-form'))
+        @if(auth()->user()->isAdmin() || auth()->user()->can('order-form'))
             <li class="{{ request()->is('order-form*') ? 'nav-active' : '' }}">
                 
                 <a class="nav-link" href="{{ route('order-form.index') }}">
@@ -111,7 +111,7 @@
             </li>
         @endif
 
-        @if (auth()->user()->isClient())
+        @if(auth()->user()->isClient())
             <li class="{{ request()->is('dashboard/services') ? 'nav-active' : '' }}">
                 
                 <a class="nav-link" href="{{ route('services') }}">
@@ -129,8 +129,8 @@
             </a>                        
         </li>
 
-        @if (auth()->user()->isAdmin())
-        <li class="{{ request()->is('settings*') ? 'nav-active' : '' }}">
+        @if(auth()->user()->isAdmin() || auth()->user()->can('setting'))
+        <li class="{{ request()->is('settings*') || request()->is('roles*') ? 'nav-active' : '' }}">
             <a class="nav-link" href="{{ route('settings') }}">
                 <i class="fas fa-cogs" aria-hidden="true"></i>
                 <span>Settings</span>

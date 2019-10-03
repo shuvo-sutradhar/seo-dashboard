@@ -23,12 +23,18 @@
 		<div class="col-lg-8 col-xl-8 offset-lg-2">
 
 			<section class="card card-horizontal mb-4">
+	            <div class="card_header">
+	                <h3 class="font-weight-semibold mt-3 dark">Add team member</h3>
+	                <a href="{{ route('account.index') }}" class="mb-1 mt-1 mr-1 btn btn-warning pull-right list-add-button text-light" >
+	                  <i class="fas fa-undo-alt"></i> Go back
+	                </a>
+	            </div>
 				<div class="card-body">
 					<form class="p-3" action="{{ route('account.store') }}" method="post" enctype="multipart/form-data">
 						
 						@csrf
 
-						<h4 class="mb-3">Add team member</h4>
+						{{-- <h4 class="mb-3">Add team member</h4> --}}
 						<div class="form-group">
 
 							<label for="email">Email <span class="required">*</span></label>
@@ -74,7 +80,7 @@
 							<label for="role">Role <span class="required">*</span></label>
 						
 							<select data-plugin-selectTwo class="form-control populate {{ $errors->has('role') ? ' is-invalid' : '' }}"  id="role" name="role"  required>
-								
+								<option selected disabled>Select a role</option>
 								@foreach ($roles as $role)
 
 									<option value="{{ $role->id }}" {{ $role->id == old('role') ? 'selected' : '' }}>{{ $role->name }}</option>
@@ -114,7 +120,8 @@
 						<div class="form-group">
 
 							<label for="password">Password <span class="required">*</span></label>
-							<input type="password" id="password" name="password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="******" required>
+							<input type="password" id="password" value="123456" name="password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="******" required>
+							<small>Default password is: 123456</small>
 
 							@if ($errors->has('password'))
 		                        <span class="invalid-feedback" role="alert">

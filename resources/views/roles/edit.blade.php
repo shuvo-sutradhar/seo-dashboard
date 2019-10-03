@@ -17,15 +17,20 @@
 		
 		<div class="col-lg-8 col-xl-8 offset-lg-2">
 
-			<section class="card  mb-4">
+			<section class="card card-horizontal mb-4">
 
 				@include('includes.alert')
+
+	            <div class="card_header">
+	                <h3 class="font-weight-semibold mt-3 dark">Edit Role</h3>
+	                <a href="{{ route('role.index') }}" class="mb-1 mt-1 mr-1 btn btn-warning pull-right list-add-button text-light" >
+	                  <i class="fas fa-undo-alt"></i> Go back
+	                </a>
+	            </div>
 
 				<div class="card-body">
 					<form class="p-3" action="{{ route('role.update', $role->id) }}" method="post" >
 						
-						<h4 class="mb-3">Edit Role</h4>
-
 						@csrf
 						@method('PUT')
 
@@ -42,7 +47,7 @@
 
 						</div>
 
-						<div class="form-group assign-permission">
+						<div class="form-group assign-permission mt-5" style="background: #f9f9f9;padding: 0px 15px;box-shadow: 0px 1px 5px #0000002e;">
 
 							<table class="table table-responsive-md mb-0">
 								<thead>

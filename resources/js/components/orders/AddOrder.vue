@@ -56,7 +56,7 @@
     	            <div class="row">
     	              <div class="col-md-12 text-right">
     	                <button type="submit" class="btn btn-primary modal-confirm" >Add order</button>
-    	                <button class="btn btn-default" @click="modalDismiss()" type="reset">Cancel</button>
+    	                <button class="btn btn-danger" @click="modalDismiss()" type="reset">Cancel</button>
     	              </div>
     	            </div>
     	          </footer>

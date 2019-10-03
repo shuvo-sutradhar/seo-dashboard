@@ -198,7 +198,9 @@ class ServiceController extends Controller
     */
     public function dataField(Request $request, $slug) 
     {
+
         //
+        // dd($request->all());
         $service = Service::where('slug',$slug)->pluck('id');
         $serviceData = ServiceData::where('service_id',$service[0])->first();
         //return $serviceData;

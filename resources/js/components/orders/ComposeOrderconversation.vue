@@ -14,7 +14,7 @@
 		    </div>
       </div><!-- /. card-header -->
       <div class="card-body">
-      	<ckeditor :editor="editor" v-model="editorData"></ckeditor>
+      	<ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
       </div>
       <div class="card-footer compose-footer">
 	      <div class="d-flex">
@@ -35,6 +35,10 @@
         data() {
             return {
               editor: ClassicEditor,
+              editorConfig: {
+                    // The configuration of the editor.
+                  //toolbar: [ 'bold', 'italic', '|', 'link','image' ]
+              },
               selectedUser: 'Client',
               editorData: '',
             }

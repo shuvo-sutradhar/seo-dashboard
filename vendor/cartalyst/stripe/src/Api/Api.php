@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Stripe
- * @version    2.2.12
+ * @version    2.3.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
  * @copyright  (c) 2011-2019, Cartalyst LLC
@@ -20,6 +20,7 @@
 
 namespace Cartalyst\Stripe\Api;
 
+use RuntimeException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
@@ -194,9 +195,14 @@ abstract class Api implements ApiInterface
      * Create the client handler.
      *
      * @return \GuzzleHttp\HandlerStack
+     * @throws \RuntimeException
      */
     protected function createHandler()
     {
+        if (! $this->config->getApiKey()) {
+            throw new RuntimeException('The Stripe API key is not defined!');
+        }
+
         $stack = HandlerStack::create();
 
         $stack->push(Middleware::mapRequest(function (RequestInterface $request) {

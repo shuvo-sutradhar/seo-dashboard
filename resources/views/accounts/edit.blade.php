@@ -23,17 +23,22 @@
 		<div class="col-lg-8 col-xl-8 offset-lg-2">
 
 			<section class="card card-horizontal mb-4">
+	            <div class="card_header">
+	                <h3 class="font-weight-semibold mt-3 dark">Edit team member {{ ucfirst($user->name) }}</h3>
+	                <a href="{{ route('account.index') }}" class="mb-1 mt-1 mr-1 btn btn-warning pull-right list-add-button text-light" >
+	                  <i class="fas fa-undo-alt"></i> Go back
+	                </a>
+	            </div>
 				<div class="card-body">
 					<form class="p-3" action="{{ route('account.update', $user->email) }}" method="post" enctype="multipart/form-data">
 						
 						@csrf
 						@method('PUT')
 
-						<h4 class="mb-3">Edit team member {{ ucfirst($user->name) }}</h4>
 						<div class="form-group">
 
 							<label for="email">Email <span class="required">*</span></label>
-							<input type="email" id="email" name="email"  class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" required placeholder="example@gmail.com" value="{{ $user->email }}">
+							<input disabled type="email" id="email" name="email"  class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" required placeholder="example@gmail.com" value="{{ $user->email }}">
 
 							@if ($errors->has('email'))
 		                        <span class="invalid-feedback" role="alert">
@@ -115,7 +120,7 @@
 
 						<div class="form-group">
 							<div class="checkbox-custom checkbox-primary">
-								<input type="checkbox" checked="" id="mailNotification" name="changePassword">
+								<input type="checkbox" checked="" id="mailNotification" name="mailNotification">
 								<label for="mailNotification">Change Password & Notification in Email</label>
 							</div>
 						</div>
@@ -123,7 +128,8 @@
 						<div class="form-group" id="password-area">
 
 							<div id="remove">
-								<label for="password">Password <span class="required">*</span></label><input type="password" id="password" name="password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="New password" required>
+								<label for="password">Password </label>
+								<input type="password" id="password" name="password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="New password">
 
 								@if ($errors->has('password'))
 			                        <span class="invalid-feedback" role="alert">

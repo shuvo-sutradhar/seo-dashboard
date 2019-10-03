@@ -37,6 +37,7 @@ class ComposerStaticInit007214e74586a6c551db3b7c039e8d48
         'e91d0dc994644828154ae2387ede1ca8' => __DIR__ . '/..' . '/spatie/string/src/string_functions.php',
         '4a1f389d6ce373bda9e57857d3b61c84' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/helpers.php',
         '0d8253363903f0ac7b0978dcde4e28a0' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/helpers.php',
+        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
         '72b1e3f4a2af9b30b3f137b3ec2057fc' => __DIR__ . '/..' . '/spatie/laravel-activitylog/src/helpers.php',
         '377b22b161c09ed6e5152de788ca020a' => __DIR__ . '/..' . '/spatie/laravel-permission/src/helpers.php',
         'a806c12c6e24e7e4e900847766218dba' => __DIR__ . '/..' . '/uxweb/sweet-alert/src/SweetAlert/functions.php',
@@ -192,6 +193,7 @@ class ComposerStaticInit007214e74586a6c551db3b7c039e8d48
         array (
             'Cviebrock\\EloquentSluggable\\' => 28,
             'Cron\\' => 5,
+            'Collective\\Html\\' => 16,
             'Cocur\\Slugify\\' => 14,
             'Cartalyst\\Stripe\\Laravel\\' => 25,
             'Cartalyst\\Stripe\\' => 17,
@@ -550,6 +552,10 @@ class ComposerStaticInit007214e74586a6c551db3b7c039e8d48
         array (
             0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
         ),
+        'Collective\\Html\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laravelcollective/html/src',
+        ),
         'Cocur\\Slugify\\' => 
         array (
             0 => __DIR__ . '/..' . '/cocur/slugify/src',
@@ -658,11 +664,15 @@ class ComposerStaticInit007214e74586a6c551db3b7c039e8d48
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Http\\Middleware\\isAdminOrClient' => __DIR__ . '/../..' . '/app/Http/Middleware/isAdminOrClient.php',
         'App\\Invoice' => __DIR__ . '/../..' . '/app/Invoice.php',
         'App\\InvoiceBilling' => __DIR__ . '/../..' . '/app/InvoiceBilling.php',
         'App\\InvoiceItem' => __DIR__ . '/../..' . '/app/InvoiceItem.php',
         'App\\Mail\\WelcomeTeam' => __DIR__ . '/../..' . '/app/Mail/WelcomeTeam.php',
         'App\\Message' => __DIR__ . '/../..' . '/app/Message.php',
+        'App\\Notifications\\InvoicePaid' => __DIR__ . '/../..' . '/app/Notifications/InvoicePaid.php',
+        'App\\Notifications\\NewInvoice' => __DIR__ . '/../..' . '/app/Notifications/NewInvoice.php',
+        'App\\Notifications\\OrderAssign' => __DIR__ . '/../..' . '/app/Notifications/OrderAssign.php',
         'App\\Notifications\\WelcomeClient' => __DIR__ . '/../..' . '/app/Notifications/WelcomeClient.php',
         'App\\Notifications\\WelcomeTeam' => __DIR__ . '/../..' . '/app/Notifications/WelcomeTeam.php',
         'App\\Order' => __DIR__ . '/../..' . '/app/Order.php',
@@ -833,6 +843,13 @@ class ComposerStaticInit007214e74586a6c551db3b7c039e8d48
         'Cocur\\Slugify\\RuleProvider\\RuleProviderInterface' => __DIR__ . '/..' . '/cocur/slugify/src/RuleProvider/RuleProviderInterface.php',
         'Cocur\\Slugify\\Slugify' => __DIR__ . '/..' . '/cocur/slugify/src/Slugify.php',
         'Cocur\\Slugify\\SlugifyInterface' => __DIR__ . '/..' . '/cocur/slugify/src/SlugifyInterface.php',
+        'Collective\\Html\\Componentable' => __DIR__ . '/..' . '/laravelcollective/html/src/Componentable.php',
+        'Collective\\Html\\Eloquent\\FormAccessible' => __DIR__ . '/..' . '/laravelcollective/html/src/Eloquent/FormAccessible.php',
+        'Collective\\Html\\FormBuilder' => __DIR__ . '/..' . '/laravelcollective/html/src/FormBuilder.php',
+        'Collective\\Html\\FormFacade' => __DIR__ . '/..' . '/laravelcollective/html/src/FormFacade.php',
+        'Collective\\Html\\HtmlBuilder' => __DIR__ . '/..' . '/laravelcollective/html/src/HtmlBuilder.php',
+        'Collective\\Html\\HtmlFacade' => __DIR__ . '/..' . '/laravelcollective/html/src/HtmlFacade.php',
+        'Collective\\Html\\HtmlServiceProvider' => __DIR__ . '/..' . '/laravelcollective/html/src/HtmlServiceProvider.php',
         'Cron\\AbstractField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/AbstractField.php',
         'Cron\\CronExpression' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/CronExpression.php',
         'Cron\\DayOfMonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/DayOfMonthField.php',

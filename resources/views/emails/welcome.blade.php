@@ -5,24 +5,15 @@
     <tr>
       <td>
         <p>Hello, <strong>{{ ucfirst($user->name) }},</p>
-        <p>Sometimes you just want to send a simple HTML email with a simple design and clear call to action. This is it.</p>
-        <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
-          <tbody>
-            <tr>
-              <td align="left">
-                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                  <tbody>
-                    <tr>
-                      <td> <a href="http://htmlemail.io" target="_blank">Call To Action</a> </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <p>This is a really simple email template. Its sole purpose is to get the recipient to click the button with no distractions.</p>
-        <p>Good luck! Hope it works.</p>
+        <p>Thanks for signing up. Your login information is below:</p>
+        <ul style="margin:5px 0px; padding: 0; list-style: none;">
+            <li><strong>E-mail:</strong> {{ $user->email }}</li>
+            <li><strong>Password:</strong> {{ $user->realPassword }}</li>
+        </ul>
+        <p>You can signin here: <br><a target="__blank" href="{{ url('/') }}">{{ url('/') }}</a></p>
+        <p>Please bookmark the login link and add this email to your address book.</p>
+        <br>
+        <p>Thanks,<br>Admin</p>
       </td>
     </tr>
   </table>

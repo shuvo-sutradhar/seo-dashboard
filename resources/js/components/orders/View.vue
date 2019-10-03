@@ -1,21 +1,16 @@
 <template>
 
-  <div class="row" style="justify-content: space-around;">
+  <div class="row" style="justify-content: space-around;" v-if="orderDetails.order">
     <!-- left side start -->
     <div class="col-md-8">
-      <div class="card_header" v-if="isOrderPage()===true">
+      <div class="card_header" v-if="isOrderPage()===true ">
         <h3 class="font-weight-semibold mt-3 dark" v-show="!$auth.isClient()">{{ orderDetails.order.order_service.name }}</h3>
         <h3 class="font-weight-semibold mt-3 dark" v-show="$auth.isClient()">#{{ orderDetails.order.order_number }}</h3>
       </div>
 
 
-      <div v-show="$auth.isClient()">
-        <div class="orderSummary">
-          <OrderSummary :orderDetails="orderDetails"></OrderSummary>
-        </div>
-        <div class="alert alert-warning mb-4 mt-4">
-          We need some information to get started on your order. <a href="#">Click here to submit data</a>.        
-        </div>
+      <div class="orderSummary" v-show="$auth.isClient()">
+        <OrderSummary :orderDetails="orderDetails"></OrderSummary>
       </div>
 
       <!-- service note start -->
@@ -44,6 +39,11 @@
       </div>
       <!-- service note end -->
 
+      <!-- service data start -->
+      <div class="alert alert-warning mb-4 mt-4" v-if="orderDetails.order.order_service.service_data">
+        We need some information to get started on your order. <a href="#" data-toggle="modal" data-target="#serviceModal" >Click here to submit data</a>.   
+      </div>
+      <!-- service data end -->
 
       <!-- order conversation start -->
       <Orderconversation :messages="orderMessage" @messageDel="deleteMessage"></Orderconversation>
@@ -54,7 +54,7 @@
 
     <!-- right side start -->
     <div class="col-md-3" v-show="$auth.isAdmin() || $auth.can('order-details')">
-      <div class="order_right_details">
+      <div class="order_right_details" >
         <!-- top bar menu -->
         <div class="d-flex justify-content-center">
             <div class="form-inline">
@@ -195,6 +195,8 @@
       </div>
     </div>
     <!-- right side end -->
+    
+    <Servicedata :data="orderDetails.order.order_service.service_data"></Servicedata>
   </div>
 
 </template>
@@ -205,9 +207,9 @@
     import OrderSummary from './OrderSummary';
     import Orderconversation from './Orderconversation';
     import ComposeOrderconversation from './ComposeOrderconversation';
-    import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-    export default {
 
+
+    export default {
         data() {
             return {
               isHidden:false,
@@ -215,8 +217,6 @@
               orderDetails:{},
               //load tag 
               tags:[],
-              //ck-editor
-              editor: ClassicEditor,
               editorData: '',
               //orderMessage
               orderMessage:[],

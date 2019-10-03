@@ -17,7 +17,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return redirect()->route('account.index');
+        $roles = Role::latest()->paginate(10);
+        return view('roles.index', compact('roles'));
     }
 
     /**
@@ -105,7 +106,7 @@ class RoleController extends Controller
 
         $request->validate([
 
-            'name'=>'required|max:10|unique:roles,name,'.$role->id,
+            'name'=>'required|max:30|unique:roles,name,'.$role->id,
             'permissions' =>'required',
         ]);
 

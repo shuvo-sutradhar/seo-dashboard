@@ -440,7 +440,7 @@ class OrderController extends Controller
             /*
             * For Client
             */
-            $order = Order::with('orderClient')->with('orderService')->where('user_id', Auth()->user()->id)->where('order_number', $order_number)->firstOrfail();
+            $order = Order::with('orderClient')->with('orderService.ServiceData')->where('user_id', Auth()->user()->id)->where('order_number', $order_number)->firstOrfail();
             $tags = Tag::all();
             return  response()->json(compact('order','tags'), 200);
 
@@ -448,7 +448,7 @@ class OrderController extends Controller
             /*
             * For admin
             */
-            $order = Order::with('orderClient')->with('orderService')->with('orderForm')->with('invoice')->with('orderTeam')->where('order_number', $order_number)->firstOrfail();
+            $order = Order::with('orderClient')->with('orderService.ServiceData')->with('orderForm')->with('invoice')->with('orderTeam')->where('order_number', $order_number)->firstOrfail();
             $teamMembers = User::where('account_role', 0)->orWhere('account_role',1)->get();
             $matchThese = ['order_id' => $order->id, 'user_id' => auth('api')->id()];
             $followOrUnfollow = OrderUnfollow::where($matchThese)->first();

@@ -332,6 +332,7 @@
                     helpBlock:'',
                     isRequired:false,
                     placeholder:'',
+                    value:'',
                 })
             },
             // 12. multi text
@@ -343,6 +344,7 @@
                     helpBlock:'',
                     isRequired:false,
                     placeholder:'',
+                    value:'',
                 })
             },
             // 13. checkbox
@@ -353,6 +355,7 @@
                     label:'Checkbox',
                     helpBlock:'',
                     isRequired:false,
+                    value:'',
                 })
             },
             // 14. dropdown
@@ -367,6 +370,7 @@
                         { option: "Item 1"},
                         { option: "Item 2"}
                     ],
+                    value:'',
                 })
             },
             // 15. file upload
@@ -379,6 +383,7 @@
                     helpBlock:'',
                     isRequired:false,
                     allowMultiple:false,
+                    value:'',
                 })
             },
             // 16. spread sheet

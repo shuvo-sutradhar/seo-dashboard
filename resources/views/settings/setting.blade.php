@@ -48,42 +48,54 @@
 				</div>	
 				<div class="card-body card-body-wrap" style="background: transparent;">
 					<div class="row">
+						@if(auth()->user()->isAdmin() || auth()->user()->can('company-setting'))
 						<div class="col-md-4 mb-4">
 							<a href="{{ route('settings.general') }}" class="single-card">
 								<h2>General settings</h2>
 								<p>Set your brand name and colors, upload your logo, connect your domain.</p>
 							</a>
 						</div><!-- /. single card -->
+						@endif
+						@if(auth()->user()->isAdmin() || auth()->user()->can('team'))
 						<div class="col-md-4 mb-4">
 							<a href="{{ route('account.index') }}" class="single-card">
 								<h2>Team</h2>
 								<p>Add team member & invite your team.</p>
 							</a>
 						</div><!-- /. single card -->
+						@endif
+						@if(auth()->user()->isAdmin() || auth()->user()->can('role-permission'))
 						<div class="col-md-4 mb-4">
-							<a href="{{ route('role.create') }}" class="single-card">
+							<a href="{{ route('role.index') }}" class="single-card">
 								<h2>Role & Permissions</h2>
 								<p>Create and assign roles, update permissions.</p>
 							</a>
 						</div><!-- /. single card -->
+						@endif
+						@if(auth()->user()->isAdmin() || auth()->user()->can('tag'))
 						<div class="col-md-4 mb-4">
 							<a href="{{route('tag.index')}}" class="single-card">
 								<h2>Tags</h2>
 								<p>Add or delete order tags to help organize orders internally.</p>
 							</a>
 						</div><!-- /. single card -->
+						@endif
+						@if(auth()->user()->isAdmin() || auth()->user()->can('payment-setting'))
 						<div class="col-md-4 mb-4">
 							<a href="#" class="single-card">
 								<h2>Payment Settings</h2>
 								<p>Add or delete order tags to help organize orders internally.</p>
 							</a>
 						</div><!-- /. single card -->
+						@endif
+						@if(auth()->user()->isAdmin() || auth()->user()->can('system-log'))
 						<div class="col-md-4 mb-4">
 							<a href="{{ route('log.index') }}" class="single-card">
 								<h2>Symtem Logs</h2>
 								<p>View event and payment logs.</p>
 							</a>
 						</div><!-- /. single card -->
+						@endif
 					</div>
 				</div>		
 			</section>

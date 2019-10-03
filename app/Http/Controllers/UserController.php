@@ -13,12 +13,15 @@ use Illuminate\Support\Facades\Hash;
 use File;
 
 use App\User;
+use App\Client;
+use Carbon\Carbon;
 
 use App\Profile;
 
 use App\Notifications\WelcomeTeam;
 
 use DB;
+use Auth;
 
 class UserController extends Controller
 {
@@ -29,9 +32,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $roles = Role::latest()->paginate(10);
         $users = User::where('account_role', 0)->latest()->paginate(10);
-        return view('settings.team', compact('roles', 'users'));
+        return view('settings.team', compact('users'));
     }
 
     /**
@@ -70,7 +72,10 @@ class UserController extends Controller
 
             'email' => $request->email,
             'name' => $request->name,
-            'password' => Hash::make($request->password)
+            'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'password' => Hash::make($request->password),
+            'account_role' => 0
+
         ]);
 
         // Move profile picture to the directory
@@ -147,7 +152,6 @@ class UserController extends Controller
         
         $request->validate([
 
-            'email'=>'required|string|email|max:255|unique:users,email,'.$user->id,
             'name'=>'required|string|max:255',
             'phone'=>['nullable', 'numeric', new PhoneNumber],
             'role' =>'required|integer',
@@ -168,7 +172,7 @@ class UserController extends Controller
         // Update password
         $userUpdate = $user->update([
 
-            'email' => $request->email,
+            'email' => $email,
             'name' => $request->name,
             'password' => $password,
 
@@ -214,6 +218,15 @@ class UserController extends Controller
 
         ]);
 
+
+
+        // Send mail notification
+        if(isset($request->mailNotification))
+        {
+            $user->setAttribute('realPassword', $request->password);
+            $user->notify(new WelcomeTeam($user));
+        }
+
         return redirect()->route('account.index')->with('success',  ' Team member '. ucfirst($user->name) .' updated');
     }
 
@@ -245,32 +258,101 @@ class UserController extends Controller
     public function profile(){
         return view('profile');
     }
-    public function profile_update(Request $request, $email){
 
-        $user = User::where('email', $email)->firstOrFail();
-
-        $request->validate([
-            'name'=>'required|string|max:255',
-        ]);
-        
-        if (isset($request['current_password']) && !Hash::check($request['current_password'], $user->password)) {
-            return back()->with('current_password', 'The specified password does not match the database password');
-        } else {
-            // write code to update password
-            return "Okay";
-
+    public function profile_update(Request $request,$email){
+        /*
+        *   Validation rules
+        */
+        if ($request->old_password && !(Hash::check($request->old_password, Auth::user()->password))) {
+            // The passwords matches
+            return redirect()->back()->withInput()->withErrors(['old_password'=> 'Current passowrd do not match with our record.']);
         }
+        if ($request->password && Hash::check($request->password, Auth::user()->password)) {
+            // The passwords matches
+            return redirect()->back()->withInput()->withErrors(['password'=> 'Old password ane new password can not be same.']);
+        }
+        $this->validate($request, [
+            'password' => 'sometimes|confirmed',
+        ]);
+
+
+
 
         /*
         *   update user table
         */
+        $user = Auth()->user();
         $user->name = $request['name'];
         $user->email = auth()->user()->email;
         if($request['password']) {
             $user->password = Hash::make($request['password']);
         }
         $user->save();
+        /*
+        *   Update profile table
+        */
 
-        return "Okay";
+
+        if(Auth()->user()->account_role == 2){
+            /*
+            *   profile table data
+            */
+            $client = $user->client;
+            $profile_picture = $client && $client->profile_picture ? $client->profile_picture : null;
+
+            if($file = $request->file('profile_picture')){
+                if($client && $client->profile_picture) {
+                    unlink(public_path('uploads/profile_pic/'. $client->profile_picture));  
+                }
+                $name = time() . $request->profile_picture->getClientoriginalName();
+                $file->move(public_path('uploads/profile_pic/'),$name);
+                $profile_picture = $name;
+            }
+
+            //check if user tble is empty or not! If empty then set an user id
+            if(empty($client)) {
+                $client = new Client;
+                $client->user_id = $user->id;
+            } 
+
+            $client->phone = $request->phone;
+            $client->profile_picture = $profile_picture;
+            $client->address = $request->address;
+            $client->city = $request->city;
+            $client->state = $request->state;
+            $client->post_code = $request->post_code;
+            $client->company_name = $request->company_name;
+            $client->tax_id = $request->tax_id;
+            $client->country_id = $request->input('country') != 'Select Country' ? $request->input('country') : null;
+            $client->save();
+
+        } else {
+            /*
+            *   profile table data
+            */
+            $profile = $user->profile;
+            $profile_picture = $profile && $profile->profile_picture ? $profile->profile_picture : null;
+
+            if($file = $request->file('profile_picture')){
+                if($profile && $profile->profile_picture) {
+                    unlink(public_path('uploads/profile_pic/'. $profile->profile_picture));  
+                }
+                $name = time() . $request->profile_picture->getClientoriginalName();
+                $file->move(public_path('uploads/profile_pic/'),$name);
+                $profile_picture = $name;
+            }
+
+            //check if user tble is empty or not! If empty then set an user id
+            if(empty($profile)) {
+                $profile = new Profile;
+                $profile->user_id = $user->id;
+            } 
+
+            $profile->contact_number = $request->phone;
+            $profile->profile_picture = $profile_picture;
+            $profile->save();
+        }
+
+        return redirect()->back()->with("success","Profile updated successfully!");
     }
 }

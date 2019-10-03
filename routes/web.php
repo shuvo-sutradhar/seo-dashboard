@@ -23,7 +23,6 @@ Route::get('/services/{path}', 'ServiceController@index')->where('path','([A-z\d
 
 // Profile
 Route::get('/profile', 'UserController@profile')->name('profile')->middleware('auth');
-Route::get('/profile/{email}', 'UserController@profile_update')->name('profile.update')->middleware('auth');
 Route::patch('/profile/{email}', 'UserController@profile_update')->name('profile.update')->middleware('auth');
 
 

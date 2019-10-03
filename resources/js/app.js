@@ -122,6 +122,7 @@ Vue.component('payment', require('./components/order-form/Payment.vue').default)
 //order page 
 Vue.component('orders', require('./components/orders/Orders.vue').default);
 Vue.component('Add', require('./components/orders/AddOrder.vue').default);
+Vue.component('Servicedata', require('./components/orders/ServiceData.vue').default);
 Vue.component('AllOrder', require('./components/orders/AllOrder.vue').default);
 //Invoice page 
 Vue.component('invoice', require('./components/invoice/Index.vue').default);
