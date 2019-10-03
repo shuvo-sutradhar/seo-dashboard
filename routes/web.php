@@ -14,12 +14,12 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Route::get('{path}', 'HomeController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('/invoices/{path}', 'InvoiceController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('/orders/{path}', 'OrderController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('/discount/{path}', 'DiscountController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('/clients/{path}', 'ClientController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('/services/{path}', 'ServiceController@index')->where('path','([A-z\d-\/_.]+)?');
+// Route::get('{path}', 'HomeController@index')->where('path','([A-z\d\-\/_.]+)?');
+Route::get('/invoices/{path}', 'InvoiceController@index')->where('path','([A-z\d\-\/_.]+)?');
+Route::get('/orders/{path}', 'OrderController@index')->where('path','([A-z\d\-\/_.]+)?');
+Route::get('/discount/{path}', 'DiscountController@index')->where('path','([A-z\d\-\/_.]+)?');
+Route::get('/clients/{path}', 'ClientController@index')->where('path','([A-z\d\-\/_.]+)?');
+Route::get('/services/{path}', 'ServiceController@index')->where('path','([A-z\d\-\/_.]+)?');
 
 // Profile
 Route::get('/profile', 'UserController@profile')->name('profile')->middleware('auth');
@@ -53,7 +53,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function(){
 	
 	//invoices
 	Route::get('invoices', 'ClientDashboardController@getInvoicePage')->name('invoice.client'); 
-	Route::get('/invoices/{path}', 'ClientDashboardController@getInvoicePage')->where('path','([A-z\d-\/_.]+)?');
+	Route::get('/invoices/{path}', 'ClientDashboardController@getInvoicePage')->where('path','([A-z\d\-\/_.]+)?');
 
 });
 
@@ -241,4 +241,4 @@ Route::get('/message',function(){
 })->middleware('auth');
 
 
-// Route::get('/orders/{path}', 'OrderController@index')->where('path','([A-z\d-\/_.]+)?');
+// Route::get('/orders/{path}', 'OrderController@index')->where('path','([A-z\d\-\/_.]+)?');
