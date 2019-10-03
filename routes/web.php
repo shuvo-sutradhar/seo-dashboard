@@ -15,11 +15,11 @@ Route::get('/', function () {
 });
 
 // Route::get('{path}', 'HomeController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('invoices/{path}', 'InvoiceController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('orders/{path}', 'OrderController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('discount/{path}', 'DiscountController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('clients/{path}', 'ClientController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('services/{path}', 'ServiceController@index')->where('path','([A-z\d-\/_.]+)?');
+// Route::get('invoices/{path}', 'InvoiceController@index')->where('path','([A-z\d-\/_.]+)?');
+// Route::get('orders/{path}', 'OrderController@index')->where('path','([A-z\d-\/_.]+)?');
+// Route::get('discount/{path}', 'DiscountController@index')->where('path','([A-z\d-\/_.]+)?');
+// Route::get('clients/{path}', 'ClientController@index')->where('path','([A-z\d-\/_.]+)?');
+// Route::get('services/{path}', 'ServiceController@index')->where('path','([A-z\d-\/_.]+)?');
 
 // Profile
 Route::get('profile', 'UserController@profile')->name('profile')->middleware('auth');
