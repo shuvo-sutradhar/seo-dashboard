@@ -248,43 +248,7 @@ class OrderController extends Controller
     */
     public function order_follow($number)
     {
-        $order = Order::where('order_number', $number)->firstOrFail();
-
-        $matchThese = ['order_id' => $order->id, 'user_id' => auth()->user()->id];
-
-        $unfollow = OrderUnfollow::where($matchThese)->first();
-
-        if(isset($unfollow->is_following))
-        {
-            $isFollowing = true;
-
-            if($unfollow->is_following == true)
-            {
-                $isFollowing = false;
-            }
-           
-            $unfollow->update([
-                'is_following' => $isFollowing,
-            ]);
-
-            if($isFollowing)
-            {
-                return ['You are now following the orde.'];
-            }
-            return ['You are now unfollowing the order.'];
-        }
-        else
-        {
-            OrderUnfollow::create([
-                'order_id' => $order->id,
-                'user_id' => auth()->user()->id,
-                'is_following' => 1,
-
-            ]);
-
-           // $user->notify(new InvoicePaid($invoice));
-        }
-        return ['You are now following the orde.'];
+        //
     }
 
 
@@ -369,11 +333,10 @@ class OrderController extends Controller
         
             $order = Order::with('orderClient')->with('orderService.ServiceData')->with('orderForm')->with('invoice')->with('orderTeam')->where('order_number', $order_number)->firstOrfail();
             $teamMembers = User::where('account_role', 0)->orWhere('account_role',1)->get();
-            $matchThese = ['order_id' => $order->id, 'user_id' => auth('api')->id()];
-            $followOrUnfollow = OrderUnfollow::where($matchThese)->first();
+            
             $tags = Tag::all();
             $order_tag = OrderTag::with('orderTag')->where('order_id',$order->id)->get();
-            return  response()->json(compact('order', 'teamMembers', 'followOrUnfollow','tags','order_tag'), 200);
+            return  response()->json(compact('order', 'teamMembers','tags','order_tag'), 200);
     }
 
     /**
