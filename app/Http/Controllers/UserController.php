@@ -151,7 +151,6 @@ class UserController extends Controller
         $request->validate([
 
             'name'=>'required|string|max:255',
-            'phone'=>['nullable', 'numeric', new PhoneNumber],
             'role' =>'required|integer',
             'profilePic' =>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'password' => 'nullable|min:6',
