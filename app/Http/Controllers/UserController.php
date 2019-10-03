@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Rules\PhoneNumber;
 
 use Spatie\Permission\Models\Role; 
 
@@ -59,7 +58,6 @@ class UserController extends Controller
 
             'email'=>'required|string|email|unique:users|max:255',
             'name'=>'required|string|max:255',
-            'phone'=>['nullable', 'numeric', new PhoneNumber],
             'role' =>'required|integer',
             'profilePic' =>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'password' => 'required|min:6',

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Rules\PhoneNumber;
-
 use App\User;
 
 use App\Client;
@@ -147,7 +145,6 @@ class ClientController extends Controller
 
             'clientEmail'=>'string|email|max:255|unique:users,email,'.$user->id,
             'clientName'=>'required|string|max:255',
-            'clientPhone'=>['numeric', new PhoneNumber],
             'profilePicture' =>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'address' =>'string|max:255',
             'city' =>'string|max:255',
