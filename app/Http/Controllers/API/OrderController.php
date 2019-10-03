@@ -373,8 +373,7 @@ class OrderController extends Controller
             $followOrUnfollow = OrderUnfollow::where($matchThese)->first();
             $tags = Tag::all();
             $order_tag = OrderTag::with('orderTag')->where('order_id',$order->id)->get();
-            $user =  Auth::user();
-            return  response()->json(compact('order', 'teamMembers', 'followOrUnfollow','tags','order_tag','user'), 200);
+            return  response()->json(compact('order', 'teamMembers', 'followOrUnfollow','tags','order_tag'), 200);
     }
 
     /**
