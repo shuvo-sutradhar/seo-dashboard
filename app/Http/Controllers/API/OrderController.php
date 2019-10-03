@@ -423,15 +423,7 @@ class OrderController extends Controller
      */
     public function show($order_number)
     {
-        if(Auth()->user()->account_role == 2) {
-            /*
-            * For Client
-            */
-            $order = Order::with('orderClient')->with('orderService.ServiceData')->where('user_id', Auth()->user()->id)->where('order_number', $order_number)->firstOrfail();
-            $tags = Tag::all();
-            return  response()->json(compact('order','tags'), 200);
 
-        } else {
             /*
             * For admin
             */
@@ -443,7 +435,7 @@ class OrderController extends Controller
             $order_tag = OrderTag::with('orderTag')->where('order_id',$order->id)->get();
             $user =  Auth::user();
             return  response()->json(compact('order', 'teamMembers', 'followOrUnfollow','tags','order_tag','user'), 200);
-        }
+        
     }
 
     /**
