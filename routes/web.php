@@ -15,23 +15,23 @@ Route::get('/', function () {
 });
 
 // Route::get('{path}', 'HomeController@index')->where('path','([A-z\d-\/_.]+)?');
-Route::get('/invoices/{path}', 'InvoiceController@index')->where('path','[-a-z0-9_\s]+');
-Route::get('/orders/{path}', 'OrderController@index')->where('path','[-a-z0-9_\s]+');
-Route::get('/discount/{path}', 'DiscountController@index')->where('path','[-a-z0-9_\s]+');
-Route::get('/clients/{path}', 'ClientController@index')->where('path','[-a-z0-9_\s]+');
-Route::get('/services/{path}', 'ServiceController@index')->where('path','[-a-z0-9_\s]+');
+Route::get('invoices/{path}', 'InvoiceController@index')->where('path','([A-z\d-\/_.]+)?');
+Route::get('orders/{path}', 'OrderController@index')->where('path','([A-z\d-\/_.]+)?');
+Route::get('discount/{path}', 'DiscountController@index')->where('path','([A-z\d-\/_.]+)?');
+Route::get('clients/{path}', 'ClientController@index')->where('path','([A-z\d-\/_.]+)?');
+Route::get('services/{path}', 'ServiceController@index')->where('path','([A-z\d-\/_.]+)?');
 
 // Profile
-Route::get('/profile', 'UserController@profile')->name('profile')->middleware('auth');
-Route::patch('/profile/{email}', 'UserController@profile_update')->name('profile.update')->middleware('auth');
+Route::get('profile', 'UserController@profile')->name('profile')->middleware('auth');
+Route::patch('profile/{email}', 'UserController@profile_update')->name('profile.update')->middleware('auth');
 
 
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
+Route::get('home', 'HomeController@index')->name('home')->middleware('verified');
 
-Route::get('/access-denied', 'Controller@getUnauthorized')->name('unauthorized')->middleware('verified');
+Route::get('access-denied', 'Controller@getUnauthorized')->name('unauthorized')->middleware('verified');
 
 Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function(){
 
@@ -57,7 +57,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function(){
 
 });
 
-Route::resource('/orders', 'OrderController', [
+Route::resource('orders', 'OrderController', [
     
     'names' => [
         'index' => 'order.main',
@@ -71,14 +71,14 @@ Route::resource('/orders', 'OrderController', [
     ]
 ]);
 
-Route::post('/main-account', 'HomeController@backToAccount')->name('account.back')->middleware('auth');
+Route::post('main-account', 'HomeController@backToAccount')->name('account.back')->middleware('auth');
 
 //order message update
-Route::post('/orders/message', 'HomeController@orderMessageUpdate')->name('order.message');
+Route::post('orders/message', 'HomeController@orderMessageUpdate')->name('order.message');
 //custome order
-Route::get('/order/{link}', 'FormBuilderController@order')->name('custom.order')->middleware('web');
-Route::post('/thanks', 'FormBuilderController@thanks')->name('custom.order.thanks')->middleware('web');
-Route::get('/thanks', 'FormBuilderController@thanks')->name('custom.order.thanks')->middleware('web');
+Route::get('order/{link}', 'FormBuilderController@order')->name('custom.order')->middleware('web');
+Route::post('thanks', 'FormBuilderController@thanks')->name('custom.order.thanks')->middleware('web');
+Route::get('thanks', 'FormBuilderController@thanks')->name('custom.order.thanks')->middleware('web');
 
 Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 
@@ -105,7 +105,7 @@ Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 
 
 	// Tag related route
-	Route::resource('/settings/tags', 'TagController', [
+	Route::resource('settings/tags', 'TagController', [
 	    
 	    'names' => [
 	        'index' => 'tag.index',
@@ -119,7 +119,7 @@ Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 	]);
 
 	// Order Form create
-	Route::resource('/order-form', 'FormBuilderController', [
+	Route::resource('order-form', 'FormBuilderController', [
 	    
 	    'names' => [
 	        'index' 	=> 'order-form.index',
@@ -132,7 +132,7 @@ Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 	    ]
 	]);
 	// Activity logs route
-	Route::resource('/logs', 'ActivityController', [
+	Route::resource('logs', 'ActivityController', [
 	    
 	    'names' => [
 	        'index' => 'log.index',
@@ -163,7 +163,7 @@ Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 	]);
 
 
-	Route::resource('/services', 'ServiceController', [
+	Route::resource('services', 'ServiceController', [
 	    
 	    'names' => [
 	        'index' => 'service.index',
@@ -176,7 +176,7 @@ Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 	    ]
 	]);
 
-	Route::resource('/clients', 'ClientController', [
+	Route::resource('clients', 'ClientController', [
 	    
 	    'names' => [
 	        'index' => 'client.index',
@@ -187,25 +187,25 @@ Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 	//Route::get('order/{number}', 'OrderController@getOrderpage')->name('order.details');
 
 	//order note update
-	Route::put('/orders/update-note/{number}', 'OrderController@updateOrderNote')->name('orderNote.update');
-	Route::delete('/orders/messages/delete/{id}', 'OrderController@deleteMessage')->name('message.delete');
+	Route::put('orders/update-note/{number}', 'OrderController@updateOrderNote')->name('orderNote.update');
+	Route::delete('orders/messages/delete/{id}', 'OrderController@deleteMessage')->name('message.delete');
 
 	//order status
-	Route::put('/orders/staus/{number}', 'OrderController@orderStatus')->name('order.state');
+	Route::put('orders/staus/{number}', 'OrderController@orderStatus')->name('order.state');
 
 	//assing orders
-	Route::put('/orders/assing/{number}', 'OrderController@assignOrders')->name('order.assign');
+	Route::put('orders/assing/{number}', 'OrderController@assignOrders')->name('order.assign');
 
 
 	//order follow or unfollow
-	Route::put('/orders/follow/{number}', 'OrderController@orderFollow')->name('order.follow');
+	Route::put('orders/follow/{number}', 'OrderController@orderFollow')->name('order.follow');
 
 
 	//assign tags
-	Route::put('/orders/tags/{number}', 'OrderController@assignTags')->name('assign.tags');
+	Route::put('orders/tags/{number}', 'OrderController@assignTags')->name('assign.tags');
 	
 
-	Route::resource('/invoices', 'InvoiceController', [
+	Route::resource('invoices', 'InvoiceController', [
 	    
 	    'names' => [
 	        'index' => 'invoice.index',
@@ -219,7 +219,7 @@ Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 	    ]
 	]);
 
-	Route::resource('/discount', 'DiscountController', [
+	Route::resource('discount', 'DiscountController', [
 	    
 	    'names' => [
 	        'index' => 'discount.index',
@@ -236,6 +236,6 @@ Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 
 
 //message roue
-Route::get('/message',function(){
+Route::get('message',function(){
 	return view('message.index');
 })->middleware('auth');
