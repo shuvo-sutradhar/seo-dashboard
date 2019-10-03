@@ -27,7 +27,7 @@ Route::patch('profile/{email}', 'UserController@profile_update')->name('profile.
 
 
 
-// Auth::routes(['verify' => true]);
+Auth::routes(['verify' => true]);
 
 Route::get('home', 'HomeController@index')->name('home')->middleware('verified');
 
@@ -215,10 +215,12 @@ Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 	        'edit' => 'invoice.edit',
 	        'update' => 'invoice.update',
 	        'destroy' => 'invoice.delete',
+
 	    ]
 	]);
 
 	Route::resource('discount', 'DiscountController', [
+	    
 	    'names' => [
 	        'index' => 'discount.index',
 	        'create' => 'discount.create',
@@ -237,3 +239,6 @@ Route::middleware(['auth', 'verified', 'IsAdminOrClient'])->group(function () {
 Route::get('message',function(){
 	return view('message.index');
 })->middleware('auth');
+
+
+// Route::get('/orders/{path}', 'OrderController@index')->where('path','([A-z\d-\/_.]+)?');
