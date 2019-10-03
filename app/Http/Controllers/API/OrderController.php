@@ -24,10 +24,10 @@ class OrderController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api');
+    // }
    
     /**
      * Display a listing of the resource.
@@ -67,18 +67,6 @@ class OrderController extends Controller
     public function index()
     {
         
-        if(Auth()->user()->account_role == 2) {
-            $count1 = Order::where('order_status','!=','unpaid')->where('user_id',Auth()->user()->id)->count(); 
-            $count2 = Order::where('order_status','Pending')->where('user_id',Auth()->user()->id)->count(); 
-            $count3 = Order::where('order_status','Submitted')->where('user_id',Auth()->user()->id)->count(); 
-            $count4 = Order::where('order_status','Working')->where('user_id',Auth()->user()->id)->count(); 
-            $count5 = Order::where('order_status','Complete')->where('user_id',Auth()->user()->id)->count(); 
-            $count6 = Order::where('order_status','Canceled')->where('user_id',Auth()->user()->id)->count(); 
-
-            $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->where('order_status','!=','unpaid')->where('user_id',Auth()->user()->id)->latest()->paginate(10);
-            return  response()->json(compact('count1','count2','count3','count4','count5','count6','orders'), 200);
-
-        } else {
             $count1 = Order::where('order_status','!=','unpaid')->count(); 
             $count2 = Order::where('order_status','Pending')->count(); 
             $count3 = Order::where('order_status','Submitted')->count(); 
@@ -88,7 +76,6 @@ class OrderController extends Controller
             $orders = Order::with('orderService')->with('orderClient')->with('orderTeam')->where('order_status','!=','unpaid')->latest()->paginate(10);
             return  response()->json(compact('count1','count2','count3','count4','count5','count6','orders'), 200);
 
-        }
     }
 
     //pending order

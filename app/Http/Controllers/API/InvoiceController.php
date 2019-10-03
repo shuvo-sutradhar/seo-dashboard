@@ -22,10 +22,10 @@ class InvoiceController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api');
+    // }
     /**
      * Display a listing of the resource.
      *
